@@ -26,6 +26,6 @@ let start port wwwDirectory =
 let main argv = 
     printfn "%A" argv
 
-    start 8080 "../../../www"
+    start (int argv.[0]) argv.[1]
 
     0 // return an integer exit code
