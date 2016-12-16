@@ -1,1 +1,29 @@
-<h1>Hello</h1>
+<html>
+<head>
+    <script>
+            var ws = new WebSocket("ws://localhost:8080/websocket");
+            ws.onerror = function(ev){
+                console.log('error');
+                console.log(ev);
+            };
+            ws.onabort = function() {
+                console.log('abort');
+            };
+            ws.onopen = function() {
+                console.log("Opened");
+
+                ws.send("hello");
+            };
+            ws.onclose = function () {
+                console.log("Closed");
+            };
+            ws.onmessage = function (evt) {
+                console.log(evt);
+                console.log("response : " + evt.data);
+            };
+    </script>
+</head>
+<body>
+    <h1>Hello</h1>
+</body>
+</html>
