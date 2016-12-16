@@ -1,5 +1,6 @@
 source https://api.nuget.org/v3/index.json
 framework >= net462
 
+nuget Microsoft.FSharpLu.Json
 nuget suave
 nuget System.ValueTuple 4.3.0

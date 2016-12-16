@@ -1,8 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
-
-
-open System
+﻿open System
 open System.IO
 open System.Net
 open System.Text
@@ -20,22 +16,41 @@ open Suave.Sockets
 open Suave.Sockets.Control
 open Suave.WebSocket
 
-let echo (webSocket : WebSocket) =
-  fun cx -> socket {
-    let loop = ref true
-    while !loop do
-      let! msg = webSocket.read()
-      match msg with
-      | (Text, data, true) ->
-        let str = Encoding.UTF8.GetString data
-        do! webSocket.send Text data true
-      | (Ping, _, _) ->
-        do! webSocket.send Pong [||] true
-      | (Close, _, _) ->
-        do! webSocket.send Close [||] true
-        loop := false
-      | _ -> ()
-  }
+open Microsoft.FSharpLu.Json
+
+type ClientCommands =
+    | Echo of string
+
+type ClientCommandResponses =
+    | Echo of string
+
+let applyCommand = function
+    | ClientCommands.Echo m -> ClientCommandResponses.Echo ("WS:" + m)
+
+let echo (applyCommand: ClientCommands -> ClientCommandResponses) (webSocket : WebSocket) =
+    let send opcode data =
+        webSocket.send opcode data true
+
+    fun cx -> socket {
+        let loop = ref true
+        while !loop do
+            let! msg = webSocket.read()
+            match msg with
+            | (Text, data, true) ->
+                do! data
+                    |> Encoding.UTF8.GetString
+                    |> Compact.deserialize<ClientCommands>
+                    |> applyCommand
+                    |> Compact.serialize
+                    |> Encoding.UTF8.GetBytes
+                    |> send Text
+            | (Ping, _, _) ->
+                do! send Pong [||]
+            | (Close, _, _) ->
+                do! send Close [||]
+                loop := false
+            | _ -> ()
+    }
 
 let start port wwwDirectory =
 
@@ -46,7 +61,7 @@ let start port wwwDirectory =
 
     let app : WebPart =
       choose [
-        path "/websocket" >=> handShake echo
+        path "/websocket" >=> handShake (echo applyCommand)
         GET >=> path "/" >=> Files.browseFileHome "index.html"
         GET >=> Files.browseHome
         RequestErrors.NOT_FOUND "Page not found." 

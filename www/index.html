@@ -12,7 +12,7 @@
             ws.onopen = function() {
                 console.log("Opened");
 
-                ws.send("hello");
+                ws.send('{ "Echo": "Hello" }');
             };
             ws.onclose = function () {
                 console.log("Closed");
