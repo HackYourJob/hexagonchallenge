@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{608F83
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon", "Hexagon\Hexagon.fsproj", "{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon.Tests", "Hexagon.Tests\Hexagon.Tests.fsproj", "{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

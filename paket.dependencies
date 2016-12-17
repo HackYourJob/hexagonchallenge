@@ -1,6 +1,8 @@
 source https://api.nuget.org/v3/index.json
 framework >= net462
 
+nuget FsUnit.Xunit
 nuget Microsoft.FSharpLu.Json
 nuget suave
 nuget System.ValueTuple 4.3.0
+nuget Xunit.runner.VisualStudio ~> 2.2 prerelease version_in_path: true
