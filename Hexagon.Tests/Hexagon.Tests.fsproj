@@ -137,6 +137,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Hexagon.fs" />
     <Content Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>
