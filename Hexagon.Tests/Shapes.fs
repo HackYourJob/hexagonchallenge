@@ -19,7 +19,7 @@ let display shape =
 module HexagonBoard =
     open Hexagon.Shapes.HexagonBoard
 
-    type ``generateHexagon should`` ()=
+    type ``generate should`` ()=
         [<Fact>] member x.
          ``center cell on first line`` ()= 
             generate 5 
@@ -75,3 +75,50 @@ module HexagonBoard =
                  "..x.x.x.."
                  "...x.x..."
                  "....x...."]
+
+open Hexagon.Domain
+
+
+type ``convertShapeToCell should`` ()=
+    [<Fact>] member x.
+        ``convert ShapeCell to Free Cell`` ()= 
+        convertShapeToCells (fun _ -> "1") [ [Cell] ] 
+        |> Seq.toList
+        |> should equal [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } ]
+
+    [<Fact>] member x.
+        ``exclude None`` ()= 
+        convertShapeToCells (fun _ -> "1") [ [Cell; None] ] 
+        |> Seq.toList
+        |> should equal [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } ]
+
+    [<Fact>] member x.
+        ``Fill good column num of line`` ()= 
+        convertShapeToCells (fun _ -> "1") [ [Cell; Cell; Cell] ] 
+        |> Seq.toList
+        |> should equal 
+            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
+              { Id = "1"; LineNum = 1; ColumnNum = 2; State = Free 0 } 
+              { Id = "1"; LineNum = 1; ColumnNum = 3; State = Free 0 } 
+            ]
+
+    [<Fact>] member x.
+        ``Fill good line num`` ()= 
+        convertShapeToCells (fun _ -> "1") [ [Cell]; [Cell]; [Cell] ] 
+        |> Seq.toList
+        |> should equal 
+            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
+              { Id = "1"; LineNum = 2; ColumnNum = 1; State = Free 0 } 
+              { Id = "1"; LineNum = 3; ColumnNum = 1; State = Free 0 } 
+            ]
+
+    [<Fact>] 
+    member x.``Use generateId for each cell`` ()= 
+        let mutable cellCounter = 0
+        convertShapeToCells (fun _ -> cellCounter <- cellCounter + 1; cellCounter |> string) [ [Cell; Cell; Cell] ] 
+        |> Seq.toList
+        |> should equal 
+            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
+              { Id = "2"; LineNum = 1; ColumnNum = 2; State = Free 0 } 
+              { Id = "3"; LineNum = 1; ColumnNum = 3; State = Free 0 } 
+            ]
