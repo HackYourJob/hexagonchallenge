@@ -31,6 +31,21 @@ module HexagonBoard =
             yield! generateFooter size
         }
 
+module HexagonCell =
+    open Domain
+
+    let isNeighbours reference other =
+        match (other.ColumnNum - reference.ColumnNum, other.LineNum - reference.LineNum) with
+        | (0, -2)
+        | (0, 2)
+        | (-2, 0)
+        | (2, 0)
+        | (-1, -1)
+        | (1, -1)
+        | (1, 1)
+        | (-1, 1) -> true
+        | _ -> false
+
 open Domain
 
 let convertShapeToCells generateId shape =

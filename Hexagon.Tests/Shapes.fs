@@ -76,8 +76,72 @@ module HexagonBoard =
                  "...x.x..."
                  "....x...."]
 
-open Hexagon.Domain
 
+module HexagonCell =
+    open Hexagon.Domain
+    open Hexagon.Shapes.HexagonCell
+    
+    let cell column line = { Id = sprintf "%i-%i" column line; LineNum = line; ColumnNum = column; State = Free 0 }
+    let reference = cell 10 10
+    
+    type ``isNeighbours should`` ()=
+        [<Fact>] member x.
+            ``return true if top cell`` ()= 
+            cell 10 8
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if bottom cell`` ()= 
+            cell 10 12
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if right cell`` ()= 
+            cell 12 10
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if left cell`` ()= 
+            cell 8 10
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if top left cell`` ()= 
+            cell 9 9
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if top right cell`` ()= 
+            cell 11 9
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if bottom right cell`` ()= 
+            cell 11 11
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return true if bottom left cell`` ()= 
+            cell 9 11
+            |> isNeighbours reference  
+            |> should be True
+
+        [<Fact>] member x.
+            ``return false if too far`` ()= 
+            cell 12 11
+            |> isNeighbours reference  
+            |> should be False
+
+
+
+open Hexagon.Domain
 
 type ``convertShapeToCell should`` ()=
     [<Fact>] member x.
