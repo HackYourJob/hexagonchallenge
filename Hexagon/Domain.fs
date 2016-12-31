@@ -5,6 +5,7 @@ type AiDescription = {
         Id: AiId
         Name: string
     }
+type AiScore = { CellsNb: int; Resources: int; BugsNb: int }
 
 type CellId = { LineNum: int; ColumnNum: int }
 type Cell = {
@@ -18,3 +19,37 @@ and CellStateOwn = { AiId: AiId; Resources: int }
 
 type Board = Cell seq
 
+type GameEvents = 
+    | Started of Started
+    | AiPlayed of AiActions
+    | Board of BoardEvents * (CellChanged list)
+    | Won of AiId
+and Started = { BoardSize: BoardSize; Board: Board; Ais: AiDescription seq }
+and BoardSize = { Lines: int; Columns: int }
+and AiActions =
+    | Transaction of TransactionParameters
+    | Bug of string
+    | Sleep
+and TransactionParameters = { FromId: CellId; ToId: CellId; AmountToTransfert: int }
+and BoardEvents =
+    | AiAdded of AiAdded
+    | ResourcesIncreased of int
+    | ResourcesTransfered of TransactionParameters
+    | FightWon of FightWon
+    | FightDrawed of FightDrawed
+    | FightLost of TransactionParameters
+and AiAdded = { AiId: AiId; CellId: CellId; Resources: int }
+and FightWon = { FromId: CellId; ToId: CellId; AmountToTransfert: int; AiId: AiId }
+and FightDrawed = { FromId: CellId; ToId: CellId }
+and CellChanged =
+    | Owned of CellOwned
+    | ResourcesChanged of CellResourcesChanged
+and CellOwned = { CellId: CellId; AiId: AiId; Resources: int }
+and CellResourcesChanged = { CellId: CellId; Resources: int }
+
+type AiPlayParameters = (CellId * CellStateOwn * Cell list) list
+
+let extractResources cell =
+    match cell.State with
+    | Own param -> param.Resources
+    | Free resources -> resources
