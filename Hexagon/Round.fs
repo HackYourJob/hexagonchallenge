@@ -48,3 +48,48 @@ module TransactionValidation =
             match createContext getCell aiId t |> validTransaction isNeighboursOf with
             | Invalid e -> sprintf "%A" e |> Bug
             | Valid c -> transaction
+
+module BoardHandler =
+    type private Comparison = More | Less | Same
+
+    let private compare a b =
+        if a < b then Less
+        else if a = b then Same
+        else More
+
+    let convertToBoardEvent fromCell toCell amountToTransfert : GameEvents option =
+        match fromCell.State with
+        | Free _ -> Option.None
+        | Own { AiId = fromAiId; Resources = fromResources } ->
+            let createCellChanged newFromResources newToResources =
+                [
+                    ResourcesChanged { CellId = fromCell.Id; Resources = newFromResources }
+                    ResourcesChanged { CellId = toCell.Id; Resources = newToResources }
+                ]
+        
+            let toResources = extractResources toCell
+            match toCell.State, toResources |> compare amountToTransfert with
+            | Own param, _ when param.AiId = fromAiId -> 
+                ResourcesTransfered { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                createCellChanged (fromResources - amountToTransfert) (toResources + amountToTransfert)
+            | _, Same -> 
+                FightDrawed { FromId = fromCell.Id; ToId = toCell.Id },
+                createCellChanged 0 (toResources + 1)
+            | _, More ->
+                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert; AiId = fromAiId },
+                [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }]
+            | _, Less -> 
+                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert)
+            |> Board |> Some
+
+    let generateEvents getCell aiAction =
+        match aiAction with
+        | Transaction param -> 
+            let fromCell = getCell param.FromId
+            let toCell = getCell param.ToId
+
+            convertToBoardEvent fromCell toCell param.AmountToTransfert
+            |> Option.toList
+        | Bug _
+        | Sleep -> []

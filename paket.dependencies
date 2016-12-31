@@ -5,4 +5,5 @@ nuget FsUnit.Xunit
 nuget Microsoft.FSharpLu.Json
 nuget suave
 nuget System.ValueTuple 4.3.0
+nuget unquote
 nuget Xunit.runner.VisualStudio version_in_path: true
