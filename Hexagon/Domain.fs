@@ -6,11 +6,9 @@ type AiDescription = {
         Name: string
     }
 
-type CellId = string
+type CellId = { LineNum: int; ColumnNum: int }
 type Cell = {
         Id: CellId
-        LineNum: int
-        ColumnNum: int
         State: CellState
     }
 and CellState =

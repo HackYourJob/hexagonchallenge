@@ -81,61 +81,61 @@ module HexagonCell =
     open Hexagon.Domain
     open Hexagon.Shapes.HexagonCell
     
-    let cell column line = { Id = sprintf "%i-%i" column line; LineNum = line; ColumnNum = column; State = Free 0 }
-    let reference = cell 10 10
+    let cellId column line = { LineNum = line; ColumnNum = column }
+    let reference = cellId 10 10
     
     type ``isNeighbours should`` ()=
         [<Fact>] member x.
             ``return true if top cell`` ()= 
-            cell 10 8
+            cellId 10 8
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if bottom cell`` ()= 
-            cell 10 12
+            cellId 10 12
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if right cell`` ()= 
-            cell 12 10
+            cellId 12 10
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if left cell`` ()= 
-            cell 8 10
+            cellId 8 10
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if top left cell`` ()= 
-            cell 9 9
+            cellId 9 9
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if top right cell`` ()= 
-            cell 11 9
+            cellId 11 9
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if bottom right cell`` ()= 
-            cell 11 11
+            cellId 11 11
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return true if bottom left cell`` ()= 
-            cell 9 11
+            cellId 9 11
             |> isNeighbours reference  
             |> should be True
 
         [<Fact>] member x.
             ``return false if too far`` ()= 
-            cell 12 11
+            cellId 12 11
             |> isNeighbours reference  
             |> should be False
 
@@ -146,43 +146,32 @@ open Hexagon.Domain
 type ``convertShapeToCell should`` ()=
     [<Fact>] member x.
         ``convert ShapeCell to Free Cell`` ()= 
-        convertShapeToCells (fun _ -> "1") [ [Cell] ] 
+        convertShapeToCells [ [Cell] ] 
         |> Seq.toList
-        |> should equal [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } ]
+        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } ]
 
     [<Fact>] member x.
         ``exclude None`` ()= 
-        convertShapeToCells (fun _ -> "1") [ [Cell; None] ] 
+        convertShapeToCells [ [Cell; None] ] 
         |> Seq.toList
-        |> should equal [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } ]
+        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } ]
 
     [<Fact>] member x.
         ``Fill good column num of line`` ()= 
-        convertShapeToCells (fun _ -> "1") [ [Cell; Cell; Cell] ] 
+        convertShapeToCells [ [Cell; Cell; Cell] ] 
         |> Seq.toList
         |> should equal 
-            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
-              { Id = "1"; LineNum = 1; ColumnNum = 2; State = Free 0 } 
-              { Id = "1"; LineNum = 1; ColumnNum = 3; State = Free 0 } 
+            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } 
+              { Id = { LineNum = 1; ColumnNum = 2 }; State = Free 0 } 
+              { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0 } 
             ]
 
     [<Fact>] member x.
         ``Fill good line num`` ()= 
-        convertShapeToCells (fun _ -> "1") [ [Cell]; [Cell]; [Cell] ] 
+        convertShapeToCells [ [Cell]; [Cell]; [Cell] ] 
         |> Seq.toList
         |> should equal 
-            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
-              { Id = "1"; LineNum = 2; ColumnNum = 1; State = Free 0 } 
-              { Id = "1"; LineNum = 3; ColumnNum = 1; State = Free 0 } 
-            ]
-
-    [<Fact>] 
-    member x.``Use generateId for each cell`` ()= 
-        let mutable cellCounter = 0
-        convertShapeToCells (fun _ -> cellCounter <- cellCounter + 1; cellCounter |> string) [ [Cell; Cell; Cell] ] 
-        |> Seq.toList
-        |> should equal 
-            [ { Id = "1"; LineNum = 1; ColumnNum = 1; State = Free 0 } 
-              { Id = "2"; LineNum = 1; ColumnNum = 2; State = Free 0 } 
-              { Id = "3"; LineNum = 1; ColumnNum = 3; State = Free 0 } 
+            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } 
+              { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 0 } 
+              { Id = { LineNum = 3; ColumnNum = 1 }; State = Free 0 } 
             ]

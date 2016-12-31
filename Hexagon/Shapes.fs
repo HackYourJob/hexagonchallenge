@@ -48,9 +48,9 @@ module HexagonCell =
 
 open Domain
 
-let convertShapeToCells generateId shape =
+let convertShapeToCells shape =
     let createCell lineNum columnNum =
-        { Id = generateId(); LineNum = lineNum + 1; ColumnNum = columnNum + 1; State = Free 0 }
+        { Id = { LineNum = lineNum + 1; ColumnNum = columnNum + 1 }; State = Free 0 }
 
     let convertCell lineNum columnNum = function
         | Cell -> createCell lineNum columnNum |> Some
