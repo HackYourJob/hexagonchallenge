@@ -20,9 +20,13 @@ module HexagonBoard =
     let private generateFooter = generateHeader >> Seq.rev
 
     let private generateBody size =
-        let fullLine _ = generateLine size size
-
-        [1 .. size] |> Seq.map fullLine
+        let fullLineWithOldLine _ = 
+            seq {
+                yield generateLine size size
+                yield generateLine size (size-1)
+            }
+            
+        [1 .. size] |> Seq.collect fullLineWithOldLine |> Seq.take (size * 2 - 1)
 
     let generate (size: int) : BoardShape = 
         seq {

@@ -49,25 +49,27 @@ module HexagonBoard =
                  "x.x.x.x.x"]
 
         [<Fact>] member x.
-         ``body has hexagon size`` ()= 
+         ``body has hexagon size and odd line`` ()= 
             generate 5 
             |> display
-            |> Seq.skip 4
-            |> Seq.take 5
+            |> Seq.skip 5
+            |> Seq.take 7
             |> Seq.toList
             |> should equal 
-                ["x.x.x.x.x"
+                [".x.x.x.x."
                  "x.x.x.x.x"
+                 ".x.x.x.x."
                  "x.x.x.x.x"
+                 ".x.x.x.x."
                  "x.x.x.x.x"
-                 "x.x.x.x.x"]
+                 ".x.x.x.x."]
 
         [<Fact>] member x.
          ``footer is inverse of header`` ()= 
             generate 5
             |> display 
-            |> Seq.skip 4
-            |> Seq.skip 4
+            |> Seq.skip 5
+            |> Seq.skip 7
             |> Seq.toList
             |> should equal 
                 ["x.x.x.x.x"
