@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Shapes.fs" />
+    <Compile Include="Round.fs" />
     <Content Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>
