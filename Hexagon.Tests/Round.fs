@@ -146,4 +146,19 @@ module BoardHandler =
                             ResourcesChanged { CellId = cellOfAi2.Id; Resources = 3 }
                             ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 1 }
                         ]))
-                
+                        
+    type ``generateResourcesIncreased should`` ()=
+        [<Fact>] 
+        member x.``increment resources of all cells`` ()= 
+            let expected = 
+                Board (
+                    ResourcesIncreased 1, 
+                    [ ResourcesChanged { CellId = cellOfAi2.Id; Resources = 8 }
+                      ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 6 } ])
+            test <@ [ (cellOfAi2.Id, 7); (cellOfOtherAi.Id, 5)] |> generateResourcesIncreased = expected @>
+
+        [<Fact>] 
+        member x.``not increment resources of cells with 100 resources`` ()= 
+            let expected = Board (ResourcesIncreased 1, [])
+            test <@ [ (cellOfAi2.Id, 100); (cellOfOtherAi.Id, 200)]  |> generateResourcesIncreased = expected @>
+

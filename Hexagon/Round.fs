@@ -93,3 +93,11 @@ module BoardHandler =
             |> Option.toList
         | Bug _
         | Sleep -> []
+
+    let generateResourcesIncreased ownCells =
+        ownCells
+        |> Seq.filter (fun (_, resources) -> resources < 100)
+        |> Seq.map (fun (id, resources) -> ResourcesChanged { CellId = id; Resources = resources + 1 }) 
+        |> Seq.toList
+        |> fun cellsChanged -> ResourcesIncreased 1, cellsChanged
+        |> Board
