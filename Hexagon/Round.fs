@@ -101,3 +101,35 @@ module BoardHandler =
         |> Seq.toList
         |> fun cellsChanged -> ResourcesIncreased 1, cellsChanged
         |> Board
+
+module AiActions =
+    let private apply getCell action =
+        seq {
+            yield AiPlayed action
+            yield! BoardHandler.generateEvents getCell action
+        }
+
+    let playAi getCellsWithNeighboursOf getCell validAction (aiId: AiId, play: AiPlayParameters -> AiActions) =
+        getCellsWithNeighboursOf aiId
+        |> play
+        |> validAction aiId
+        |> apply getCell
+
+let playAis (play: (AiId * (AiPlayParameters -> AiActions)) -> GameEvents seq) ais =
+    ais 
+    |> Seq.map play
+
+let createPlayAi getCellsWithNeighboursOf getCell isNeighboursOf =
+    let validAction = TransactionValidation.validAiAction getCell isNeighboursOf
+    AiActions.playAi getCellsWithNeighboursOf (getCell >> Option.get) validAction
+
+let runRound getAllOwnCells playAi ais = 
+    seq {
+        yield! ais |> playAis playAi |> Seq.collect id
+            
+        yield getAllOwnCells () |> BoardHandler.generateResourcesIncreased
+    }
+
+let createRunRound getCellsWithNeighboursOf getCell isNeighboursOf getAllOwnCells =
+    createPlayAi getCellsWithNeighboursOf getCell isNeighboursOf
+    |> runRound getAllOwnCells

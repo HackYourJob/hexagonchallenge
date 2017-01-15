@@ -162,3 +162,56 @@ module BoardHandler =
             let expected = Board (ResourcesIncreased 1, [])
             test <@ [ (cellOfAi2.Id, 100); (cellOfOtherAi.Id, 200)]  |> generateResourcesIncreased = expected @>
 
+module AiActions =
+    open Hexagon.Round.AiActions
+        
+    type ``playAi should`` ()=
+        [<Fact>] 
+        member x.``play ai with neighbours cells and return GameEvents`` ()= 
+            let aiId = 1
+            let cellsWithNeighbours = [({ LineNum = 1; ColumnNum = 1 }, { AiId = aiId; Resources = 5 }, [{ Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 5 }}])]
+            let aiAction = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 5 }
+            let aiActionAfterValidation = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 2 }
+
+            let getCellsWithNeighboursOf = function
+                | id when id = aiId -> cellsWithNeighbours
+                | _ -> failwith "Invalid aiId"
+
+            let getCell = function
+                | id -> { Id = id; State = Own { AiId = aiId; Resources = 5 }}
+
+            let validAction aiId = function
+                | a when a = aiAction -> aiActionAfterValidation
+                | _ -> failwith "Invalid action"
+
+            let play = function
+                | c when c = cellsWithNeighbours -> aiAction
+                | _ -> failwith "Invalid cells"
+                
+
+            let result = playAi getCellsWithNeighboursOf getCell validAction (aiId, play) |> Seq.toList
+            
+            let expected = AiPlayed aiActionAfterValidation :: Hexagon.Round.BoardHandler.generateEvents getCell aiActionAfterValidation
+            test <@ result = expected @>
+
+open Hexagon.Round
+
+type ``runRound should`` ()=
+    [<Fact>] 
+    member x.``play all ais and increment resources`` ()= 
+        let getAllOwnCells () = 
+            [({ LineNum = 1; ColumnNum = 2 }, 5)]
+
+        let playAi (id, play) =
+            seq {
+                yield AiActions.Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = id } |> AiPlayed
+            }
+        let ais = [(1,fun _ -> Sleep); (2,fun _ -> Sleep)] |> List.toSeq
+
+        let result = runRound getAllOwnCells playAi ais |> Seq.toList
+            
+        let expected = [
+            AiPlayed (AiActions.Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 1 }) 
+            AiPlayed (AiActions.Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 2 })
+            BoardHandler.generateResourcesIncreased (getAllOwnCells ())]
+        test <@ result = expected @>
