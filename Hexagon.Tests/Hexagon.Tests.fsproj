@@ -69,6 +69,7 @@
     <Compile Include="Shapes.fs" />
     <Compile Include="Round.fs" />
     <Compile Include="Ais.fs" />
+    <Compile Include="AiCellIdsStore.fs" />
     <Content Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>
