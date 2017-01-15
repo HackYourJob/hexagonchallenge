@@ -96,6 +96,7 @@ module BoardHandler =
         | id when id = cellOfAi2.Id -> cellOfAi2
         | id when id = freeCell.Id -> freeCell
         | id when id = cellOfOtherAi.Id -> cellOfOtherAi
+        | _ -> failwith "invalid cell"
 
     let generate action = generateEvents getCell action |> Seq.toList
 

@@ -59,6 +59,7 @@
     <Compile Include="Domain.fs" />
     <Compile Include="Shapes.fs" />
     <Compile Include="Round.fs" />
+    <Compile Include="Ais.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="paket.references" />
