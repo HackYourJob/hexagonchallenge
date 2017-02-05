@@ -1,29 +1,344 @@
-<html>
+﻿<html>
 <head>
-    <script>
-            var ws = new WebSocket("ws://localhost:8080/websocket");
-            ws.onerror = function(ev){
-                console.log('error');
-                console.log(ev);
-            };
-            ws.onabort = function() {
-                console.log('abort');
-            };
-            ws.onopen = function() {
-                console.log("Opened");
+    <title>Hexagonal game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+        }
 
-                ws.send('{ "Echo": "Hello" }');
-            };
-            ws.onclose = function () {
-                console.log("Closed");
-            };
-            ws.onmessage = function (evt) {
-                console.log(evt);
-                console.log("response : " + evt.data);
-            };
-    </script>
+         .board {
+             display: flex;
+             flex-direction: column;
+         }
+
+        .board-row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .board-row--hexagon {
+            margin-bottom: -11px;
+        }
+
+        .board-cell {
+            display: flex;
+            visibility: hidden;
+        }
+
+        .board-cell[inside="true"] {
+            visibility: visible;
+        }
+
+        .hexagonCellShape {
+            margin-right: -4px;
+
+            width: 26px;
+            height: 24px;
+        }
+
+        .hexagonCellShape-left {
+            border-right: 6px solid transparent;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right-color: #ccc;
+        }
+
+        .hexagonCellShape-middle {
+            width: 14px;
+            height: 24px;
+            background: #ccc;
+        }
+
+        .hexagonCellShape-right {
+            border-left: 6px solid transparent;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left-color: #ccc;
+        }
+
+        .board-cell-content {
+            font-size: 10px;
+            font-weight: bold;
+
+            align-self: center;
+            text-align: center;
+        }
+
+        .board-cell-content--hexagon {
+            margin-left: -26px;
+            width: 25px;
+        }
+
+        [aiId="1"] .hexagonCellShape-left, [aiId="1"] .hexagonCellShape-right {
+            border-right-color: #ff2a08;
+            border-left-color: #ff2a08;
+        }
+
+        [aiId="1"] .hexagonCellShape-middle, [aiId="1"] .score-legend {
+            background: #ff2a08;
+        }
+
+        [aiId="2"] .hexagonCellShape-left, [aiId="2"] .hexagonCellShape-right {
+            border-right-color: #ffb308;
+            border-left-color: #ffb308;
+        }
+
+        [aiId="2"] .hexagonCellShape-middle, [aiId="2"] .score-legend {
+            background: #ffb308;
+        }
+
+        [aiId="3"] .hexagonCellShape-left, [aiId="3"] .hexagonCellShape-right {
+            border-right-color: #72ff08;
+            border-left-color: #72ff08;
+        }
+
+        [aiId="3"] .hexagonCellShape-middle, [aiId="3"] .score-legend {
+            background: #72ff08;
+        }
+
+        [aiId="4"] .hexagonCellShape-left, [aiId="4"] .hexagonCellShape-right {
+            border-right-color: #08ffff;
+            border-left-color: #08ffff;
+        }
+
+        [aiId="4"] .hexagonCellShape-middle, [aiId="4"] .score-legend {
+            background: #08ffff;
+        }
+
+        [aiId="5"] .hexagonCellShape-left, [aiId="5"] .hexagonCellShape-right {
+            border-right-color: #0849ff;
+            border-left-color: #0849ff;
+        }
+
+        [aiId="5"] .hexagonCellShape-middle, [aiId="5"] .score-legend {
+            background: #0849ff;
+        }
+
+        [aiId="6"] .hexagonCellShape-left, [aiId="6"] .hexagonCellShape-right {
+            border-right-color: #ff08e1;
+            border-left-color: #ff08e1;
+        }
+
+        [aiId="6"] .hexagonCellShape-middle, [aiId="6"] .score-legend {
+            background: #ff08e1;
+        }
+
+        .score {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            margin-left: 10px;
+            margin-bottom: 5px;
+        }
+
+        .score-legend {
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .score-aiName {
+            width: 150px;
+        }
+
+        .score-cellsNb {
+            width: 50px;
+
+            text-align: right;
+        }
+
+        .score-resources {
+            width: 100px;
+
+            text-align: right;
+        }
+
+        .score-bugs {
+            width: 50px;
+
+            text-align: right;
+        }
+
+        .score--header {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello</h1>
+    <div id="board" class="board"></div>
+    <div id="scores">
+        <div class="score score--header"><div class="score-legend"></div><div class="score-aiName">Name</div><div class="score-cellsNb">Cells</div><div class="score-resources">Resources</div><div class="score-bugs">Bugs</div></div>
+        <div class="score" aiId="1"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
+        <div class="score" aiId="2"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
+        <div class="score" aiId="3"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
+        <div class="score" aiId="4"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
+        <div class="score" aiId="5"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
+    </div>
+
+<script>
+    (function () {
+        var cellDomsByPosition = [];
+
+        var saveCell = function (rowPosition, columnPosition, cell) {
+            var currentAiId = -1;
+            var currentResource = -1;
+            var isInside = false;
+            var contentDom = cell.querySelector('.board-cell-content');
+
+            cellDomsByPosition[rowPosition + "-" + columnPosition] = {
+                setAiId: function (num) {
+                    if (num !== currentAiId) {
+                        cell.setAttribute('aiId', num);
+                        currentAiId = num;
+                    }
+                },
+                setResources: function (nb) {
+                    if (currentResource !== nb) {
+                        contentDom.textContent = nb;
+                        currentResource = nb;
+                    }
+                },
+                inside: function (value) {
+                    if (isInside !== value) {
+                        cell.setAttribute('inside', value);
+                        isInside = value;
+                    }
+                }
+            };
+        };
+
+        var getCell = function(rowPosition, columnPosition) {
+            return cellDomsByPosition[rowPosition + "-" + columnPosition];
+        };
+
+        var createCell = function (rowPosition, columnPosition) {
+            var cell = document.createElement('div');
+            cell.className = 'board-cell hexagonCellShape';
+
+            cell.setAttribute('data-column', columnPosition);
+            cell.setAttribute('data-row', rowPosition);
+
+            cell.innerHTML = '<div class="hexagonCellShape-left"></div><div class="hexagonCellShape-middle"></div><div class="hexagonCellShape-right"></div><div class="board-cell-content board-cell-content--hexagon">0</div>';
+
+            return cell;
+        };
+
+        var createAndSaveCell = function(rowPosition, columnPosition) {
+            var cell = createCell(rowPosition, columnPosition);
+
+            saveCell(rowPosition, columnPosition, cell);
+
+            return cell;
+        };
+
+        var createRow = function (rowPosition, columnsNb) {
+            var row = document.createElement("div");
+            row.className = "board-row board-row--hexagon";
+            for (var columnNum = 1; columnNum <= columnsNb; columnNum++) {
+                row.appendChild(createAndSaveCell(rowPosition, columnNum));
+            }
+
+            return row;
+        };
+
+        var initializeBoard = function(rowsNb, columnsNb) {
+            var board = document.querySelector("#board");
+            
+            for (var rowNum = 1; rowNum <= rowsNb + 1; rowNum++) {
+                board.appendChild(createRow(rowNum, columnsNb));
+            }
+        };
+
+        var initializeCells = function(cells) {
+            cells.forEach(function(cell) {
+                var boardCell = getCell(cell["Id"]["LineNum"], cell["Id"]["ColumnNum"]);
+
+                boardCell.inside(true);
+
+                if (cell["State"].hasOwnProperty("Free")) {
+                    boardCell.setAiId(0);
+                    boardCell.setResources(cell["State"]["Free"]);
+                } else {
+                    var own = cell["State"]["Own"];
+                    boardCell.setAiId(own.AiId);
+                    boardCell.setResources(own.Resources);
+                }
+            });
+        };
+        
+        var initializeLegend = function(ais) {
+
+        };
+
+        var onStarted = function(evt) {
+            initializeBoard(evt["BoardSize"]["Lines"], evt["BoardSize"]["Columns"]);
+            initializeCells(evt["Board"]);
+            initializeLegend(evt["Ais"]);
+        };
+
+        var onCellOwned = function (evt) {
+            var cellId = evt.CellId;
+            var boardCell = getCell(cellId["LineNum"], cellId["ColumnNum"]);
+            boardCell.setAiId(evt.AiId);
+            boardCell.setResources(evt.Resources);
+        };
+
+        var onCellResourcesChanged = function (evt) {
+            var cellId = evt.CellId;
+            var boardCell = getCell(cellId["LineNum"], cellId["ColumnNum"]);
+            boardCell.setResources(evt.Resources);
+        };
+
+        var onCellsChanged = function(events) {
+            events.forEach(function(evt) {
+                if (evt["Owned"]) {
+                    onCellOwned(evt["Owned"]);
+                    return;
+                }
+                if (evt["ResourcesChanged"]) {
+                    onCellResourcesChanged(evt["ResourcesChanged"]);
+                    return;
+                }
+            });
+        };
+
+        var handleMessage = function (message) {
+            if (message["Started"]) {
+                onStarted(message["Started"]);
+                return;
+            }
+            if (message["Board"]) {
+                onCellsChanged(message["Board"][1]);
+                return;
+            }
+        };
+
+        var ws = new WebSocket("ws://localhost:8080/websocket");
+        ws.onerror = function (ev) {
+            console.log('error');
+            console.log(ev);
+        };
+        ws.onabort = function () {
+            console.log('abort');
+        };
+        ws.onopen = function () {
+            console.log("Opened");
+
+            ws.send('{ "Echo": "Hello" }');
+        };
+        ws.onclose = function () {
+            console.log("Closed");
+        };
+        ws.onmessage = function (evt) {
+            JSON.parse(evt.data).forEach(handleMessage);
+        };
+    })();
+</script>
+
 </body>
 </html>
