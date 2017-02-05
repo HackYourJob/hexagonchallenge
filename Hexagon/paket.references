@@ -1,3 +1,4 @@
 System.ValueTuple
 suave
 Microsoft.FSharpLu.Json
+FSharp.Control.Reactive
