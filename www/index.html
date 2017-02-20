@@ -173,11 +173,6 @@
     <div id="board" class="board"></div>
     <div id="scores">
         <div class="score score--header"><div class="score-legend"></div><div class="score-aiName">Name</div><div class="score-cellsNb">Cells</div><div class="score-resources">Resources</div><div class="score-bugs">Bugs</div></div>
-        <div class="score" aiId="1"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
-        <div class="score" aiId="2"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
-        <div class="score" aiId="3"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
-        <div class="score" aiId="4"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
-        <div class="score" aiId="5"><div class="score-legend"></div><div class="score-aiName">Boby Joe Indien 56</div><div class="score-cellsNb">250</div><div class="score-resources">1000000</div><div class="score-bugs">50</div></div>
     </div>
 
 <script>
@@ -270,9 +265,56 @@
                 }
             });
         };
-        
-        var initializeLegend = function(ais) {
 
+        var scoresByAi = [];
+        
+        var initializeLegend = function (ais) {
+            var scores = document.querySelector("#scores");
+            ais.forEach(function (ai) {
+                var score = document.createElement("div");
+                score.className = "score";
+                score.setAttribute('aiId', ai.Id);
+                scores.appendChild(score);
+                var legendContainer = document.createElement("div");
+                legendContainer.className = "score-legend";
+                score.appendChild(legendContainer);
+                var nameContainer = document.createElement("div");
+                nameContainer.className = "score-aiName";
+                nameContainer.textContent = ai.Name;
+                score.appendChild(nameContainer);
+                var cellsNbContainer = document.createElement("div");
+                cellsNbContainer.className = "score-cellsNb";
+                var cellsNb = 0;
+                cellsNbContainer.textContent = cellsNb;
+                score.appendChild(cellsNbContainer);
+                var resourcesNbContainer = document.createElement("div");
+                resourcesNbContainer.className = "score-resources";
+                var resourcesNb = 0;
+                resourcesNbContainer.textContent = resourcesNb;
+                score.appendChild(resourcesNbContainer);
+                var bugsNbContainer = document.createElement("div");
+                bugsNbContainer.className = "score-bugs";
+                var bugsNb = 0;
+                bugsNbContainer.textContent = bugsNb;
+                score.appendChild(bugsNbContainer);
+
+                scoresByAi[ai.Id] = {
+                    incrementResources: function (nb) {
+                        resourcesNb += nb;
+                        resourcesNbContainer.textContent = resourcesNb;
+                    },
+                    incrementCells: function (nb) {
+                        cellsNb += nb;
+                        cellsNbContainer.textContent = cellsNb;
+                    },
+                    incrementBugs: function (nb) {
+                        bugsNb += nb;
+                        bugsNbContainer.textContent = bugsNb;
+                    }
+                };
+
+
+            });
         };
 
         var onStarted = function(evt) {
@@ -307,6 +349,28 @@
             });
         };
 
+        var onBugged = function(evt) {
+            scoresByAi[evt].incrementBugs(1);
+        };
+
+        var onTerritoryChanged = function (evt) {
+            scoresByAi[evt.AiId].incrementCells(evt.CellsIncrement);
+            scoresByAi[evt.AiId].incrementResources(evt.ResourcesIncrement);
+        };
+
+        var onScoreChanged = function(events) {
+            events.forEach(function (evt) {
+                if (evt["TerritoryChanged"]) {
+                    onTerritoryChanged(evt["TerritoryChanged"]);
+                    return;
+                }
+                if (evt["Bugged"]) {
+                    onBugged(evt["Bugged"]);
+                    return;
+                }
+            });
+        };
+
         var handleMessage = function (message) {
             if (message["Started"]) {
                 onStarted(message["Started"]);
@@ -314,6 +378,7 @@
             }
             if (message["Board"]) {
                 onCellsChanged(message["Board"][1]);
+                onScoreChanged(message["Board"][2]);
                 return;
             }
         };
