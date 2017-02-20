@@ -16,7 +16,7 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
     
     let publishEvent evt =
         match evt with
-        | Board (_, cellEvents) -> cellEvents |> Seq.iter board.apply
+        | Board (_, cellEvents, _) -> cellEvents |> Seq.iter board.apply
         | _ -> ()
 
         evt
@@ -29,7 +29,7 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
         1, hexagon |> Seq.head |> (fun c -> c.Id)
         2, hexagon |> Seq.rev |> Seq.head |> (fun c -> c.Id)
     ] 
-    |> Seq.map (fun (ai, cell) -> AiAdded { AiId = ai; CellId = cell; Resources = 1 }, [Owned { AiId = ai; CellId = cell; Resources = 1 }])
+    |> Seq.map (fun (ai, cell) -> AiAdded { AiId = ai; CellId = cell; Resources = 1 }, [Owned { AiId = ai; CellId = cell; Resources = 1 }], [TerritoryChanged { AiId = ai; ResourcesIncrement = 1; CellsIncrement = 1}])
     |> Seq.map Board
     |> Seq.iter publishEvent
         

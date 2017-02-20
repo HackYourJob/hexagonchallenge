@@ -113,7 +113,7 @@ type ``Store should`` ()=
             ]
         let store = CellsStore(board, isNeighbours)
         
-        test <@ store.getAllOwnCells() = [ (cellId1, 5); (cellId2, 6) ] @>
+        test <@ store.getAllOwnCells() = [ (cellId1, {AiId = 1; Resources = 5 }); (cellId2, { AiId = 2; Resources = 6 }) ] @>
 
     [<Fact>] 
     member x.``update own state when Owned`` ()= 

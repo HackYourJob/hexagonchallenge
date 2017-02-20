@@ -71,16 +71,32 @@ module BoardHandler =
             match toCell.State, toResources |> compare amountToTransfert with
             | Own param, _ when param.AiId = fromAiId -> 
                 ResourcesTransfered { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
-                createCellChanged (fromResources - amountToTransfert) (toResources + amountToTransfert)
-            | _, Same -> 
+                createCellChanged (fromResources - amountToTransfert) (toResources + amountToTransfert),
+                []
+            | Own param, Same -> 
                 FightDrawed { FromId = fromCell.Id; ToId = toCell.Id },
-                createCellChanged 0 (toResources + 1)
-            | _, More ->
+                createCellChanged 0 (toResources + 1),
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -fromResources; CellsIncrement = 0 }; TerritoryChanged { AiId = param.AiId; ResourcesIncrement = 1; CellsIncrement = 0 }]
+            | Free _, Same -> 
+                FightDrawed { FromId = fromCell.Id; ToId = toCell.Id },
+                createCellChanged 0 (toResources + 1),
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -fromResources; CellsIncrement = 0 }]
+            | Own param, More ->
                 FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert; AiId = fromAiId },
-                [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }]
-            | _, Less -> 
+                [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }],
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -toResources; CellsIncrement = 1 }; TerritoryChanged { AiId = param.AiId; ResourcesIncrement = -toResources; CellsIncrement = -1 }]
+            | Free _, More ->
+                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert; AiId = fromAiId },
+                [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }],
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -toResources; CellsIncrement = 1 }]
+            | Own param, Less -> 
                 FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
-                createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert)
+                createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert),
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }; TerritoryChanged { AiId = param.AiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }]
+            | Free _, Less -> 
+                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert),
+                [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }]
             |> Board |> Some
 
     let generateEvents getCell aiAction =
@@ -94,12 +110,21 @@ module BoardHandler =
         | Bug _
         | Sleep -> []
 
-    let generateResourcesIncreased ownCells =
-        ownCells
-        |> Seq.filter (fun (_, resources) -> resources < 100)
-        |> Seq.map (fun (id, resources) -> ResourcesChanged { CellId = id; Resources = resources + 1 }) 
-        |> Seq.toList
-        |> fun cellsChanged -> ResourcesIncreased 1, cellsChanged
+    let generateResourcesIncreased (ownCells: (CellId * CellStateOwn) seq) : GameEvents =
+        let cellsChanged = 
+            ownCells
+            |> Seq.filter (fun (_, param) -> param.Resources < 100)
+            |> Seq.map (fun (id, param) -> ResourcesChanged { CellId = id; Resources = param.Resources + 1 }) 
+            |> Seq.toList
+        
+        let scoreChanged =
+            ownCells
+            |> Seq.filter (fun (_, param) -> param.Resources < 100)
+            |> Seq.groupBy (fun (_, s) -> s.AiId)
+            |> Seq.map (fun (aiId, param) -> TerritoryChanged { AiId = aiId; ResourcesIncrement = param |> Seq.length; CellsIncrement = 0 }) 
+            |> Seq.toList
+        
+        (ResourcesIncreased 1, cellsChanged, scoreChanged)
         |> Board
 
 module AiActions =

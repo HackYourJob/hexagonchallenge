@@ -22,7 +22,7 @@ type Board = Cell seq
 type GameEvents = 
     | Started of Started
     | AiPlayed of AiActions
-    | Board of BoardEvents * (CellChanged list)
+    | Board of BoardEvents * (CellChanged list) * (ScoreChanged list)
     | Won of AiId
 and Started = { BoardSize: BoardSize; Board: Board; Ais: AiDescription seq }
 and BoardSize = { Lines: int; Columns: int }
@@ -46,6 +46,10 @@ and CellChanged =
     | ResourcesChanged of CellResourcesChanged
 and CellOwned = { CellId: CellId; AiId: AiId; Resources: int }
 and CellResourcesChanged = { CellId: CellId; Resources: int }
+and ScoreChanged = 
+    | Bugged of AiId
+    | TerritoryChanged of TerritoryChanged
+and TerritoryChanged = { AiId: AiId; ResourcesIncrement: int; CellsIncrement: int }
 
 type AiPlayParameters = (CellId * CellStateOwn * Cell list) list
 

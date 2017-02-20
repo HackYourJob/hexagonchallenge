@@ -37,8 +37,9 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
 
     member x.getAllOwnCells () =
         cellsById.Values 
-        |> Seq.filter (fun c -> match c.State with | Own _ -> true | Free _ -> false)
-        |> Seq.map (fun c -> c.Id, extractResources c)
+        |> Seq.map (fun c -> match c.State with | Own param -> Some (c.Id, param) | Free _ -> None)
+        |> Seq.filter Option.isSome
+        |> Seq.map Option.get
         |> Seq.toList
 
     member x.apply (evt: CellChanged) =

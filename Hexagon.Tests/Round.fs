@@ -85,17 +85,20 @@ module BoardHandler =
     open Hexagon.Round.BoardHandler
     
     let aiId = 1
+    let otherAiId = 3
 
-    let cellOfAi1 = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }}
-    let cellOfAi2 = { Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 7 }}
+    let cell1OfAi = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }}
+    let cell2OfAi = { Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 7 }}
     let freeCell = { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0}
-    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 4 }; State = Own { AiId = aiId + 2; Resources = 5 }}
+    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 4 }; State = Own { AiId = otherAiId; Resources = 5 }}
+    let free2Cell = { Id = { LineNum = 1; ColumnNum = 5 }; State = Free 5}
     
     let getCell = function
-        | id when id = cellOfAi1.Id -> cellOfAi1
-        | id when id = cellOfAi2.Id -> cellOfAi2
+        | id when id = cell1OfAi.Id -> cell1OfAi
+        | id when id = cell2OfAi.Id -> cell2OfAi
         | id when id = freeCell.Id -> freeCell
         | id when id = cellOfOtherAi.Id -> cellOfOtherAi
+        | id when id = free2Cell.Id -> free2Cell
         | _ -> failwith "invalid cell"
 
     let generate action = generateEvents getCell action |> Seq.toList
@@ -114,38 +117,80 @@ module BoardHandler =
 
         [<Fact>] 
         member x.``return ResourcesTransfered when move between two cells of same ai`` ()= 
-            Transaction { FromId = cellOfAi1.Id; ToId = cellOfAi2.Id; AmountToTransfert = 1 } 
+            Transaction { FromId = cell1OfAi.Id; ToId = cell2OfAi.Id; AmountToTransfert = 1 } 
             |> expect (Board (
-                        ResourcesTransfered { FromId = cellOfAi1.Id; ToId = cellOfAi2.Id; AmountToTransfert = 1 }, [
-                            ResourcesChanged { CellId = cellOfAi1.Id; Resources = 4 }
-                            ResourcesChanged { CellId = cellOfAi2.Id; Resources = 8 }
-                        ]))
+                        ResourcesTransfered { FromId = cell1OfAi.Id; ToId = cell2OfAi.Id; AmountToTransfert = 1 }, [
+                            ResourcesChanged { CellId = cell1OfAi.Id; Resources = 4 }
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 8 }
+                        ], []))
 
         [<Fact>] 
-        member x.``return FightDrawed and attacker lost all resources when fight with same resources amount`` ()= 
-            Transaction { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 5 } 
+        member x.``return FightDrawed and attacker lost all resources when fight with same resources amount on own cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 5 } 
             |> expect (Board (
-                        FightDrawed { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id }, [
-                            ResourcesChanged { CellId = cellOfAi2.Id; Resources = 0 }
+                        FightDrawed { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 0 }
                             ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 6 }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -7; CellsIncrement = 0 }
+                            TerritoryChanged { AiId = otherAiId; ResourcesIncrement = 1; CellsIncrement = 0 }
                         ]))
 
         [<Fact>] 
-        member x.``return FightWon and own cell when attacker with more resources`` ()= 
-            Transaction { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 6 } 
+        member x.``return FightDrawed and attacker lost all resources when fight with same resources amount on free cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = free2Cell.Id; AmountToTransfert = 5 } 
             |> expect (Board (
-                        FightWon { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 6; AiId = aiId }, [
-                            ResourcesChanged { CellId = cellOfAi2.Id; Resources = 1 }
+                        FightDrawed { FromId = cell2OfAi.Id; ToId = free2Cell.Id }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 0 }
+                            ResourcesChanged { CellId = free2Cell.Id; Resources = 6 }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -7; CellsIncrement = 0 }
+                        ]))
+
+        [<Fact>] 
+        member x.``return FightWon and own cell when attacker with more resources on own cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 6 } 
+            |> expect (Board (
+                        FightWon { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 6; AiId = aiId }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 1 }
                             Owned { CellId = cellOfOtherAi.Id; Resources = 1; AiId = aiId }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -5; CellsIncrement = 1 }
+                            TerritoryChanged { AiId = otherAiId; ResourcesIncrement = -5; CellsIncrement = -1 }
                         ]))
 
         [<Fact>] 
-        member x.``return FightLost when attacker with less resources`` ()= 
-            Transaction { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 4 } 
+        member x.``return FightWon and own cell when attacker with more resources on free cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = free2Cell.Id; AmountToTransfert = 6 } 
             |> expect (Board (
-                        FightLost { FromId = cellOfAi2.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 4 }, [
-                            ResourcesChanged { CellId = cellOfAi2.Id; Resources = 3 }
+                        FightWon { FromId = cell2OfAi.Id; ToId = free2Cell.Id; AmountToTransfert = 6; AiId = aiId }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 1 }
+                            Owned { CellId = free2Cell.Id; Resources = 1; AiId = aiId }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -5; CellsIncrement = 1 }
+                        ]))
+
+        [<Fact>] 
+        member x.``return FightLost when attacker with less resources on own cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 4 } 
+            |> expect (Board (
+                        FightLost { FromId = cell2OfAi.Id; ToId = cellOfOtherAi.Id; AmountToTransfert = 4 }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 3 }
                             ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 1 }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -4; CellsIncrement = 0 }
+                            TerritoryChanged { AiId = otherAiId; ResourcesIncrement = -4; CellsIncrement = 0 }
+                        ]))
+
+        [<Fact>] 
+        member x.``return FightLost when attacker with less resources on free cell`` ()= 
+            Transaction { FromId = cell2OfAi.Id; ToId = free2Cell.Id; AmountToTransfert = 4 } 
+            |> expect (Board (
+                        FightLost { FromId = cell2OfAi.Id; ToId = free2Cell.Id; AmountToTransfert = 4 }, [
+                            ResourcesChanged { CellId = cell2OfAi.Id; Resources = 3 }
+                            ResourcesChanged { CellId = free2Cell.Id; Resources = 1 }
+                        ], [
+                            TerritoryChanged { AiId = aiId; ResourcesIncrement = -4; CellsIncrement = 0 }
                         ]))
                         
     type ``generateResourcesIncreased should`` ()=
@@ -154,14 +199,16 @@ module BoardHandler =
             let expected = 
                 Board (
                     ResourcesIncreased 1, 
-                    [ ResourcesChanged { CellId = cellOfAi2.Id; Resources = 8 }
-                      ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 6 } ])
-            test <@ [ (cellOfAi2.Id, 7); (cellOfOtherAi.Id, 5)] |> generateResourcesIncreased = expected @>
+                    [ ResourcesChanged { CellId = cell2OfAi.Id; Resources = 8 }
+                      ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 6 } ],
+                    [ TerritoryChanged { AiId = aiId; ResourcesIncrement = 1; CellsIncrement = 0 }
+                      TerritoryChanged { AiId = otherAiId; ResourcesIncrement = 1; CellsIncrement = 0 }])
+            test <@ [ (cell2OfAi.Id, { AiId = aiId; Resources = 7 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 5 })] |> generateResourcesIncreased = expected @>
 
         [<Fact>] 
         member x.``not increment resources of cells with 100 resources`` ()= 
-            let expected = Board (ResourcesIncreased 1, [])
-            test <@ [ (cellOfAi2.Id, 100); (cellOfOtherAi.Id, 200)]  |> generateResourcesIncreased = expected @>
+            let expected = Board (ResourcesIncreased 1, [], [])
+            test <@ [ (cell2OfAi.Id, { AiId = aiId; Resources = 100 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 200 })]  |> generateResourcesIncreased = expected @>
 
 module AiActions =
     open Hexagon.Round.AiActions
@@ -201,7 +248,7 @@ type ``runRound should`` ()=
     [<Fact>] 
     member x.``play all ais and increment resources`` ()= 
         let getAllOwnCells () = 
-            [({ LineNum = 1; ColumnNum = 2 }, 5)]
+            [({ LineNum = 1; ColumnNum = 2 }, { AiId = 1; Resources = 5 })]
 
         let playAi (id, play) =
             seq {
