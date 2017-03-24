@@ -8,11 +8,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{608F83
 		paket.dependencies = paket.dependencies
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon", "Hexagon\Hexagon.fsproj", "{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonWebServer", "Hexagon\HexagonWebServer.fsproj", "{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon.Tests", "Hexagon.Tests\Hexagon.Tests.fsproj", "{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonLib", "HexagonLib\HexagonLib.fsproj", "{54C1D653-0603-43BA-8F97-CCB8295CE5FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{E0B36D0A-7B7F-4A54-AA4C-5366ECBB8F4D}"
+	ProjectSection(SolutionItems) = preProject
+		www\index.html = www\index.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Start", "Start", "{2D74480D-5B57-43C4-9559-C8E3CB858C89}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		fableconfig.json = fableconfig.json
+		README = README
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
