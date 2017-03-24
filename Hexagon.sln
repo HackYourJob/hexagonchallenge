@@ -17,13 +17,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{E0B36D0A-7B7F-4A54-AA4C-5366ECBB8F4D}"
 	ProjectSection(SolutionItems) = preProject
 		www\index.html = www\index.html
+		www\index.js = www\index.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Start", "Start", "{2D74480D-5B57-43C4-9559-C8E3CB858C89}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		fableconfig.json = fableconfig.json
+		LICENSE = LICENSE
+		package.json = package.json
 		README = README
+		start.bat = start.bat
+		webpack.config.js = webpack.config.js
 	EndProjectSection
 EndProject
 Global

@@ -1,4 +1,14 @@
 {
   "projFile": "HexagonLib/HexagonLib.fsproj",
-  "outDir": "www/fable" 
+  "outDir": "www/fable",
+  "scripts": {
+    "postbuild": "webpack"
+  },
+  "targets": {
+    "watch": {
+      "scripts": {
+        "postbuild": "webpack --watch"
+      }
+    }
+  }
 }

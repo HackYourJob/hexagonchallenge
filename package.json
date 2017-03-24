@@ -1,0 +1,32 @@
+{
+  "name": "hexagonchallenge",
+  "version": "1.0.0",
+  "description": "Hexagon Challenge game",
+  "main": "index.js",
+  "scripts": {
+    "build": "fable",
+    "watch": "fable -w --target watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpellet/hexagonchallenge.git"
+  },
+  "keywords": [
+    "game"
+  ],
+  "author": "@florentpellet, @clem_bouillier, @ouarzy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fpellet/hexagonchallenge/issues"
+  },
+  "homepage": "https://github.com/fpellet/hexagonchallenge#readme",
+  "devDependencies": {
+    "fable-compiler": "^0.7.50",
+    "source-map-loader": "^0.2.0",
+    "webpack": "^2.3.1"
+  },
+  "dependencies": {
+    "core-js": "^2.4.1",
+    "fable-core": "^0.7.29"
+  }
+}
