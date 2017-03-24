@@ -56,23 +56,22 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Domain.fs" />
-    <Compile Include="Shapes.fs" />
-    <Compile Include="Round.fs" />
-    <Compile Include="Ais.fs" />
-    <Compile Include="CellsStore.fs" />
-    <Compile Include="AiCellIdsStore.fs" />
-    <Compile Include="BasicAi.fs" />
-    <Compile Include="Game.fs" />
-    <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="paket.references" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HexagonLib\HexagonLib.fsproj">
+      <Name>HexagonLib</Name>
+      <Project>{54c1d653-0603-43ba-8f97-ccb8295ce5ff}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

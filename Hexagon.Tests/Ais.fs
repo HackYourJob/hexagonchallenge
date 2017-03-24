@@ -12,7 +12,7 @@ module AntiCorruptionLayer =
     open Hexagon.Ais.AntiCorruptionLayer
     
     let cellId = { LineNum = 1; ColumnNum = 1 }
-    let cellState = { AiId = 1; Resources = 5 }
+    let cellState = { CellStateOwn.AiId = 1; Resources = 5 }
     let cellId2 = { LineNum = 1; ColumnNum = 2 }
 
     type ``convertToAiCells should`` ()=

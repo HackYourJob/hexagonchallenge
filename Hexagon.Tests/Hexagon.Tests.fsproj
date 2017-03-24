@@ -79,9 +79,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\Hexagon\Hexagon.fsproj">
-      <Name>Hexagon</Name>
-      <Project>{ed5d6e86-4ac8-460d-93d5-dafa3050981f}</Project>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HexagonLib\HexagonLib.fsproj">
+      <Name>HexagonLib</Name>
+      <Project>{54c1d653-0603-43ba-8f97-ccb8295ce5ff}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

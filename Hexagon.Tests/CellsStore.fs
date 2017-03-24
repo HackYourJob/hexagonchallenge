@@ -99,8 +99,8 @@ type ``Store should`` ()=
         let store = CellsStore(board, isNeighbours)
 
         let expected = [
-                (cellId1, { AiId = aiId; Resources = 5 }, store.getNeighbours cellId1)
-                (cellId2, { AiId = aiId; Resources = 5 }, store.getNeighbours cellId2) 
+                (cellId1, { CellStateOwn.AiId = aiId; Resources = 5 }, store.getNeighbours cellId1)
+                (cellId2, { CellStateOwn.AiId = aiId; Resources = 5 }, store.getNeighbours cellId2) 
             ]
         test <@ store.getCellsWithNeighboursOf aiId = expected @>
 

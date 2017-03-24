@@ -203,12 +203,12 @@ module BoardHandler =
                       ResourcesChanged { CellId = cellOfOtherAi.Id; Resources = 6 } ],
                     [ TerritoryChanged { AiId = aiId; ResourcesIncrement = 1; CellsIncrement = 0 }
                       TerritoryChanged { AiId = otherAiId; ResourcesIncrement = 1; CellsIncrement = 0 }])
-            test <@ [ (cell2OfAi.Id, { AiId = aiId; Resources = 7 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 5 })] |> generateResourcesIncreased = expected @>
+            test <@ [ (cell2OfAi.Id, { CellStateOwn.AiId = aiId; Resources = 7 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 5 })] |> generateResourcesIncreased = expected @>
 
         [<Fact>] 
         member x.``not increment resources of cells with 100 resources`` ()= 
             let expected = Board (ResourcesIncreased 1, [], [])
-            test <@ [ (cell2OfAi.Id, { AiId = aiId; Resources = 100 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 200 })]  |> generateResourcesIncreased = expected @>
+            test <@ [ (cell2OfAi.Id, { CellStateOwn.AiId = aiId; Resources = 100 }); (cellOfOtherAi.Id, { AiId = otherAiId; Resources = 200 })]  |> generateResourcesIncreased = expected @>
 
 module AiActions =
     open Hexagon.Round.AiActions
@@ -217,7 +217,7 @@ module AiActions =
         [<Fact>] 
         member x.``play ai with neighbours cells and return GameEvents`` ()= 
             let aiId = 1
-            let cellsWithNeighbours = [({ LineNum = 1; ColumnNum = 1 }, { AiId = aiId; Resources = 5 }, [{ Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 5 }}])]
+            let cellsWithNeighbours = [({ LineNum = 1; ColumnNum = 1 }, { CellStateOwn.AiId = aiId; Resources = 5 }, [{ Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 5 }}])]
             let aiAction = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 5 }
             let aiActionAfterValidation = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfert = 2 }
 
@@ -248,7 +248,7 @@ type ``runRound should`` ()=
     [<Fact>] 
     member x.``play all ais and increment resources`` ()= 
         let getAllOwnCells () = 
-            [({ LineNum = 1; ColumnNum = 2 }, { AiId = 1; Resources = 5 })]
+            [({ LineNum = 1; ColumnNum = 2 }, { CellStateOwn.AiId = 1; Resources = 5 })]
 
         let playAi (id, play) =
             seq {

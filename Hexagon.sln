@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26014.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{608F83F2-4709-4D1F-8A40-9145E62DB6A7}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,6 +11,8 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon", "Hexagon\Hexagon.fsproj", "{ED5D6E86-4AC8-460D-93D5-DAFA3050981F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Hexagon.Tests", "Hexagon.Tests\Hexagon.Tests.fsproj", "{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonLib", "HexagonLib\HexagonLib.fsproj", "{54C1D653-0603-43BA-8F97-CCB8295CE5FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F774B9B9-B9E2-4F1D-9698-7CA168C282CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C1D653-0603-43BA-8F97-CCB8295CE5FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C1D653-0603-43BA-8F97-CCB8295CE5FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C1D653-0603-43BA-8F97-CCB8295CE5FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C1D653-0603-43BA-8F97-CCB8295CE5FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
