@@ -63,9 +63,8 @@ let convertShapeToCells shape =
     let convertLine lineNum line =
         line 
         |> Seq.mapi (convertCell lineNum)
+        |> Seq.choose id
 
     shape 
     |> Seq.mapi convertLine 
     |> Seq.collect id
-    |> Seq.filter Option.isSome
-    |> Seq.map Option.get
