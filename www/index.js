@@ -206,16 +206,7 @@ var handleMessage = function (message) {
     }
 };
 
-let ct = { isCancelled : false };
-setTimeout(function() {
-        ct.isCancelled = true;
-    },
-    5000);
-startGame(handleMessage, ct, 5, function(fun) {
-    setTimeout(fun, 100);
-});
-
-/*var ws = new WebSocket("ws://localhost:8080/websocket");
+var ws = new WebSocket("ws://localhost:8080/websocket");
 ws.onerror = function (ev) {
     console.log('error');
     console.log(ev);
@@ -233,4 +224,4 @@ ws.onclose = function () {
 };
 ws.onmessage = function (evt) {
     JSON.parse(evt.data).forEach(handleMessage);
-};*/
+};

@@ -3,7 +3,7 @@ var webpack = require("webpack");
 
 var cfg = {
     devtool: "source-map",
-    entry: "./www/index.js",
+    entry: "./www/index.offline.js",
     output: {
         path: path.join(__dirname, "www", "fable"),
         filename: "bundle.js"
