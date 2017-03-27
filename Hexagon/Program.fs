@@ -88,7 +88,7 @@ let wsServer (webSocket : WebSocket) =
             match msg with
             | (Text, data, true) ->
                 async {
-                    Hexagon.Game.startGame publisher.publish cts.Token 10
+                    Hexagon.Game.startGame publisher.publish cts.Token 10 (fun x -> x())
                 } |> Async.Start
             | (Ping, _, _) ->
                 do! send Pong [||]

@@ -4,7 +4,7 @@ open Domain
 open Hexagon
 open Hexagon.Shapes
 
-let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize =
+let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout =
     let ais = [ ({ Id = 1; Name = "Basic1" }, BasicAi.play ); ({ Id = 2; Name = "Basic2" }, BasicAi.play )]
     let hexagon = 
         HexagonBoard.generate hexagonSize 
@@ -41,7 +41,8 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
         System.Console.WriteLine ("Round " + nb.ToString())
 
         if cancellationToken.IsCancellationRequested |> not
-        then runRound (nb + 1) ais
+        then 
+            setTimeout (fun () -> runRound (nb + 1) ais)
 
     ais 
     |> List.map (fun (ai, play) -> (ai.Id, wrapAiPlay play)) 

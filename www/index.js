@@ -206,7 +206,14 @@ var handleMessage = function (message) {
     }
 };
 
-startGame(handleMessage, null, 5);
+let ct = { isCancelled : false };
+setTimeout(function() {
+        ct.isCancelled = true;
+    },
+    5000);
+startGame(handleMessage, ct, 5, function(fun) {
+    setTimeout(fun, 100);
+});
 
 /*var ws = new WebSocket("ws://localhost:8080/websocket");
 ws.onerror = function (ev) {
