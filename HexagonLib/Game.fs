@@ -4,8 +4,7 @@ open Domain
 open Hexagon
 open Hexagon.Shapes
 
-let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout =
-    let ais = [ ({ Id = 1; Name = "Basic1" }, BasicAi.play ); ({ Id = 2; Name = "Basic2" }, BasicAi.play )]
+let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout ais =
     let hexagon = 
         HexagonBoard.generate hexagonSize 
         |> convertShapeToCells

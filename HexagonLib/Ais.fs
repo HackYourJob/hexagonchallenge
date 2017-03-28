@@ -6,7 +6,7 @@ type AiCellId = string
 type AiCell = {
         Id: AiCellId
         Resources: int
-        Neighbours: NeighbourCell list
+        Neighbours: NeighbourCell array
     }
 and NeighbourCell = {
         Id: AiCellId
@@ -35,7 +35,7 @@ module AntiCorruptionLayer =
         {
             Id = cellId |> convertToAiCellId
             Resources = cellState.Resources
-            Neighbours = neighbours |> Seq.map createNeighbourView |> Seq.toList
+            Neighbours = neighbours |> Seq.map createNeighbourView |> Seq.toArray
         }
 
     let convertToAiPlayed convertToCellId (transaction: Transaction) : AiActions =
@@ -47,7 +47,7 @@ module AntiCorruptionLayer =
     let wrap convertToAiCellId convertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =
         aiCellsWithNeighbours
         |> Seq.map (convertToAiCells convertToAiCellId)
-        |> Seq.toList
-        |> (fun c -> if c.IsEmpty then Transaction.Sleep else aiTurn c)
+        |> Seq.toArray
+        |> (fun c -> if c.Length = 0 then Transaction.Sleep else aiTurn c)
         |> convertToAiPlayed convertToCellId
 

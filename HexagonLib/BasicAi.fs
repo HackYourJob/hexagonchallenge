@@ -2,7 +2,7 @@
 
 open Ais
 
-let play (cells: AiCell list) : Transaction =
+let play (cells: AiCell array) : Transaction =
     cells 
     |> Seq.collect (fun c -> c.Neighbours |> Seq.map (fun n -> c, n))
     |> Seq.filter (fun (_, n) -> n.Owner <> Own)
