@@ -38,16 +38,15 @@ module AntiCorruptionLayer =
             Neighbours = neighbours |> Seq.map createNeighbourView |> Seq.toArray
         }
 
-    let convertToAiPlayed convertToCellId (transaction: Transaction) : AiActions =
-        match transaction with
-        | Transaction.Sleep -> AiActions.Sleep
-        | Transaction.Bug r -> AiActions.Bug r
-        | Transaction.Move t -> AiActions.Transaction { FromId = t.FromId |> convertToCellId; ToId = t.ToId |> convertToCellId; AmountToTransfert = t.AmountToTransfert }
+    let convertToAiPlayed convertToCellId (transactionParameters: TransactionParameters option) : AiActions =
+        match transactionParameters with
+        | Some t -> AiActions.Transaction { FromId = t.FromId |> convertToCellId; ToId = t.ToId |> convertToCellId; AmountToTransfert = t.AmountToTransfert }
+        | Option.None -> AiActions.Sleep
 
     let wrap convertToAiCellId convertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =
         aiCellsWithNeighbours
         |> Seq.map (convertToAiCells convertToAiCellId)
         |> Seq.toArray
-        |> (fun c -> if c.Length = 0 then Transaction.Sleep else aiTurn c)
+        |> (fun c -> if c.Length = 0 then Option.None else aiTurn c)
         |> convertToAiPlayed convertToCellId
 
