@@ -30,7 +30,7 @@ and AiActions =
     | Transaction of TransactionParameters
     | Bug of string
     | Sleep
-and TransactionParameters = { FromId: CellId; ToId: CellId; AmountToTransfert: int }
+and TransactionParameters = { FromId: CellId; ToId: CellId; AmountToTransfer: int }
 and BoardEvents =
     | AiAdded of AiAdded
     | ResourcesIncreased of int
@@ -39,7 +39,7 @@ and BoardEvents =
     | FightDrawed of FightDrawed
     | FightLost of TransactionParameters
 and AiAdded = { AiId: AiId; CellId: CellId; Resources: int }
-and FightWon = { FromId: CellId; ToId: CellId; AmountToTransfert: int; AiId: AiId }
+and FightWon = { FromId: CellId; ToId: CellId; AmountToTransfer: int; AiId: AiId }
 and FightDrawed = { FromId: CellId; ToId: CellId }
 and CellChanged =
     | Owned of CellOwned

@@ -22,7 +22,7 @@ type Transaction =
     | Move of TransactionParameters
     | Sleep
     | Bug of string
-and TransactionParameters = { FromId: AiCellId; ToId: AiCellId; AmountToTransfert: int }
+and TransactionParameters = { FromId: AiCellId; ToId: AiCellId; AmountToTransfer: int }
 
 module AntiCorruptionLayer =
     let convertToAiCells convertToAiCellId (cellId, (cellState: CellStateOwn), neighbours : Cell seq) : AiCell =
@@ -40,7 +40,7 @@ module AntiCorruptionLayer =
 
     let convertToAiPlayed convertToCellId (transactionParameters: TransactionParameters option) : AiActions =
         match transactionParameters with
-        | Some t -> AiActions.Transaction { FromId = t.FromId |> convertToCellId; ToId = t.ToId |> convertToCellId; AmountToTransfert = t.AmountToTransfert }
+        | Some t -> AiActions.Transaction { FromId = t.FromId |> convertToCellId; ToId = t.ToId |> convertToCellId; AmountToTransfer = t.AmountToTransfer }
         | Option.None -> AiActions.Sleep
 
     let wrap convertToAiCellId convertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =

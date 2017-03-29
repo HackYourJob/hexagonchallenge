@@ -26,7 +26,7 @@ module AntiCorruptionLayer =
 
             let result = convertToAiCells convertToAiCellId (cellId, cellState, neighbours)
 
-            test <@ result = { Id = "a"; Resources = 5; Neighbours = [{ Id = "b"; Owner = CellOwner.None; Resources = 8}] } @>
+            test <@ result = { Id = "a"; Resources = 5; Neighbours = [|{ Id = "b"; Owner = CellOwner.None; Resources = 8}|] } @>
 
         [<Fact>] 
         member x.``Neighbour own if has same id`` ()= 
@@ -35,7 +35,7 @@ module AntiCorruptionLayer =
 
             let { Id = _; Resources = _; Neighbours = neighbours } = convertToAiCells convertToAiCellId (cellId, cellState, neighbours)
             
-            test <@ neighbours = [{ Id = "b"; Owner = CellOwner.Own; Resources = 8}] @>
+            test <@ neighbours = [|{ Id = "b"; Owner = CellOwner.Own; Resources = 8}|] @>
 
         [<Fact>] 
         member x.``Neighbour Other if has not same id`` ()= 
@@ -44,25 +44,17 @@ module AntiCorruptionLayer =
 
             let { Id = _; Resources = _; Neighbours = neighbours } = convertToAiCells convertToAiCellId (cellId, cellState, neighbours)
 
-            test <@ neighbours = [{ Id = "b"; Owner = CellOwner.Other; Resources = 8}] @>
+            test <@ neighbours = [|{ Id = "b"; Owner = CellOwner.Other; Resources = 8}|] @>
 
     type ``convertToAiPlayed should`` ()=
         [<Fact>] 
         member x.``return Sleep if sleep`` ()= 
             let convertToCellId _ = failwith "Not used"
 
-            let result = Transaction.Sleep |> convertToAiPlayed convertToCellId 
+            let result = Option.None |> convertToAiPlayed convertToCellId 
 
             test <@ result = AiActions.Sleep @>
-            
-        [<Fact>] 
-        member x.``return bug if bug`` ()= 
-            let convertToCellId _ = failwith "Not used"
-
-            let result = Transaction.Bug "Argg" |> convertToAiPlayed convertToCellId 
-
-            test <@ result = AiActions.Bug "Argg" @>
-            
+                        
         [<Fact>] 
         member x.``return Transaction if Move`` ()= 
             let convertToCellId = function
@@ -70,9 +62,9 @@ module AntiCorruptionLayer =
                 | "b" -> cellId2
                 | _ -> failwith "invalid id"
 
-            let result = Transaction.Move { FromId = "a"; ToId = "b"; AmountToTransfert = 5 } |> convertToAiPlayed convertToCellId 
+            let result = Some { FromId = "a"; ToId = "b"; AmountToTransfer = 5 } |> convertToAiPlayed convertToCellId 
 
-            test <@ result = AiActions.Transaction { FromId = cellId; ToId = cellId2; AmountToTransfert = 5 } @>
+            test <@ result = AiActions.Transaction { FromId = cellId; ToId = cellId2; AmountToTransfer = 5 } @>
 
     type ``wrap should`` ()=
         [<Fact>] 
@@ -87,14 +79,14 @@ module AntiCorruptionLayer =
                 | c -> sprintf "invalid cell %A" c |> failwith
 
             let aiTurn = function 
-                | c when c = [{ Id = "a"; Resources = 5; Neighbours = [{ Id = "b"; Owner = CellOwner.None; Resources = 8}] }]
-                    -> Transaction.Move { FromId = "a"; ToId = "b"; AmountToTransfert = 5 }
+                | c when c = [|{ Id = "a"; Resources = 5; Neighbours = [|{ Id = "b"; Owner = CellOwner.None; Resources = 8}|] }|]
+                    -> Some { FromId = "a"; ToId = "b"; AmountToTransfer = 5 }
                 | c -> sprintf "invalid cells %A" c |> failwith
             let cells = [(cellId, cellState, [{ Id = cellId2; State = CellState.Free 8}])]
 
             let result = wrap convertToAiCellId convertToCellId aiTurn cells
 
-            test <@ result = AiActions.Transaction { FromId = cellId; ToId = cellId2; AmountToTransfert = 5 } @>
+            test <@ result = AiActions.Transaction { FromId = cellId; ToId = cellId2; AmountToTransfer = 5 } @>
 
         [<Fact>] 
         member x.``not play ai if not cells (game over)`` ()= 

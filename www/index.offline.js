@@ -21,9 +21,7 @@ let basicAiJs = function(cells) {
             }
         });
     });
-    let result = new TransactionParameters(selectedTuple[0].Id, selectedTuple[1].Id, selectedTuple[0].Resources);
-    //let result = { FromId: selectedTuple[0].Id, ToId: selectedTuple[1].Id, AmountToTransfer: selectedTuple[0].Resources };
-    return result;
+    return { FromId: selectedTuple[0].Id, ToId: selectedTuple[1].Id, AmountToTransfert: selectedTuple[0].Resources };
 }
 
 let ais = [[{ Id: 1, Name: "Basic JS" }, basicAiJs ], [{Id: 2, Name: "Basic F#" }, play ]];

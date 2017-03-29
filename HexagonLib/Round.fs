@@ -27,7 +27,7 @@ module TransactionValidation =
 
         let haveEnoughResources context =
             match extractResources context.FromCell with
-            | r when r >= context.Transaction.AmountToTransfert -> Valid context
+            | r when r >= context.Transaction.AmountToTransfer -> Valid context
             | _ -> Invalid NotEnoughResources
 
         let isNeighbours context =
@@ -70,7 +70,7 @@ module BoardHandler =
             let toResources = extractResources toCell
             match toCell.State, toResources |> compare amountToTransfert with
             | Own param, _ when param.AiId = fromAiId -> 
-                ResourcesTransfered { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                ResourcesTransfered { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfer = amountToTransfert }, 
                 createCellChanged (fromResources - amountToTransfert) (toResources + amountToTransfert),
                 []
             | Own param, Same -> 
@@ -82,19 +82,19 @@ module BoardHandler =
                 createCellChanged 0 (toResources + 1),
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -fromResources; CellsIncrement = 0 }]
             | Own param, More ->
-                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert; AiId = fromAiId },
+                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfer = amountToTransfert; AiId = fromAiId },
                 [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }],
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -toResources; CellsIncrement = 1 }; TerritoryChanged { AiId = param.AiId; ResourcesIncrement = -toResources; CellsIncrement = -1 }]
             | Free _, More ->
-                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert; AiId = fromAiId },
+                FightWon { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfer = amountToTransfert; AiId = fromAiId },
                 [ResourcesChanged { CellId = fromCell.Id; Resources = fromResources - amountToTransfert }; Owned { CellId = toCell.Id; Resources = amountToTransfert - toResources; AiId = fromAiId }],
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -toResources; CellsIncrement = 1 }]
             | Own param, Less -> 
-                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfer = amountToTransfert }, 
                 createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert),
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }; TerritoryChanged { AiId = param.AiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }]
             | Free _, Less -> 
-                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfert = amountToTransfert }, 
+                FightLost { FromId = fromCell.Id; ToId = toCell.Id; AmountToTransfer = amountToTransfert }, 
                 createCellChanged (fromResources - amountToTransfert) (toResources - amountToTransfert),
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }]
             |> Board |> Some
@@ -105,7 +105,7 @@ module BoardHandler =
             let fromCell = getCell param.FromId
             let toCell = getCell param.ToId
 
-            convertToBoardEvent fromCell toCell param.AmountToTransfert
+            convertToBoardEvent fromCell toCell param.AmountToTransfer
             |> Option.toList
         | Bug _
         | Sleep -> []
