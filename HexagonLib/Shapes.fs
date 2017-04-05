@@ -36,29 +36,26 @@ module HexagonBoard =
     let private isBetweenTopOrBottomAndCenter i size =
         i + 1 = size || i + 1 = 3 * size - 2
 
-    let private isStartingCell shape board i j size =
-        let nbCellsByLine = 2 * size - 1
-        let nbCellsByColumn = 4 * size - 3
-        let borderDistanceOnLine = size / 2 + 1
-        let borderDistanceOnColumns = size
-        if j + 1 = borderDistanceOnLine 
-            && (i + 1 = borderDistanceOnColumns + 2 
-                || i + 1 = nbCellsByColumn - borderDistanceOnColumns - 1) then
-            true
-        else if j + 1 = size
-            && (i + 1 = borderDistanceOnColumns
-                || i + 1 = nbCellsByColumn - borderDistanceOnColumns + 1) then
-            true
-        else if j = nbCellsByLine - borderDistanceOnLine
-            && (i + 1 = borderDistanceOnColumns + 2 
-                || i + 1 = nbCellsByColumn - borderDistanceOnColumns - 1) then
-            true
-        else false
+    let private isStartingCell i j size =
+        let lastCellIndexByLine = 2 * size - 2
+        let lastCellIndexByColumn = 4 * size - 3
+        let borderDistanceOnLine = size / 2
+        let borderDistanceOnColumns = size - 1
+        let isOnALineCrossingLeftToRightDiagonals =
+            i = borderDistanceOnColumns + 2
+                || i = lastCellIndexByColumn - borderDistanceOnColumns - 3
+        let isBetweenBorderAndCenterOnVerticalDiagonal =
+            j + 1 = size
+            && (i = borderDistanceOnColumns
+                || i = lastCellIndexByColumn - borderDistanceOnColumns - 1)
+        (j = borderDistanceOnLine && isOnALineCrossingLeftToRightDiagonals)
+            || isBetweenBorderAndCenterOnVerticalDiagonal
+            || (j = lastCellIndexByLine - borderDistanceOnLine && isOnALineCrossingLeftToRightDiagonals)
 
     let private transform shape i j board size =
         match shape with
         | Cell -> 
-            if shape = Cell && isStartingCell shape board i j size  then
+            if shape = Cell && isStartingCell i j size  then
                 StartingCell
             else
                 shape
