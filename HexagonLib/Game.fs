@@ -5,6 +5,11 @@ open Hexagon
 open Hexagon.Shapes
 
 let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout ais =
+    let nbPlayers = ais |> List.length
+    let basicAis = 
+        [nbPlayers..6]
+        |> List.map (fun i -> { Id = i; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
+    
     let hexagon = 
         HexagonBoard.generate hexagonSize 
         |> convertShapeToCells
@@ -21,14 +26,23 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
         evt
         |> raiseEvents
 
-    Started { BoardSize = { Lines = hexagon |> Seq.map (fun c -> c.Id.LineNum) |> Seq.max; Columns = hexagon |> Seq.map (fun c -> c.Id.ColumnNum) |> Seq.max }; Board = hexagon; Ais = ais |> Seq.map fst }
+    Started { 
+        BoardSize = 
+            { 
+                Lines = hexagon |> Seq.map (fun c -> c.Id.LineNum) |> Seq.max 
+                Columns = hexagon |> Seq.map (fun c -> c.Id.ColumnNum) |> Seq.max 
+            } 
+        Board = hexagon
+        Ais = ais |> Seq.map fst }
     |> publishEvent
     
-    [
-        1, hexagon |> Seq.head |> (fun c -> c.Id)
-        2, hexagon |> Seq.rev |> Seq.head |> (fun c -> c.Id)
-    ] 
-    |> Seq.map (fun (ai, cell) -> AiAdded { AiId = ai; CellId = cell; Resources = 1 }, [Owned { AiId = ai; CellId = cell; Resources = 1 }], [TerritoryChanged { AiId = ai; ResourcesIncrement = 1; CellsIncrement = 1}])
+    ais
+    |> Seq.map (fun ai -> (fst ai).Id)
+    |> Seq.zip (hexagon |> Seq.filter (fun c -> c.IsStartingPosition) |> Seq.map (fun c -> c.Id))
+    |> Seq.map (fun (cell, ai) -> 
+        AiAdded { AiId = ai; CellId = cell; Resources = 1 }, // WTF??
+        [Owned { AiId = ai; CellId = cell; Resources = 1 }], 
+        [TerritoryChanged { AiId = ai; ResourcesIncrement = 1; CellsIncrement = 1}])
     |> Seq.map Board
     |> Seq.iter publishEvent
         

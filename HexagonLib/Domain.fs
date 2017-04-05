@@ -11,6 +11,7 @@ type CellId = { LineNum: int; ColumnNum: int }
 type Cell = {
         Id: CellId
         State: CellState
+        IsStartingPosition: bool
     }
 and CellState =
     | Own of CellStateOwn

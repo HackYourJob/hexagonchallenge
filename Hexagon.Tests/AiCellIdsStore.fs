@@ -11,10 +11,10 @@ open Hexagon.AiCellIdsStore
 let cellId1 = { LineNum = 1; ColumnNum = 1 }
 let cellId2 = { LineNum = 1; ColumnNum = 2 }
 let board = [
-        { Id = cellId1; State = Free 1 }
-        { Id = cellId2; State = Free 1 }
-        { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 1 }
-        { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 1 }
+        { Id = cellId1; State = Free 1; IsStartingPosition = false }
+        { Id = cellId2; State = Free 1; IsStartingPosition = false }
+        { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 1; IsStartingPosition = false }
+        { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 1; IsStartingPosition = false }
     ]
 
 type ``Store should`` ()=

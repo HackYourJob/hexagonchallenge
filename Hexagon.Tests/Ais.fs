@@ -18,7 +18,7 @@ module AntiCorruptionLayer =
     type ``convertToAiCells should`` ()=
         [<Fact>] 
         member x.``convert to ai object`` ()= 
-            let neighbours = [{ Id = cellId2; State = CellState.Free 8}]
+            let neighbours = [{ Id = cellId2; State = CellState.Free 8; IsStartingPosition = false}]
             let convertToAiCellId = function
                 | c when c = cellId -> "a"
                 | c when c = cellId2 -> "b"
@@ -30,7 +30,7 @@ module AntiCorruptionLayer =
 
         [<Fact>] 
         member x.``Neighbour own if has same id`` ()= 
-            let neighbours = [{ Id = cellId2; State = CellState.Own { AiId = 1; Resources = 8}}]
+            let neighbours = [{ Id = cellId2; State = CellState.Own { AiId = 1; Resources = 8}; IsStartingPosition = false}]
             let convertToAiCellId _ = "b"
 
             let { Id = _; Resources = _; Neighbours = neighbours } = convertToAiCells convertToAiCellId (cellId, cellState, neighbours)
@@ -39,7 +39,7 @@ module AntiCorruptionLayer =
 
         [<Fact>] 
         member x.``Neighbour Other if has not same id`` ()= 
-            let neighbours = [{ Id = cellId2; State = CellState.Own { AiId = 2; Resources = 8}}]
+            let neighbours = [{ Id = cellId2; State = CellState.Own { AiId = 2; Resources = 8}; IsStartingPosition = false}]
             let convertToAiCellId _ = "b"
 
             let { Id = _; Resources = _; Neighbours = neighbours } = convertToAiCells convertToAiCellId (cellId, cellState, neighbours)
@@ -82,7 +82,7 @@ module AntiCorruptionLayer =
                 | c when c = [|{ Id = "a"; Resources = 5; Neighbours = [|{ Id = "b"; Owner = CellOwner.None; Resources = 8}|] }|]
                     -> Some { FromId = "a"; ToId = "b"; AmountToTransfer = 5 }
                 | c -> sprintf "invalid cells %A" c |> failwith
-            let cells = [(cellId, cellState, [{ Id = cellId2; State = CellState.Free 8}])]
+            let cells = [(cellId, cellState, [{ Id = cellId2; State = CellState.Free 8; IsStartingPosition = false}])]
 
             let result = wrap convertToAiCellId convertToCellId aiTurn cells
 

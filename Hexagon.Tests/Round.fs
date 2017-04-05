@@ -12,13 +12,13 @@ module TransactionValidation =
     
     let aiId = 1
 
-    let cellOfAi = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }}
-    let freeCell = { Id = { LineNum = 1; ColumnNum = 2 }; State = Free 0}
-    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 3 }; State = Own { AiId = aiId + 2; Resources = 5 }}
+    let cellOfAi = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }; IsStartingPosition = false}
+    let freeCell = { Id = { LineNum = 1; ColumnNum = 2 }; State = Free 0; IsStartingPosition = false}
+    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 3 }; State = Own { AiId = aiId + 2; Resources = 5 }; IsStartingPosition = false}
     let unknownCellId = { LineNum = 1; ColumnNum = 4 }
 
-    let neighboursCell = { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 0}
-    let notNeighboursCell = { Id = { LineNum = 2; ColumnNum = 3 }; State = Free 0}
+    let neighboursCell = { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 0; IsStartingPosition = false}
+    let notNeighboursCell = { Id = { LineNum = 2; ColumnNum = 3 }; State = Free 0; IsStartingPosition = false}
 
     let getCell = function
         | id when id = cellOfAi.Id -> Some cellOfAi
@@ -87,11 +87,11 @@ module BoardHandler =
     let aiId = 1
     let otherAiId = 3
 
-    let cell1OfAi = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }}
-    let cell2OfAi = { Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 7 }}
-    let freeCell = { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0}
-    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 4 }; State = Own { AiId = otherAiId; Resources = 5 }}
-    let free2Cell = { Id = { LineNum = 1; ColumnNum = 5 }; State = Free 5}
+    let cell1OfAi = { Id = { LineNum = 1; ColumnNum = 1 }; State = Own { AiId = aiId; Resources = 5 }; IsStartingPosition = false}
+    let cell2OfAi = { Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 7 }; IsStartingPosition = false}
+    let freeCell = { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0; IsStartingPosition = false}
+    let cellOfOtherAi = { Id = { LineNum = 1; ColumnNum = 4 }; State = Own { AiId = otherAiId; Resources = 5 }; IsStartingPosition = false}
+    let free2Cell = { Id = { LineNum = 1; ColumnNum = 5 }; State = Free 5; IsStartingPosition = false}
     
     let getCell = function
         | id when id = cell1OfAi.Id -> cell1OfAi
@@ -217,7 +217,7 @@ module AiActions =
         [<Fact>] 
         member x.``play ai with neighbours cells and return GameEvents`` ()= 
             let aiId = 1
-            let cellsWithNeighbours = [({ LineNum = 1; ColumnNum = 1 }, { CellStateOwn.AiId = aiId; Resources = 5 }, [{ Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 5 }}])]
+            let cellsWithNeighbours = [({ LineNum = 1; ColumnNum = 1 }, { CellStateOwn.AiId = aiId; Resources = 5 }, [{ Id = { LineNum = 1; ColumnNum = 2 }; State = Own { AiId = aiId; Resources = 5 }; IsStartingPosition = false}])]
             let aiAction = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfer = 5 }
             let aiActionAfterValidation = Transaction { FromId = { LineNum = 1; ColumnNum = 1 }; ToId = { LineNum = 1; ColumnNum = 2 }; AmountToTransfer = 2 }
 
@@ -226,7 +226,7 @@ module AiActions =
                 | _ -> failwith "Invalid aiId"
 
             let getCell = function
-                | id -> { Id = id; State = Own { AiId = aiId; Resources = 5 }}
+                | id -> { Id = id; State = Own { AiId = aiId; Resources = 5 }; IsStartingPosition = false}
 
             let validAction aiId = function
                 | a when a = aiAction -> aiActionAfterValidation

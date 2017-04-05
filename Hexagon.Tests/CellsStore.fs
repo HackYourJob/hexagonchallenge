@@ -9,14 +9,14 @@ open Hexagon.Domain
 open Hexagon.CellsStore
     
 let cellId1 = { LineNum = 1; ColumnNum = 1 }
-let cell1 = { Id = cellId1; State = Free 1 }
+let cell1 = { Id = cellId1; State = Free 1; IsStartingPosition = false }
 let cellId2 = { LineNum = 1; ColumnNum = 2 }
-let cell2 = { Id = cellId2; State = Free 1 }
+let cell2 = { Id = cellId2; State = Free 1; IsStartingPosition = false }
 let board = [
         cell1
         cell2
-        { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 1 }
-        { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 1 }
+        { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 1; IsStartingPosition = false }
+        { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 1; IsStartingPosition = false }
     ]
 
 let isNeighbours _ _ = true
@@ -40,9 +40,9 @@ type ``Store should`` ()=
         let aiId = 1
         let board = [ 
                 { cell1 with State = Own { AiId = aiId; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 } }
+                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 }; IsStartingPosition = false }
                 { cell2 with State = Own { AiId = aiId; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let store = CellsStore(board, isNeighbours)
 
@@ -53,9 +53,9 @@ type ``Store should`` ()=
         let cellId3 = { LineNum = 3; ColumnNum = 1 }
         let board = [ 
                 cell1
-                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 } }
+                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 }; IsStartingPosition = false }
                 cell2
-                { Id = cellId3; State = Free 5 }
+                { Id = cellId3; State = Free 5; IsStartingPosition = false }
             ]
         let isNeighbours _ = function
             | id when id = cellId2 -> true
@@ -71,7 +71,7 @@ type ``Store should`` ()=
         let board = [ 
                 cell1
                 cell2
-                { Id = cellId3; State = Free 5 }
+                { Id = cellId3; State = Free 5; IsStartingPosition = false }
             ]
         let isNeighbours id1 id2 =
             match id1, id2 with
@@ -88,10 +88,10 @@ type ``Store should`` ()=
         let aiId = 1
         let board = [ 
                 { cell1 with State = Own { AiId = aiId; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 } }
+                { Id = { LineNum = 2; ColumnNum = 1 }; State = Own { AiId = 2; Resources = 5 }; IsStartingPosition = false }
                 { cell2 with State = Own { AiId = aiId; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
-                { Id = { LineNum = 3; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
+                { Id = { LineNum = 3; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let isNeighbours _ = function
             | id when id.LineNum < 3 -> true
@@ -109,7 +109,7 @@ type ``Store should`` ()=
         let board = [ 
                 { cell1 with State = Own { AiId = 1; Resources = 5 } }
                 { cell2 with State = Own { AiId = 2; Resources = 6 } }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let store = CellsStore(board, isNeighbours)
         
@@ -119,7 +119,7 @@ type ``Store should`` ()=
     member x.``update own state when Owned`` ()= 
         let board = [ 
                 { cell1 with State = Own { AiId = 1; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let store = CellsStore(board, isNeighbours)
 
@@ -131,7 +131,7 @@ type ``Store should`` ()=
     member x.``update resource of own cell when ResourcesChanged`` ()= 
         let board = [ 
                 { cell1 with State = Own { AiId = 1; Resources = 5 } }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let store = CellsStore(board, isNeighbours)
 
@@ -143,7 +143,7 @@ type ``Store should`` ()=
     member x.``update resource of free cell when ResourcesChanged`` ()= 
         let board = [ 
                 { cell1 with State = Free 6 }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5 }
+                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
             ]
         let store = CellsStore(board, isNeighbours)
 

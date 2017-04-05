@@ -9,7 +9,7 @@ open Hexagon.Shapes
 let display shape =
     let serializeLine line =
         line 
-        |> Seq.map (function Cell -> 'x' | None -> '.') 
+        |> Seq.map (function StartingCell -> 'o' | Cell -> 'x' | None -> '.') 
         |> String.Concat
 
     shape 
@@ -46,7 +46,7 @@ module HexagonBoard =
                  "...x.x..."
                  "..x.x.x.."
                  ".x.x.x.x."
-                 "x.x.x.x.x"]
+                 "x.x.o.x.x"]
 
         [<Fact>] member x.
          ``body has hexagon size and odd line`` ()= 
@@ -57,11 +57,11 @@ module HexagonBoard =
             |> Seq.toList
             |> should equal 
                 [".x.x.x.x."
-                 "x.x.x.x.x"
+                 "x.o.x.o.x"
                  ".x.x.x.x."
                  "x.x.x.x.x"
                  ".x.x.x.x."
-                 "x.x.x.x.x"
+                 "x.o.x.o.x"
                  ".x.x.x.x."]
 
         [<Fact>] member x.
@@ -72,7 +72,7 @@ module HexagonBoard =
             |> Seq.skip 7
             |> Seq.toList
             |> should equal 
-                ["x.x.x.x.x"
+                ["x.x.o.x.x"
                  ".x.x.x.x."
                  "..x.x.x.."
                  "...x.x..."
@@ -150,22 +150,28 @@ type ``convertShapeToCell should`` ()=
         ``convert ShapeCell to Free Cell`` ()= 
         convertShapeToCells [ [Cell] ] 
         |> Seq.toList
-        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } ]
+        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } ]
+
+    [<Fact>] member x.
+        ``convert ShapeCell to Free starting Cell`` ()= 
+        convertShapeToCells [ [StartingCell] ] 
+        |> Seq.toList
+        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0; IsStartingPosition = true } ]
 
     [<Fact>] member x.
         ``exclude None`` ()= 
         convertShapeToCells [ [Cell; None] ] 
         |> Seq.toList
-        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } ]
+        |> should equal [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } ]
 
     [<Fact>] member x.
         ``Fill good column num of line`` ()= 
         convertShapeToCells [ [Cell; Cell; Cell] ] 
         |> Seq.toList
         |> should equal 
-            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } 
-              { Id = { LineNum = 1; ColumnNum = 2 }; State = Free 0 } 
-              { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0 } 
+            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } 
+              { Id = { LineNum = 1; ColumnNum = 2 }; State = Free 0; IsStartingPosition = false } 
+              { Id = { LineNum = 1; ColumnNum = 3 }; State = Free 0; IsStartingPosition = false } 
             ]
 
     [<Fact>] member x.
@@ -173,7 +179,7 @@ type ``convertShapeToCell should`` ()=
         convertShapeToCells [ [Cell]; [Cell]; [Cell] ] 
         |> Seq.toList
         |> should equal 
-            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0 } 
-              { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 0 } 
-              { Id = { LineNum = 3; ColumnNum = 1 }; State = Free 0 } 
+            [ { Id = { LineNum = 1; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } 
+              { Id = { LineNum = 2; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } 
+              { Id = { LineNum = 3; ColumnNum = 1 }; State = Free 0; IsStartingPosition = false } 
             ]

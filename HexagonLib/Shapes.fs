@@ -1,6 +1,6 @@
 ﻿module Hexagon.Shapes
 
-type ShapeCell = Cell | None
+type ShapeCell = StartingCell | Cell | None
 type BoardShape = ShapeCell seq seq
 
 let none _ = None
@@ -26,14 +26,53 @@ module HexagonBoard =
                 yield generateLine size (size-1)
             }
             
-        [1 .. size] |> Seq.collect fullLineWithOldLine |> Seq.take (size * 2 - 1)
+        [1 .. size] 
+        |> Seq.collect fullLineWithOldLine 
+        |> Seq.take (size * 2 - 1)
+
+    let private isInTheMiddle j size =
+        j + 1 = size
+
+    let private isBetweenTopOrBottomAndCenter i size =
+        i + 1 = size || i + 1 = 3 * size - 2
+
+    let private isStartingCell shape board i j size =
+        let nbCellsByLine = 2 * size - 1
+        let nbCellsByColumn = 4 * size - 3
+        let borderDistanceOnLine = size / 2 + 1
+        let borderDistanceOnColumns = size
+        if j + 1 = borderDistanceOnLine 
+            && (i + 1 = borderDistanceOnColumns + 2 
+                || i + 1 = nbCellsByColumn - borderDistanceOnColumns - 1) then
+            true
+        else if j + 1 = size
+            && (i + 1 = borderDistanceOnColumns
+                || i + 1 = nbCellsByColumn - borderDistanceOnColumns + 1) then
+            true
+        else if j = nbCellsByLine - borderDistanceOnLine
+            && (i + 1 = borderDistanceOnColumns + 2 
+                || i + 1 = nbCellsByColumn - borderDistanceOnColumns - 1) then
+            true
+        else false
+
+    let private transform shape i j board size =
+        match shape with
+        | Cell -> 
+            if shape = Cell && isStartingCell shape board i j size  then
+                StartingCell
+            else
+                shape
+        | _ -> shape
 
     let generate (size: int) : BoardShape = 
-        seq {
+        let board = seq {
             yield! generateHeader size
             yield! generateBody size
             yield! generateFooter size
         }
+        board
+        |> Seq.mapi (fun i line -> 
+            line |> Seq.mapi (fun j shape -> transform shape i j board size))
 
 module HexagonCell =
     open Domain
@@ -53,11 +92,12 @@ module HexagonCell =
 open Domain
 
 let convertShapeToCells shape =
-    let createCell lineNum columnNum =
-        { Id = { LineNum = lineNum + 1; ColumnNum = columnNum + 1 }; State = Free 0 }
+    let createCell lineNum columnNum isStartingPosition =
+        { Id = { LineNum = lineNum + 1; ColumnNum = columnNum + 1 }; State = Free 0; IsStartingPosition = isStartingPosition }
 
     let convertCell lineNum columnNum = function
-        | Cell -> createCell lineNum columnNum |> Some
+        | Cell -> createCell lineNum columnNum false |> Some
+        | StartingCell -> createCell lineNum columnNum true |> Some
         | None -> Option.None
 
     let convertLine lineNum line =
