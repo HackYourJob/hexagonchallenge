@@ -7,8 +7,9 @@ open Hexagon.Shapes
 let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout ais =
     let nbPlayers = ais |> List.length
     let basicAis = 
-        [nbPlayers..6]
+        [nbPlayers + 1..6]
         |> List.map (fun i -> { Id = i; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
+    let ais = ais @ basicAis
     
     let hexagon = 
         HexagonBoard.generate hexagonSize 
