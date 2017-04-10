@@ -147,6 +147,32 @@ let onCellsChanged cellsChanged =
         | Owned cellOwned -> onCellOwned cellOwned
         | ResourcesChanged resourcesChanged -> onCellResourcesChanged resourcesChanged)
 
+let moveUp score upperElement = 
+    let scores = score.CellsNbContainer.parentElement.parentElement
+    scores.removeChild score.CellsNbContainer.parentElement |> ignore
+    scores.insertBefore (score.CellsNbContainer.parentElement, upperElement) |> ignore
+
+let moveDown score (lowerElement:Node) = 
+    let scores = score.CellsNbContainer.parentElement.parentElement
+    scores.removeChild score.CellsNbContainer.parentElement |> ignore
+    if lowerElement.nextSibling <> null then
+        scores.insertBefore (score.CellsNbContainer.parentElement, lowerElement.nextSibling) |> ignore
+    else
+        scores.appendChild score.CellsNbContainer.parentElement |> ignore
+
+let rec reorderPlayersScore score cellsIncrement =
+    let surroundingElement, compare, move =
+        if cellsIncrement > 0 then
+            score.CellsNbContainer.parentElement.previousElementSibling, (>), moveUp
+        else
+            score.CellsNbContainer.parentElement.nextElementSibling, (<), moveDown
+    
+    if surroundingElement <> null then
+        let surroundingCellsNb = surroundingElement.getElementsByClassName("score-cellsNb").Item 0 
+        if compare score.CellsNb (int surroundingCellsNb.textContent) then
+            move score surroundingElement
+            reorderPlayersScore score cellsIncrement
+
 let onTerritoryChanged (territoryChanged:TerritoryChanged) =
     let previousScore = scoreByAi.[territoryChanged.AiId]
     let score = { previousScore with 
@@ -155,6 +181,7 @@ let onTerritoryChanged (territoryChanged:TerritoryChanged) =
     score.CellsNbContainer.textContent <- string score.CellsNb
     score.ResourcesNbContainer.textContent <- string score.ResourcesNb
     scoreByAi.[territoryChanged.AiId] <- score
+    reorderPlayersScore score territoryChanged.CellsIncrement
 
 let onBugged aiId =
     let previousScore = scoreByAi.[aiId]
@@ -175,6 +202,13 @@ let handleMessage = function
         onScoreChanged scoreChanged
     | _ -> ()
 
-let optionSeqSeq = [[Some 2; Some 4]; [None; Some 3]]
-let collect = optionSeqSeq |> Seq.collect id
-printfn "collected nb = %i" (Seq.length collect)
+let startGame' (mouse:MouseEvent) =
+    let name = document.getElementById("name").innerText
+    let code = document.getElementById("code").innerText
+    let functionStart = code.IndexOf('{') + 1
+    let functionBody = code.Substring(functionStart, code.LastIndexOf('}') - functionStart)
+    let ai = { Id = 6; Name = name}, Fable.Import.JS.Function.Create [|"cells"; functionBody|] 
+    new obj()
+
+let testButton = document.getElementById("test")
+testButton.onclick <- new System.Func<MouseEvent, obj>(startGame')
