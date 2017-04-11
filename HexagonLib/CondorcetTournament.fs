@@ -9,20 +9,39 @@ type Game = {
     Players: Player seq
 }
 
-let drawTournament (players: Player list) = 
+let private appendPlayersIfNeeded (players: Player list) =
+    let nbPlayers = players |> Seq.length
+    let lastPlayerId = players |> Seq.rev |> Seq.head |> fst |> fun p -> p.Id
+    let basicAis = 
+        [nbPlayers + 1..6]
+        |> List.map (fun i -> { Id = i + lastPlayerId; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
+    players @ basicAis
+
+let splitInGames players =
+    let rec loop xs =
+        [
+            yield xs |> Seq.take 6
+            match Seq.length xs > 6 with
+            | true -> yield! xs |> Seq.skip 6 |> loop
+            | false -> ()
+        ]
+    loop players
+    |> Seq.map (fun players -> { Players = players })
+
+let drawTournament players = 
     if players |> Seq.length = 0 then List.empty<Game>
     else 
-        let nbPlayers = players |> Seq.length
-        let lastPlayerId = players |> Seq.rev |> Seq.head |> fst |> fun p -> p.Id
-        let basicAis = 
-            [nbPlayers + 1..6]
-            |> List.map (fun i -> { Id = i + lastPlayerId; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
-        let players = players @ basicAis
+        
         let random = new System.Random()
         let rand = fun () -> random.Next()
-        let randomizedPlayers = 
+        
+        let players =
             players
-            |> Seq.map (fun p -> p, rand())
-            |> Seq.sortBy snd
-            |> Seq.map fst
-        [{ Players = randomizedPlayers }]
+            |> appendPlayersIfNeeded
+        
+        players
+        |> Seq.map (fun p -> p, rand())
+        |> Seq.sortBy snd
+        |> Seq.map fst
+        |> splitInGames
+        |> Seq.toList
