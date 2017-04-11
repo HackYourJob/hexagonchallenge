@@ -73,6 +73,7 @@
     <Compile Include="AiCellIdsStore.fs" />
     <Content Include="App.config" />
     <None Include="paket.references" />
+    <Compile Include="CondorcetTournament.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
