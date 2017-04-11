@@ -57,13 +57,13 @@ type ``drawGames should`` () =
         drawTournament (sixPlayers @ sixOtherPlayers)
         |> Seq.iter (fun g -> g.Players |> Seq.length |> should equal 6)
     
-//    [<Fact>]
-//    member x.``return games with same participation (half the nb of players) for each players`` ()=
-//        let games = drawTournament (sixPlayers @ sixOtherPlayers)
-//        let nbGamePerPlayer =
-//            games |> Seq.collect (fun g -> g.Players)
-//            |> Seq.map (fun p -> (fst p).Id)
-//            |> Seq.countBy id
-//        nbGamePerPlayer
-//        |> Seq.iter (fun (x, y) -> y |> should equal 6)
-//        
+    [<Fact>]
+    member x.``return games with same participation (half the nb of players) for each players`` ()=
+        let games = drawTournament (sixPlayers @ sixOtherPlayers)
+        let nbGamePerPlayer =
+            games |> Seq.collect (fun g -> g.Players)
+            |> Seq.map (fun p -> (fst p).Id)
+            |> Seq.countBy id
+        nbGamePerPlayer
+        |> Seq.iter (fun (x, y) -> y |> should equal 6)
+        
