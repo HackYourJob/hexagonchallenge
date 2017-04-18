@@ -23,10 +23,13 @@ let startGame raiseEvents hexagonSize ais : GameStep =
 
     let board = CellsStore.CellsStore(hexagon, HexagonCell.isNeighbours)
     let aiCellsIdsStore = AiCellIdsStore.Store(hexagon)
+    let scoresStore = ScoresStore.Store()
     
     let publishEvent evt =
         match evt with
-        | Board (_, cellEvents, _) -> cellEvents |> Seq.iter board.apply
+        | Board (_, cellEvents, scoreEvents) -> 
+            cellEvents |> Seq.iter board.apply
+            scoreEvents |> Seq.iter scoresStore.apply
         | _ -> ()
 
         evt
