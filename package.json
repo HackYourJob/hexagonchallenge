@@ -4,12 +4,13 @@
   "description": "Hexagon Challenge game",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd .paket && paket.bootstrapper.exe && paket.exe restore",
     "build": "fable",
     "watch": "fable -w --target watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fpellet/hexagonchallenge.git"
+    "url": "git+https://github.com/HackYourJob/hexagonchallenge.git"
   },
   "keywords": [
     "game"
@@ -17,9 +18,9 @@
   "author": "@florentpellet, @clem_bouillier, @ouarzy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fpellet/hexagonchallenge/issues"
+    "url": "https://github.com/HackYourJob/hexagonchallenge/issues"
   },
-  "homepage": "https://github.com/fpellet/hexagonchallenge#readme",
+  "homepage": "https://github.com/HackYourJob/hexagonchallenge#readme",
   "devDependencies": {
     "fable-compiler": "^0.7.50",
     "source-map-loader": "^0.2.0",
