@@ -43,7 +43,7 @@ and AiActions =
     | Sleep
 and TransactionParameters = { FromId: CellId; ToId: CellId; AmountToTransfer: int }
 and BoardEvents =
-    | AiAdded of AiAdded
+    | AiAdded of AiDescription
     | ResourcesIncreased of int
     | ResourcesTransfered of TransactionParameters
     | FightWon of FightWon

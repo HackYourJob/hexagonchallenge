@@ -43,12 +43,11 @@ let startGame raiseEvents hexagonSize ais : GameStep =
     |> publishEvent
     
     ais
-    |> Seq.map (fun ai -> (fst ai).Id)
     |> Seq.zip (hexagon |> Seq.filter (fun c -> c.IsStartingPosition) |> Seq.map (fun c -> c.Id))
-    |> Seq.map (fun (cell, ai) -> 
-        AiAdded { AiId = ai; CellId = cell; Resources = 1 }, // WTF??
-        [Owned { AiId = ai; CellId = cell; Resources = 1 }], 
-        [TerritoryChanged { AiId = ai; ResourcesIncrement = 1; CellsIncrement = 1}])
+    |> Seq.map (fun (cell, (ai, _)) -> 
+        AiAdded ai,
+        [Owned { AiId = ai.Id; CellId = cell; Resources = 1 }], 
+        [TerritoryChanged { AiId = ai.Id; ResourcesIncrement = 1; CellsIncrement = 1}])
     |> Seq.map Board
     |> Seq.iter publishEvent
         
