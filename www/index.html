@@ -7,7 +7,9 @@
 </head>
 <body>
     <div>
-        Name: <input id="name" type="text" /><br />
+        UserName: <input id="userName" type="text" /><br />
+        AiName: <input id="aiName" type="text" /><br />
+        Password: <input id="password" type="text" /><br />
         Code: <div id="code" class="editor">
 function(cells) {
     // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
@@ -22,6 +24,8 @@ function(cells) {
 }</div><br />
         <button id="test">Test</button>
         <button id="stop">Stop</button>
+        <button id="submit">Submit</button>
+        <button id="get">Get</button>
     </div>
     <div id="board" class="board"></div>
     <div id="scores">

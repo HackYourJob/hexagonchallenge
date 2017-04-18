@@ -5,6 +5,7 @@ nuget Fable.Core
 nuget FSharp.Control.Reactive
 nuget FsUnit.Xunit
 nuget Microsoft.FSharpLu.Json
+nuget Newtonsoft.Json
 nuget suave
 nuget System.ValueTuple 4.3.0
 nuget unquote
