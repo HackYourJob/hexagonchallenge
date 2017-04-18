@@ -18,7 +18,7 @@ let handleMessage evt =
     
 let getPlayFunction () =
     CodeEditor.getValue Hexagon.Compilator.Js.compile
-
+    
 let mutable isCancelled = false
 
 let startGame hexagonSize roundsNb ais = 

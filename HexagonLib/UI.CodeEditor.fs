@@ -8,7 +8,7 @@ let mutable editor: Fable.Import.AceAjax.Editor = null
 let initialize (container: HTMLElement) =
     editor <- Fable.Import.Globals.ace.edit(container)
     editor.getSession().setMode("ace/mode/javascript");
-    editor.setValue("""(function() {
+    editor.setValue("""(function(_) {
 return function(cells) {
     // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
     // - Resources cannot be more than 100, it is the available resources to move from a cell
