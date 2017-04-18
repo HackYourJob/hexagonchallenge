@@ -29,9 +29,8 @@ testButton.addEventListener("click", function() {
         [{ Id: 3, Name: "Dynamic JS" }, getPlayFunction() ]];
 
     ct.isCancelled = false;
-    setTimeout(stop, 30000);
 
-    startGame(9, ais, () => ct.isCancelled);
+    startGame(9, ais, 5000, () => ct.isCancelled);
 });
 
 let stopButton = document.getElementById("stop");

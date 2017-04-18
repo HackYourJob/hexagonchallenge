@@ -234,7 +234,7 @@ let getPlayFunction (): (Ais.AiCell[] -> Ais.TransactionParameters option) =
 [<Emit("setTimeout($1, $0)")>]
 let setTimeout (delayInMs: int) (action: unit -> unit) = jsNative
 
-let startGame hexagonSize ais isCancelled = 
+let startGame hexagonSize ais roundsNb isCancelled = 
     let rec deferNextStep nextStep = 
         match isCancelled(), nextStep with
         | true, _ -> ()
@@ -242,6 +242,6 @@ let startGame hexagonSize ais isCancelled =
                 setTimeout 10 (fun () -> action() |> deferNextStep)
         | false, End (reason, score) -> ()
 
-    let nextStep = Hexagon.Game.startGame handleMessage hexagonSize ais
+    let nextStep = Hexagon.Game.startGame handleMessage hexagonSize roundsNb ais
 
     deferNextStep nextStep

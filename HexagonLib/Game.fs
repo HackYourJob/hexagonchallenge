@@ -4,7 +4,7 @@ open Domain
 open Hexagon
 open Hexagon.Shapes
 
-let startGame raiseEvents hexagonSize ais : GameStep =
+let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
     let nbPlayers = ais |> List.length
     let basicAis = 
         [nbPlayers + 1..6]
@@ -60,8 +60,16 @@ let startGame raiseEvents hexagonSize ais : GameStep =
     let rec runRound (nb: RoundNumber) ais = 
         round ais |> Seq.iter publishEvent
 
-        let nextRoundId = nb + 1
-        NextRound (nextRoundId, (fun () -> runRound nextRoundId ais))
+        let aisOnBoard = board.getAisOnBoard()
+        match scoresStore.tryToGetWinner(), nb = roundsNb with
+        | Some aiId, _ -> 
+            GameEvents.Won aiId |> publishEvent
+            End (GameEndReason.AiWon, scoresStore.getScores())
+        | _, true -> 
+            End (GameEndReason.RoundsNumberLimit, scoresStore.getScores())
+        | _, false ->
+            let nextRoundId = nb + 1
+            NextRound (nextRoundId, (fun () -> runRound nextRoundId ais))
 
     ais 
     |> List.map (fun (ai, play) -> (ai.Id, wrapAiPlay play)) 
