@@ -17,9 +17,15 @@ let handleMessage evt =
     
 let getPlayFunction () =
     CodeEditor.getValue Hexagon.Compilator.Js.compile
+
+let getSpeed () =
+    let speedSelector = document.getElementById("speed") :?> HTMLSelectElement
+    let selectedOption = speedSelector.options.[int speedSelector.selectedIndex] :?> HTMLOptionElement
+    selectedOption.value |> int
     
 let mutable isRunning = false
 let mutable isPaused = false
+let mutable speed = 100
 
 let mutable nextStep: GameStep = End (Stopped, [])
 
@@ -32,14 +38,15 @@ let runNextStep () =
             isPaused <- false
 
 let rec autoPlay () =
-    match isRunning, isPaused with
-    | false, _ -> 
+    match isRunning, isPaused, speed with
+    | false, _, _ -> 
         nextStep <- End (Stopped, [])
-    | _, true -> 
+    | _, true, _ 
+    | true, false, -1 -> 
         ()
-    | true, false -> 
+    | true, false, _ -> 
         runNextStep()
-        setTimeout 10 autoPlay
+        setTimeout speed autoPlay
 
 let startGame hexagonSize roundsNb ais = 
     nextStep <- Hexagon.Game.startGame handleMessage hexagonSize roundsNb ais
@@ -47,6 +54,8 @@ let startGame hexagonSize roundsNb ais =
     autoPlay()
 
 let play basicAiJs =
+    speed <- getSpeed ()
+
     match isPaused with
     | true -> 
         isPaused <- false
