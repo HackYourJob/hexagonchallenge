@@ -4,6 +4,7 @@
   "description": "Hexagon Challenge game",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd .paket && paket.bootstrapper.exe && paket.exe restore",
     "build": "fable",
     "watch": "fable -w --target watch"
   },
