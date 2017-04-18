@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/HackYourJob/hexagonchallenge#readme",
   "devDependencies": {
+    "@types/ace": "0.0.32",
     "fable-compiler": "^0.7.50",
     "source-map-loader": "^0.2.0",
+    "ts2fable": "^0.1.23",
     "webpack": "^2.3.1"
   },
   "dependencies": {

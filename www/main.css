@@ -1,0 +1,168 @@
+﻿body {
+	display: flex;
+	flex-direction: row;
+}
+
+.board {
+ display: flex;
+ flex-direction: column;
+}
+
+.board-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.board-row--hexagon {
+	margin-bottom: -11px;
+}
+
+.board-cell {
+	display: flex;
+	visibility: hidden;
+}
+
+.board-cell[inside="true"] {
+	visibility: visible;
+}
+
+.hexagonCellShape {
+	margin-right: -4px;
+
+	width: 26px;
+	height: 24px;
+}
+
+.hexagonCellShape-left {
+	border-right: 6px solid transparent;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
+	border-right-color: #ccc;
+}
+
+.hexagonCellShape-middle {
+	width: 14px;
+	height: 24px;
+	background: #ccc;
+}
+
+.hexagonCellShape-right {
+	border-left: 6px solid transparent;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
+	border-left-color: #ccc;
+}
+
+.board-cell-content {
+	font-size: 10px;
+	font-weight: bold;
+
+	align-self: center;
+	text-align: center;
+}
+
+.board-cell-content--hexagon {
+	margin-left: -26px;
+	width: 25px;
+}
+
+[aiId="1"] .hexagonCellShape-left, [aiId="1"] .hexagonCellShape-right {
+	border-right-color: #ff2a08;
+	border-left-color: #ff2a08;
+}
+
+[aiId="1"] .hexagonCellShape-middle, [aiId="1"] .score-legend {
+	background: #ff2a08;
+}
+
+[aiId="2"] .hexagonCellShape-left, [aiId="2"] .hexagonCellShape-right {
+	border-right-color: #ffb308;
+	border-left-color: #ffb308;
+}
+
+[aiId="2"] .hexagonCellShape-middle, [aiId="2"] .score-legend {
+	background: #ffb308;
+}
+
+[aiId="3"] .hexagonCellShape-left, [aiId="3"] .hexagonCellShape-right {
+	border-right-color: #72ff08;
+	border-left-color: #72ff08;
+}
+
+[aiId="3"] .hexagonCellShape-middle, [aiId="3"] .score-legend {
+	background: #72ff08;
+}
+
+[aiId="4"] .hexagonCellShape-left, [aiId="4"] .hexagonCellShape-right {
+	border-right-color: #08ffff;
+	border-left-color: #08ffff;
+}
+
+[aiId="4"] .hexagonCellShape-middle, [aiId="4"] .score-legend {
+	background: #08ffff;
+}
+
+[aiId="5"] .hexagonCellShape-left, [aiId="5"] .hexagonCellShape-right {
+	border-right-color: #0849ff;
+	border-left-color: #0849ff;
+}
+
+[aiId="5"] .hexagonCellShape-middle, [aiId="5"] .score-legend {
+	background: #0849ff;
+}
+
+[aiId="6"] .hexagonCellShape-left, [aiId="6"] .hexagonCellShape-right {
+	border-right-color: #ff08e1;
+	border-left-color: #ff08e1;
+}
+
+[aiId="6"] .hexagonCellShape-middle, [aiId="6"] .score-legend {
+	background: #ff08e1;
+}
+
+.score {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	margin-left: 10px;
+	margin-bottom: 5px;
+}
+
+.score-legend {
+	width: 20px;
+	height: 10px;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.score-aiName {
+	width: 150px;
+}
+
+.score-cellsNb {
+	width: 50px;
+
+	text-align: right;
+}
+
+.score-resources {
+	width: 100px;
+
+	text-align: right;
+}
+
+.score-bugs {
+	width: 50px;
+
+	text-align: right;
+}
+
+.score--header {
+	font-weight: bold;
+}
+
+.editor {
+    width: 500px;
+    height: 300px;
+}

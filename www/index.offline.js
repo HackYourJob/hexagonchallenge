@@ -1,5 +1,5 @@
 import { startGame } from './fable/Game';
-import { handleMessage } from './fable/UI';
+import { handleMessage, getPlayFunction } from './fable/UI';
 import { TransactionParameters, Transaction } from "./fable/Ais";
 import { play } from "./fable/BasicAi";
 
@@ -21,12 +21,6 @@ let basicAiJs = function(cells) {
         });
     });
     return { FromId: selectedTuple[0].Id, ToId: selectedTuple[1].Id, AmountToTransfer: selectedTuple[0].Resources };
-}
-
-let code = document.getElementById("code");
-let getPlayFunction = function() {
-    const functionCode = code.value.replace("function(cells)", "");
-    return new Function("cells", functionCode);
 }
     
 let testButton = document.getElementById("test");
