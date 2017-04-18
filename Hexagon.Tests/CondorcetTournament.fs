@@ -31,7 +31,6 @@ type ``drawGames should`` () =
     [<Fact>]
     member x.``return a game when 6 players given randomly distributed`` ()=
         let games = drawTournament sixPlayers
-        games |> should haveLength 1
         
         (games |> Seq.head).Players 
         |> Seq.mapi (fun i p -> sixPlayers |> Seq.item i |> fst = fst p)
