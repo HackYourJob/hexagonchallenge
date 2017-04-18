@@ -1,5 +1,4 @@
-import { startGame } from './fable/Game';
-import { handleMessage, getPlayFunction } from './fable/UI';
+import { handleMessage, getPlayFunction, startGame } from './fable/UI';
 import { TransactionParameters, Transaction } from "./fable/Ais";
 import { play } from "./fable/BasicAi";
 
@@ -30,11 +29,8 @@ testButton.addEventListener("click", function() {
         [{ Id: 3, Name: "Dynamic JS" }, getPlayFunction() ]];
 
     ct.isCancelled = false;
-    setTimeout(stop, 30000);
 
-    startGame(message => { console.log(message); handleMessage(message); }, ct, 9, function (fun) {
-        setTimeout(fun, 100);
-    }, ais);    
+    startGame(9, ais, 5000, () => ct.isCancelled);
 });
 
 let stopButton = document.getElementById("stop");

@@ -63,6 +63,3 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
                         match cell.State with 
                         | Free p -> { cell with State = Free resources}
                         | Own p -> { cell with State = Own { p with Resources = resources }}
-
-         
-

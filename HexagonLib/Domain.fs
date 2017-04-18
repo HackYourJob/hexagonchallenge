@@ -20,12 +20,22 @@ and CellStateOwn = { AiId: AiId; Resources: int }
 
 type Board = Cell seq
 
+type RoundNumber = int
+
+type GameStep =
+    | NextRound of RoundNumber * (unit -> GameStep)
+    | End of GameEndReason * Scores
+and GameEndReason =
+    | RoundsNumberLimit
+    | AiWon
+and Scores = (AiId * AiScore) list
+
 type GameEvents = 
     | Started of Started
     | AiPlayed of AiActions
     | Board of BoardEvents * (CellChanged list) * (ScoreChanged list)
     | Won of AiId
-and Started = { BoardSize: BoardSize; Board: Board; Ais: AiDescription seq }
+and Started = { BoardSize: BoardSize; Board: Board }
 and BoardSize = { Lines: int; Columns: int }
 and AiActions =
     | Transaction of TransactionParameters
@@ -33,7 +43,7 @@ and AiActions =
     | Sleep
 and TransactionParameters = { FromId: CellId; ToId: CellId; AmountToTransfer: int }
 and BoardEvents =
-    | AiAdded of AiAdded
+    | AiAdded of AiDescription
     | ResourcesIncreased of int
     | ResourcesTransfered of TransactionParameters
     | FightWon of FightWon
