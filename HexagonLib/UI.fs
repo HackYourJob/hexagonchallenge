@@ -224,7 +224,7 @@ editor.setValue("""(function() {
 open Fable.Core
 open Hexagon.BasicAi
 
-[<Emit("eval($0)")>]
+[<Emit("eval($0)()")>]
 let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = jsNative
 
 let getPlayFunction (): (Ais.AiCell[] -> Ais.TransactionParameters option) =
