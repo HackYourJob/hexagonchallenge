@@ -17,8 +17,13 @@ return function(cells) {
     
     // Your clever code here :)
     
-    if (cells[cells.length - 1].Resources > 10 && cells[cells.length - 1].Resources > cells[0].Neighbours[0].Resources) {
-        return { FromId: cells[cells.length - 1].Id, ToId: cells[0].Neighbours[0].Id, AmountToTransfer: cells[cells.length - 1].Resources - 1 };
+    if (cells[cells.length - 1].Resources > 10 
+        && cells[cells.length - 1].Resources > cells[0].Neighbours[0].Resources) {
+        return { 
+            FromId: cells[cells.length - 1].Id, 
+            ToId: cells[0].Neighbours[0].Id, 
+            AmountToTransfer: cells[cells.length - 1].Resources - 1 
+        };
     }
 };
 })""") |> ignore
