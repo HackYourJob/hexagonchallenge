@@ -9,7 +9,7 @@ module RestFul =
   open Suave.Filters
   open Suave.Successful
   open Suave.RequestErrors
-  open HexagonRestApi.AisStorage
+  open HexagonRestApi.AisService
     
   type RestResource<'a> = {
     GetAll : unit -> 'a seq

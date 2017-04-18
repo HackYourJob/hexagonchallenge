@@ -2,7 +2,7 @@
 
 open Suave.Web
 open Suave.Successful
-open HexagonRestApi.AisStorage
+open HexagonRestApi.AisService
 open HexagonRestApi.Rest.RestFul
 open Domain
 
@@ -18,9 +18,9 @@ let usingInMemoryStorage = {
 [<EntryPoint>]
 let main argv =
   let aiWebPart = rest "ais" {
-    GetAll = AisStorage.getAis usingInMemoryStorage
-    Submit = AisStorage.submitAi usingInMemoryStorage
-    GetById = AisStorage.getAi usingInMemoryStorage
+    GetAll = AisService.getAis usingInMemoryStorage
+    Submit = AisService.submitAi usingInMemoryStorage
+    GetById = AisService.getAi usingInMemoryStorage
    }
   startWebServer defaultConfig aiWebPart
   0

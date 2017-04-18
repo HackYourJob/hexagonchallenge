@@ -1,8 +1,8 @@
-﻿namespace HexagonRestApi.AisStorage
+﻿namespace HexagonRestApi.AisService
 
 open Domain
 
-module AisStorage =
+module AisService =
  
 
   let private buildAiId userId password aiName =

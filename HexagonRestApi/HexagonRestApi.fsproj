@@ -62,7 +62,7 @@
     </Content>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Domain.fs" />
-    <Compile Include="AisStorage.fs" />
+    <Compile Include="AisService.fs" />
     <Compile Include="RestFul.fs" />
     <Compile Include="AiStorageInmemory.fs" />
     <Compile Include="App.fs" />
