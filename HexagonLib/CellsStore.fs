@@ -3,11 +3,22 @@
 open Domain
 
 type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
-    let cellsById = System.Collections.Generic.Dictionary<_,_>(cells |> Seq.map (fun c -> c.Id, c) |> dict)
-    let neighboursById = cellsById.Keys |> Seq.map (fun id -> id, cellsById.Keys |> Seq.filter (fun nId -> isNeighbours id nId) |> Seq.toList) |> dict
+    let serializeCellId cellId = sprintf "%dx%d" cellId.LineNum cellId.ColumnNum
+
+    let cellsById = System.Collections.Generic.Dictionary<_,_>(cells |> Seq.map (fun c -> c.Id |> serializeCellId, c) |> dict)
+    let neighboursById = 
+        let filterNeighbours cellId cells =
+            cells 
+            |> Seq.filter (fun neighbours -> isNeighbours cellId neighbours.Id) 
+            |> Seq.map (fun cell -> serializeCellId cell.Id) 
+            |> Seq.toList
+
+        cells 
+        |> Seq.map (fun cell -> cell.Id |> serializeCellId, cells |> filterNeighbours cell.Id) 
+        |> dict
 
     let tryGetValue (dict: System.Collections.Generic.IDictionary<_, _>) key =
-        match dict.TryGetValue(key) with
+        match dict.TryGetValue(key |> serializeCellId) with
         | true, value -> Some value
         | false, _ -> None
 
@@ -43,10 +54,12 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
     member x.apply (evt: CellChanged) =
         match evt with
         | Owned { CellId = cellId; AiId = aiId; Resources = resources } -> 
-                cellsById.[cellId] <- { cellsById.[cellId] with State = Own { AiId = aiId; Resources = resources } }
+                let serializedId = serializeCellId cellId
+                cellsById.[serializedId] <- { cellsById.[serializedId] with State = Own { AiId = aiId; Resources = resources } }
         | ResourcesChanged { CellId = cellId; Resources = resources } ->
-                let cell = cellsById.[cellId]
-                cellsById.[cellId] <- 
+                let serializedId = serializeCellId cellId
+                let cell = cellsById.[serializedId]
+                cellsById.[serializedId] <- 
                         match cell.State with 
                         | Free p -> { cell with State = Free resources}
                         | Own p -> { cell with State = Own { p with Resources = resources }}
