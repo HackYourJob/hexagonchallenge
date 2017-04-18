@@ -51,13 +51,6 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
         |> Seq.choose id
         |> Seq.toList
 
-    member x.getAisOnBoard () =
-        cellsById.Values
-        |> Seq.map (fun c -> match c.State with | Own param -> Some param.AiId | Free _ -> None)
-        |> Seq.choose id
-        |> Seq.distinct
-        |> Seq.toArray
-
     member x.apply (evt: CellChanged) =
         match evt with
         | Owned { CellId = cellId; AiId = aiId; Resources = resources } -> 
@@ -70,6 +63,3 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
                         match cell.State with 
                         | Free p -> { cell with State = Free resources}
                         | Own p -> { cell with State = Own { p with Resources = resources }}
-
-         
-

@@ -59,8 +59,7 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
 
     let rec runRound (nb: RoundNumber) ais = 
         round ais |> Seq.iter publishEvent
-
-        let aisOnBoard = board.getAisOnBoard()
+        
         match scoresStore.tryToGetWinner(), nb = roundsNb with
         | Some aiId, _ -> 
             GameEvents.Won aiId |> publishEvent

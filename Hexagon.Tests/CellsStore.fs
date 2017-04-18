@@ -114,18 +114,6 @@ type ``Store should`` ()=
         let store = CellsStore(board, isNeighbours)
         
         test <@ store.getAllOwnCells() = [ (cellId1, {AiId = 1; Resources = 5 }); (cellId2, { AiId = 2; Resources = 6 }) ] @>
-        
-    [<Fact>] 
-    member x.``return all ai ids with cells on board when getAisOnBoard`` ()= 
-        let board = [ 
-                { cell1 with State = Own { AiId = 1; Resources = 5 } }
-                { cell2 with State = Own { AiId = 2; Resources = 6 } }
-                { Id = { LineNum = 2; ColumnNum = 4 }; State = Own { AiId = 2; Resources = 6 }; IsStartingPosition = false }
-                { Id = { LineNum = 2; ColumnNum = 2 }; State = Free 5; IsStartingPosition = false }
-            ]
-        let store = CellsStore(board, isNeighbours)
-        
-        test <@ store.getAisOnBoard() = [| 1; 2 |] @>
 
     [<Fact>] 
     member x.``update own state when Owned`` ()= 
