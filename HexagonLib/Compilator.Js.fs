@@ -2,6 +2,9 @@
 
 open Hexagon
 open Fable.Core
+open Fable.Core.JsInterop
+
+let underscore = importAll<obj> "underscore"
 
 [<Emit("""(function(cells) {
     cells.map(c => c.Neighbours.map(n => n.Owner = n.Owner.Case));
@@ -20,10 +23,10 @@ let improveInput (cells: Ais.AiCell[]): obj = jsNative
 })($0);""")>]
 let checkOuput (result: Ais.TransactionParameters option): Ais.TransactionParameters option = jsNative
 
-[<Emit("eval($0)()")>]
-let eval (code: string): (obj -> Ais.TransactionParameters option) = jsNative
+[<Emit("eval($0)($1)")>]
+let eval (code: string) underscore : (obj -> Ais.TransactionParameters option) = jsNative
 
 let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = 
-    let play = eval code
+    let play = eval code underscore
 
     improveInput >> play >> checkOuput

@@ -5,8 +5,8 @@ open Fable.Import.Browser
 
 let mutable container: Element = null
 
-let initialize () =
-    container <- document.querySelector("#scores")
+let initialize domContainer =
+    container <- domContainer
 
 type Score = {
     CellsNb: int
@@ -104,7 +104,7 @@ let private addAiInLegend (ai: AiDescription) =
     })
         
 let private clear () =
-    [1..int container.childNodes.length - 1] |> List.map (fun _ -> container.removeChild <| container.childNodes.item(1.0)) |> ignore
+    [1..int container.childNodes.length] |> Seq.iter (fun _ -> container.firstChild |> container.removeChild |> ignore)
     
 let private onScoreChanged = function
     | TerritoryChanged territoryChanged -> onTerritoryChanged territoryChanged

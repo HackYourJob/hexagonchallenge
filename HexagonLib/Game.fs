@@ -71,6 +71,6 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
 
     ais 
     |> List.map (fun (ai, play) -> (ai.Id, wrapAiPlay play)) 
-    |> runRound 1
+    |> (fun ais -> NextRound (1, (fun () -> runRound 1 ais)))
 
 

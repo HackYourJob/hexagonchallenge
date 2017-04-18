@@ -1,9 +1,4 @@
-﻿body {
-	display: flex;
-	flex-direction: row;
-}
-
-.board {
+﻿.board {
  display: flex;
  flex-direction: column;
 }
@@ -75,6 +70,10 @@
 	background: #ff2a08;
 }
 
+[aiId="1"] .board-cell-content {
+    color: #ffffff;
+}
+
 [aiId="2"] .hexagonCellShape-left, [aiId="2"] .hexagonCellShape-right {
 	border-right-color: #ffb308;
 	border-left-color: #ffb308;
@@ -111,6 +110,10 @@
 	background: #0849ff;
 }
 
+[aiId="5"] .board-cell-content {
+    color: #ffffff;
+}
+
 [aiId="6"] .hexagonCellShape-left, [aiId="6"] .hexagonCellShape-right {
 	border-right-color: #ff08e1;
 	border-left-color: #ff08e1;
@@ -118,6 +121,10 @@
 
 [aiId="6"] .hexagonCellShape-middle, [aiId="6"] .score-legend {
 	background: #ff08e1;
+}
+
+[aiId="6"] .board-cell-content {
+    color: #ffffff;
 }
 
 .score {
@@ -163,6 +170,43 @@
 }
 
 .editor {
-    width: 500px;
-    height: 300px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 50%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 5px;
+}
+
+.editor-code {
+    height: 200px;
+    flex: 1;
+}
+
+.editor-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.editor-actions > * {
+    margin: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.simulator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 50%;
+    padding: 5px;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
