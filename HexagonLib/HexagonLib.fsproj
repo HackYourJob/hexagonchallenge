@@ -59,6 +59,7 @@
     <Compile Include="AiCellIdsStore.fs" />
     <Compile Include="BasicAi.fs" />
     <Compile Include="Game.fs" />
+    <Compile Include="Fable.Import.Ace.fs" />
     <Compile Include="UI.fs" />
     <None Include="paket.references" />
     <Compile Include="CondorcetTournament.fs" />
