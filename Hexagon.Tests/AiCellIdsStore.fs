@@ -35,7 +35,13 @@ type ``Store should`` ()=
         let store = Store(board)
         let aiCellId = store.convertToAiCellId cellId1
 
-        test <@ store.convertToCellId aiCellId = cellId1 @>
+        test <@ store.tryConvertToCellId aiCellId = Some cellId1 @>
+
+    [<Fact>] 
+    member x.``return None if invalid AiCellId`` ()= 
+        let store = Store(board)
+
+        test <@ store.tryConvertToCellId "invalid" = None @>
 
     [<Fact>] 
     member x.``generate random ids`` ()= 

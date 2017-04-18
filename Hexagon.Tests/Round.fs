@@ -81,6 +81,18 @@ module TransactionValidation =
             |> validAction
             |> should equal validTransaction
 
+        [<Fact>] 
+        member x.``return bug if transaction move 0 resource`` ()= 
+            Transaction { FromId = cellOfAi.Id; ToId = neighboursCell.Id; AmountToTransfer = 0 }
+            |> validAction
+            |> should equal (Bug "InvalidMove")
+
+        [<Fact>] 
+        member x.``return bug if transaction move negative resource amount`` ()= 
+            Transaction { FromId = cellOfAi.Id; ToId = neighboursCell.Id; AmountToTransfer = -5 }
+            |> validAction
+            |> should equal (Bug "InvalidMove")
+
 module BoardHandler =
     open Hexagon.Round.BoardHandler
     
