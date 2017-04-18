@@ -2,7 +2,6 @@
 
 open Fable.Core
 open Hexagon.Domain
-open Hexagon.BasicAi
 open Fable.Import.Browser
 
 [<Emit("setTimeout($1, $0)")>]
@@ -19,19 +18,33 @@ let handleMessage evt =
 let getPlayFunction () =
     CodeEditor.getValue Hexagon.Compilator.Js.compile
     
-let mutable isCancelled = false
+let mutable isRunning = false
+let mutable isPaused = false
+
+let mutable nextStep: GameStep = End (Stopped, [])
+
+let runNextStep () = 
+    match nextStep with
+    | NextRound (_, action) -> 
+            nextStep <- action()
+    | End (_, _) -> 
+            isRunning <- false
+            isPaused <- false
+
+let rec play () =
+    match isRunning, isPaused with
+    | false, _ -> 
+        nextStep <- End (Stopped, [])
+    | _, true -> 
+        ()
+    | true, false -> 
+        runNextStep()
+        setTimeout 10 play
 
 let startGame hexagonSize roundsNb ais = 
-    let rec deferNextStep nextStep = 
-        match isCancelled, nextStep with
-        | true, _ -> ()
-        | false, NextRound (num, action) -> 
-                setTimeout 10 (fun () -> action() |> deferNextStep)
-        | false, End (reason, score) -> ()
+    nextStep <- Hexagon.Game.startGame handleMessage hexagonSize roundsNb ais
 
-    let nextStep = Hexagon.Game.startGame handleMessage hexagonSize roundsNb ais
-
-    deferNextStep nextStep
+    play()
 
 let addListenerOnClick (button: HTMLElement) action =
     button.addEventListener_click(fun _ -> 
@@ -45,14 +58,30 @@ let initializeAiSimulator basicAiJs =
 
     let testButton = document.getElementById("test");
     addListenerOnClick testButton (fun _ -> 
-        isCancelled <- false
+        match isPaused with
+        | true -> 
+            isPaused <- false
+            play()
+        | false -> 
+            isRunning <- true
+            isPaused <- false
         
-        [
-            ({ Id = 1; Name = "Basic JS" }, basicAiJs )
-            ({ Id = 2; Name = "Basic F#" }, play )
-            ({ Id = 3; Name = "Dynamic JS" }, getPlayFunction() )
-        ]
-        |> startGame 9 5000)
+            [
+                ({ Id = 1; Name = "Basic JS" }, basicAiJs )
+                ({ Id = 2; Name = "Basic F#" }, Hexagon.BasicAi.play )
+                ({ Id = 3; Name = "Dynamic JS" }, getPlayFunction() )
+            ]
+            |> startGame 9 5000)
         
     let stopButton = document.getElementById("stop");
-    addListenerOnClick stopButton (fun _ -> isCancelled <- true)
+    addListenerOnClick stopButton (fun _ -> 
+        isRunning <- false
+        isPaused <- false)
+        
+    let pauseButton = document.getElementById("pause");
+    addListenerOnClick pauseButton (fun _ -> 
+        match isRunning with
+        | false -> ()
+        | true -> 
+            isPaused <- not isPaused
+            play())

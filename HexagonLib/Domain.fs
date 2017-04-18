@@ -28,6 +28,7 @@ type GameStep =
 and GameEndReason =
     | RoundsNumberLimit
     | AiWon
+    | Stopped
 and Scores = (AiId * AiScore) list
 
 type GameEvents = 
