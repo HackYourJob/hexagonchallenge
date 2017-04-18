@@ -20,6 +20,16 @@ and CellStateOwn = { AiId: AiId; Resources: int }
 
 type Board = Cell seq
 
+type RoundNumber = int
+
+type GameStep =
+    | NextRound of RoundNumber * (unit -> GameStep)
+    | End of GameEndReason * Scores
+and GameEndReason =
+    | RoundsNumberLimit
+    | AiWon
+and Scores = (AiId * AiScore) list
+
 type GameEvents = 
     | Started of Started
     | AiPlayed of AiActions
