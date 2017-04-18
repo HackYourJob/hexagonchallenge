@@ -61,8 +61,10 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Domain.fs" />
     <Compile Include="AisStorage.fs" />
     <Compile Include="RestFul.fs" />
+    <Compile Include="AiStorageInmemory.fs" />
     <Compile Include="App.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />

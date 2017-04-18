@@ -1,32 +1,27 @@
 ﻿namespace HexagonRestApi.AisStorage
 
-type Ai = {
-  AiName : string
-  UserId : string
-  Password : string
-  Content : string
-}
+open Domain
 
 module AisStorage =
-  open System.Collections.Generic
+ 
 
-  let private aiStorage = new Dictionary<string, Ai>()
-  
-  let buildAiId userId password aiName =
+  let private buildAiId userId password aiName =
     String.concat "." [userId; password; aiName;]
   
-  let getAis () =
-    aiStorage.Values |> Seq.map (fun ai -> ai)
+  let getAis fromStorage =
+    fromStorage.GetAll
 
-  let submitAi ai =
+  let submitAi intoStorage ai =
     let id = buildAiId ai.UserId ai.Password ai.AiName
-    aiStorage.Add(id, ai)
-    ai
+    if intoStorage.Exists(id) then
+        intoStorage.Update(id,ai)
+    else
+        intoStorage.Add(id,ai)        
 
-  let getAi aiInfo =
+  let getAi fromStorage aiInfo=
     let userId, password, aiName = aiInfo
     let id = buildAiId userId password aiName
-    if aiStorage.ContainsKey(id) then
-      Some aiStorage.[id]
+    if fromStorage.Exists id then
+      Some (fromStorage.GetById id)
     else
       None
