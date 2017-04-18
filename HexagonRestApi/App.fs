@@ -4,7 +4,7 @@ open Suave.Web
 open Suave.Successful
 open HexagonRestApi.AisService
 open HexagonRestApi.Rest.RestFul
-open Domain
+open HexagonRestApi.Domain.Domain
 
 
 let usingInMemoryStorage = {

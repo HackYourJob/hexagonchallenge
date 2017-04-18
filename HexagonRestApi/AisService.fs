@@ -1,10 +1,8 @@
 ﻿namespace HexagonRestApi.AisService
 
-open Domain
-
 module AisService =
+  open HexagonRestApi.Domain.Domain
  
-
   let private buildAiId userId password aiName =
     String.concat "." [userId; password; aiName;]
   
