@@ -20,14 +20,22 @@
     [<Fact>]
     let ``create ai when submit an unknown ai`` () =
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
+      
         AisService.submitAi usingInMemoryStorage aiToSubmit|> should equal aiToSubmit 
         usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
         
+
     [<Fact>] 
     let ``update ai when submit a known ai`` () =
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
         let aiUpdated = {AiName="test";UserId="test";Password="test";Content="testUpdated"}
-        AisService.submitAi usingInMemoryStorage aiToSubmit |> should equal aiToSubmit
+        
+        usingInMemoryStorage.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
+        
         AisService.submitAi usingInMemoryStorage aiUpdated |> should equal aiUpdated
-        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated 
+        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
+
+    [<Fact>] 
+    let ``return none when unknow ai`` () =              
+        AisService.getAi usingInMemoryStorage ("unknow","unknow","unknow") |> should equal None
 
