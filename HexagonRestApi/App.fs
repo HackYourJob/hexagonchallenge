@@ -2,8 +2,14 @@
 
 open Suave.Web
 open Suave.Successful
+open HexagonRestApi.Rest
+open HexagonRestApi.Storage
+
 
 [<EntryPoint>]
 let main argv =
-  startWebServer defaultConfig (OK "Hello, Suave!")
+  let aiWebPart = rest "ais" {
+    GetAll = Storage.getAis
+  }
+  startWebServer defaultConfig aiWebPart
   0
