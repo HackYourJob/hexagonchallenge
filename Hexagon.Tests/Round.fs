@@ -101,7 +101,7 @@ module BoardHandler =
         | id when id = free2Cell.Id -> free2Cell
         | _ -> failwith "invalid cell"
 
-    let generate action = generateEvents getCell action |> Seq.toList
+    let generate action = generateEvents getCell aiId action |> Seq.toList
 
     let expect expected action =
         test <@ action |> generate = [expected] @>
@@ -112,8 +112,8 @@ module BoardHandler =
             test <@ Sleep |> generate = [] @>
 
         [<Fact>] 
-        member x.``return empty if bug`` ()= 
-            test <@ Bug "Error" |> generate = [] @>
+        member x.``return Bugged if bug`` ()= 
+            test <@ Bug "Error" |> generate = [Board (BoardEvents.Bugged, [], [ScoreChanged.Bugged aiId])] @>
 
         [<Fact>] 
         member x.``return ResourcesTransfered when move between two cells of same ai`` ()= 
@@ -239,7 +239,7 @@ module AiActions =
 
             let result = playAi getCellsWithNeighboursOf getCell validAction (aiId, play) |> Seq.toList
             
-            let expected = AiPlayed aiActionAfterValidation :: Hexagon.Round.BoardHandler.generateEvents getCell aiActionAfterValidation
+            let expected = AiPlayed aiActionAfterValidation :: Hexagon.Round.BoardHandler.generateEvents getCell aiId aiActionAfterValidation
             test <@ result = expected @>
 
 open Hexagon.Round

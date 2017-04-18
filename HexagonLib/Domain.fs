@@ -39,6 +39,7 @@ and BoardEvents =
     | FightWon of FightWon
     | FightDrawed of FightDrawed
     | FightLost of TransactionParameters
+    | Bugged
 and AiAdded = { AiId: AiId; CellId: CellId; Resources: int }
 and FightWon = { FromId: CellId; ToId: CellId; AmountToTransfer: int; AiId: AiId }
 and FightDrawed = { FromId: CellId; ToId: CellId }

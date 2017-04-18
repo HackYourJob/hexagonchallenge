@@ -99,7 +99,7 @@ module BoardHandler =
                 [TerritoryChanged { AiId = fromAiId; ResourcesIncrement = -amountToTransfert; CellsIncrement = 0 }]
             |> Board |> Some
 
-    let generateEvents getCell aiAction =
+    let generateEvents getCell aiId aiAction =
         match aiAction with
         | Transaction param -> 
             let fromCell = getCell param.FromId
@@ -107,7 +107,8 @@ module BoardHandler =
 
             convertToBoardEvent fromCell toCell param.AmountToTransfer
             |> Option.toList
-        | Bug _
+        | Bug _ ->
+            [ Board (BoardEvents.Bugged, [], [ScoreChanged.Bugged aiId])]
         | Sleep -> []
 
     let generateResourcesIncreased (ownCells: (CellId * CellStateOwn) seq) : GameEvents =
@@ -128,17 +129,17 @@ module BoardHandler =
         |> Board
 
 module AiActions =
-    let private apply getCell action =
+    let private apply getCell aiId action =
         seq {
             yield AiPlayed action
-            yield! BoardHandler.generateEvents getCell action
+            yield! BoardHandler.generateEvents getCell aiId action
         }
 
     let playAi getCellsWithNeighboursOf getCell validAction (aiId: AiId, play: AiPlayParameters -> AiActions) =
         getCellsWithNeighboursOf aiId
         |> play
         |> validAction aiId
-        |> apply getCell
+        |> apply getCell aiId
 
 let playAis (play: (AiId * (AiPlayParameters -> AiActions)) -> GameEvents seq) ais =
     ais 
