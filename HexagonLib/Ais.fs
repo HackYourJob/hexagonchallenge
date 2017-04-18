@@ -44,9 +44,11 @@ module AntiCorruptionLayer =
         | Option.None -> AiActions.Sleep
 
     let wrap convertToAiCellId convertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =
-        aiCellsWithNeighbours
-        |> Seq.map (convertToAiCells convertToAiCellId)
-        |> Seq.toArray
-        |> (fun c -> if c.Length = 0 then Option.None else aiTurn c)
-        |> convertToAiPlayed convertToCellId
+        try
+            aiCellsWithNeighbours
+            |> Seq.map (convertToAiCells convertToAiCellId)
+            |> Seq.toArray
+            |> (fun c -> if c.Length = 0 then Option.None else aiTurn c)
+            |> convertToAiPlayed convertToCellId
+        with | ex -> AiActions.Bug (ex.ToString())
 
