@@ -5,8 +5,8 @@ open Fable.Import.Browser
 
 let mutable container: Element = null
 
-let initialize () =
-    container <- document.querySelector("#scores")
+let initialize domContainer =
+    container <- domContainer
 
 type Score = {
     CellsNb: int

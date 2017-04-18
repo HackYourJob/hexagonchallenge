@@ -3,6 +3,11 @@
 open Hexagon.Domain
 open Fable.Import.Browser
 
+let mutable container: Element = null
+
+let initialize domContainer =
+    container <- domContainer
+
 type CellDom = {
     AiId: int
     Resources: int
@@ -46,10 +51,9 @@ let private createRow row columnsNb =
     rowElement
 
 let private initializeBoard boardSize =
-    let board = document.querySelector("#board")
-    [1..int board.childNodes.length] |> List.map (fun n -> board.removeChild <| board.childNodes.item(0.)) |> ignore
+    [1..int container.childNodes.length] |> List.map (fun n -> container.removeChild <| container.childNodes.item(0.)) |> ignore
     [1..boardSize.Lines + 1]
-    |> Seq.iter (fun row -> createRow row <| boardSize.Columns |> board.appendChild |> ignore)
+    |> Seq.iter (fun row -> createRow row <| boardSize.Columns |> container.appendChild |> ignore)
 
 let private inside value cellId cell =
     cell.Cell.setAttribute("inside", string value)
