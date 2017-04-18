@@ -231,3 +231,17 @@ let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) =
 let getPlayFunction (): (Ais.AiCell[] -> Ais.TransactionParameters option) =
     editor.getValue() |> compile
 
+[<Emit("setTimeout($1, $0)")>]
+let setTimeout (delayInMs: int) (action: unit -> unit) = jsNative
+
+let startGame hexagonSize ais isCancelled = 
+    let rec deferNextStep nextStep = 
+        match isCancelled(), nextStep with
+        | true, _ -> ()
+        | false, NextRound (num, action) -> 
+                setTimeout 10 (fun () -> action() |> deferNextStep)
+        | false, End (reason, score) -> ()
+
+    let nextStep = Hexagon.Game.startGame handleMessage hexagonSize ais
+
+    deferNextStep nextStep

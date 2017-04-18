@@ -4,7 +4,7 @@ open Domain
 open Hexagon
 open Hexagon.Shapes
 
-let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken) hexagonSize setTimeout ais =
+let startGame raiseEvents hexagonSize ais : GameStep =
     let nbPlayers = ais |> List.length
     let basicAis = 
         [nbPlayers + 1..6]
@@ -55,14 +55,14 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
     let wrapAiPlay = Ais.AntiCorruptionLayer.wrap aiCellsIdsStore.convertToAiCellId aiCellsIdsStore.convertToCellId
     let round = Round.createRunRound board.getCellsWithNeighboursOf board.getCell board.isNeighboursOf board.getAllOwnCells
 
-    let rec runRound (nb: int) ais = 
+    let rec runRound (nb: RoundNumber) ais = 
         round ais |> Seq.iter publishEvent
-        System.Console.WriteLine ("Round " + nb.ToString())
 
-        if cancellationToken.IsCancellationRequested |> not
-        then 
-            setTimeout (fun () -> runRound (nb + 1) ais)
+        let nextRoundId = nb + 1
+        NextRound (nextRoundId, (fun () -> runRound nextRoundId ais))
 
     ais 
     |> List.map (fun (ai, play) -> (ai.Id, wrapAiPlay play)) 
-    |> runRound 0
+    |> runRound 1
+
+
