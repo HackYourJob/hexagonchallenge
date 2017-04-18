@@ -71,6 +71,7 @@
     <Compile Include="Ais.fs" />
     <Compile Include="CellsStore.fs" />
     <Compile Include="AiCellIdsStore.fs" />
+    <Compile Include="ScoresStore.fs" />
     <Compile Include="CondorcetTournament.fs" />
     <Content Include="App.config" />
     <None Include="paket.references" />

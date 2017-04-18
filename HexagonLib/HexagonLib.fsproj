@@ -57,6 +57,7 @@
     <Compile Include="Ais.fs" />
     <Compile Include="CellsStore.fs" />
     <Compile Include="AiCellIdsStore.fs" />
+    <Compile Include="ScoresStore.fs" />
     <Compile Include="BasicAi.fs" />
     <Compile Include="Game.fs" />
     <Compile Include="Fable.Import.Ace.fs" />
