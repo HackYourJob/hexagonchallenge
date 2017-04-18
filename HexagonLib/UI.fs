@@ -57,6 +57,7 @@ let createRow row columnsNb =
 
 let initializeBoard boardSize =
     let board = document.querySelector("#board")
+    [1..int board.childNodes.length] |> List.map (fun n -> board.removeChild <| board.childNodes.item(0.)) |> ignore
     [1..boardSize.Lines + 1]
     |> Seq.iter (fun row -> createRow row <| boardSize.Columns |> board.appendChild |> ignore)
 
@@ -85,6 +86,7 @@ let initializeCells cells =
 
 let initializeLegend ais =
     let scores = document.querySelector("#scores");
+    [1..int scores.childNodes.length - 1] |> List.map (fun _ -> scores.removeChild <| scores.childNodes.item(1.0)) |> ignore
     ais |> Seq.iter (fun (ai:AiDescription) -> 
         let score = document.createElement_div();
         score.className <- "score";

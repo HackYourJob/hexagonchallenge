@@ -4,10 +4,9 @@ import { TransactionParameters, Transaction } from "./fable/Ais";
 import { play } from "./fable/BasicAi";
 
 let ct = { isCancelled: false };
-setTimeout(function () {
+let stop = function () {
     ct.isCancelled = true;
-},
-    30000);
+}
 
 let basicAiJs = function(cells) {
     let maxResourcesDiff = 0;
@@ -28,13 +27,20 @@ let code = document.getElementById("code");
     
 let testButton = document.getElementById("test");
 testButton.addEventListener("click", function() {
+
     const dynamicAi = new Function("cells", code.value);
 
     const ais = [[{ Id: 1, Name: "Basic JS" }, basicAiJs ], 
         [{Id: 2, Name: "Basic F#" }, play ], 
         [{ Id: 3, Name: "Dynamic JS" }, dynamicAi ]];
 
+    ct.isCancelled = false;
+    setTimeout(stop, 30000);
+
     startGame(handleMessage, ct, 9, function (fun) {
         setTimeout(fun, 100);
     }, ais);    
 });
+
+let stopButton = document.getElementById("stop");
+stopButton.addEventListener("click", stop);
