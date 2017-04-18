@@ -17,7 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{E0B36D0A-7B7F-4A54-AA4C-5366ECBB8F4D}"
 	ProjectSection(SolutionItems) = preProject
 		www\index.html = www\index.html
-		www\index.js = www\index.js
 		www\index.offline.js = www\index.offline.js
 		www\main.css = www\main.css
 	EndProjectSection
