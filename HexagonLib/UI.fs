@@ -204,13 +204,26 @@ let handleMessage = function
         onScoreChanged scoreChanged
     | _ -> ()
 
-let startGame' (mouse:MouseEvent) =
-    let name = document.getElementById("name").innerText
-    let code = document.getElementById("code").innerText
-    let functionStart = code.IndexOf('{') + 1
-    let functionBody = code.Substring(functionStart, code.LastIndexOf('}') - functionStart)
-    let ai = { Id = 6; Name = name}, Fable.Import.JS.Function.Create [|"cells"; functionBody|] 
-    new obj()
+let editor = Fable.Import.Globals.ace.edit(document.getElementById("code"))
+editor.getSession().setMode("ace/mode/javascript");
+editor.setValue("""function(cells) {
+    // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
+    // - Resources cannot be more than 100, it is the available resources to move from a cell
+    // - Neighbours is an array of cell, with Id and Resources properties only
+    // NOTE: you don't know who is the cell's owner, and by the way, Neighbours include your cells also
 
-let testButton = document.getElementById("test")
-testButton.onclick <- new System.Func<MouseEvent, obj>(startGame')
+    // Your clever code here :)
+
+    if (cells[cells.length - 1].Resources > 10 && cells[cells.length - 1].Resources > cells[0].Neighbours[0].Resources)
+        return { FromId: cells[cells.length - 1].Id, ToId: cells[0].Neighbours[0].Id, AmountToTransfer: cells[cells.length - 1].Resources - 1 };
+    }""");
+
+open Fable.Core
+open Hexagon.BasicAi
+
+[<Emit("eval($0)")>]
+let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = jsNative
+
+let getPlayFunction (): (Ais.AiCell[] -> Ais.TransactionParameters option) =
+    editor.getValue() |> compile
+
