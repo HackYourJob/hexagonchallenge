@@ -71,6 +71,9 @@
     <Compile Include="CondorcetTournament.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Fable.Core">
+      <HintPath>..\packages\Fable.Core\lib\netstandard1.6\Fable.Core.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
