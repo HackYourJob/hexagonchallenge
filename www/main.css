@@ -1,9 +1,4 @@
-﻿body {
-	display: flex;
-	flex-direction: row;
-}
-
-.board {
+﻿.board {
  display: flex;
  flex-direction: column;
 }
@@ -163,6 +158,43 @@
 }
 
 .editor {
-    width: 500px;
-    height: 300px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 50%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 5px;
+}
+
+.editor-code {
+    height: 200px;
+    flex: 1;
+}
+
+.editor-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.editor-action {
+    margin: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.simulator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 50%;
+    padding: 5px;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
