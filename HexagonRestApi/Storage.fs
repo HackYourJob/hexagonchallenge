@@ -20,8 +20,9 @@ module Storage =
     aiStorage.Add(id, ai)
     ai
 
-  let getAi ai =
-    let id = buildAiId ai.UserId ai.Password ai.AiName
+  let getAi aiInfo =
+    let userId, password, aiName = aiInfo
+    let id = buildAiId userId password aiName
     if aiStorage.ContainsKey(id) then
       Some aiStorage.[id]
     else

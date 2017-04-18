@@ -14,7 +14,7 @@ module RestFul =
   type RestResource<'a> = {
     GetAll : unit -> 'a seq
     Create : 'a -> 'a
-    GetById : 'a -> 'a option
+    GetById : string * string * string -> 'a option
   }
 
   let JSON objectToSerialize =
@@ -35,7 +35,7 @@ module RestFul =
 
   let rest resourceName resource =
     let resourcePath = "/" + resourceName
-    let resourceIdPath = new PrintfFormat<(string -> string),string,string,string,string>(resourcePath + "/%s")
+    let resourceIdPath = new PrintfFormat<(string*string*string -> string),unit,string,string,string*string*string>(resourcePath + "/userId=%s&password=%s&aiName=%s")
 
     let badRequest = BAD_REQUEST "Resource not found"
 
@@ -48,10 +48,11 @@ module RestFul =
     let getResourceById =
         resource.GetById >> handleResource (NOT_FOUND "Resource not found")
       
-    path resourcePath >=> choose [
-        GET >=> getAll
-        GET >=> request (getResourceFromRequest >> resource.GetById >> handleResource badRequest)
-        POST >=> request (getResourceFromRequest >> resource.Create >> JSON)
+    choose [
+        path resourcePath >=> choose [
+            GET >=> getAll
+            POST >=> request (getResourceFromRequest >> resource.Create >> JSON)
+         ]
+        GET >=> pathScan resourceIdPath getResourceById
      ]
-
 
