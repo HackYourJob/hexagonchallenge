@@ -13,11 +13,15 @@
         Update = AiStorageInmemory.Update
         GetById = AiStorageInmemory.GetById
         }
+    
+    let private buildAiId ai=
+        String.concat "." [ai.UserId; ai.Password; ai.AiName;]
 
     [<Fact>]
     let ``create ai when submit an unknown ai`` () =
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
-        AisService.submitAi usingInMemoryStorage aiToSubmit |> should equal aiToSubmit    
+        AisService.submitAi usingInMemoryStorage aiToSubmit|> should equal aiToSubmit 
+        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
         
     [<Fact>] 
     let ``update ai when submit a known ai`` () =
@@ -25,3 +29,5 @@
         let aiUpdated = {AiName="test";UserId="test";Password="test";Content="testUpdated"}
         AisService.submitAi usingInMemoryStorage aiToSubmit |> should equal aiToSubmit
         AisService.submitAi usingInMemoryStorage aiUpdated |> should equal aiUpdated
+        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated 
+
