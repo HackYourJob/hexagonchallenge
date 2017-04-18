@@ -39,7 +39,7 @@ let startGame raiseEvents (cancellationToken: System.Threading.CancellationToken
                 Columns = hexagon |> Seq.map (fun c -> c.Id.ColumnNum) |> Seq.max 
             } 
         Board = hexagon
-        Ais = ais |> Seq.map fst }
+        Ais = ais |> List.map fst }
     |> publishEvent
     
     ais
