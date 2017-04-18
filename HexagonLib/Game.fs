@@ -53,7 +53,7 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
     |> Seq.map Board
     |> Seq.iter publishEvent
         
-    let wrapAiPlay = Ais.AntiCorruptionLayer.wrap aiCellsIdsStore.convertToAiCellId aiCellsIdsStore.convertToCellId
+    let wrapAiPlay = Ais.AntiCorruptionLayer.wrap aiCellsIdsStore.convertToAiCellId aiCellsIdsStore.tryConvertToCellId
     let round = Round.createRunRound board.getCellsWithNeighboursOf board.getCell board.isNeighboursOf board.getAllOwnCells
 
     let rec runRound (nb: RoundNumber) ais = 

@@ -11,6 +11,8 @@ type Store (cells: Board)=
     member x.convertToAiCellId id =
         cellIds.[id]
 
-    member x.convertToCellId id =
-        aiCellIds.[id]
+    member x.tryConvertToCellId id =
+        match aiCellIds.TryGetValue(id) with
+        | true, value -> Some value
+        | false, _ -> None
 

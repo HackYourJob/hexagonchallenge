@@ -38,17 +38,22 @@ module AntiCorruptionLayer =
             Neighbours = neighbours |> Seq.map createNeighbourView |> Seq.toArray
         }
 
-    let convertToAiPlayed convertToCellId (transactionParameters: TransactionParameters option) : AiActions =
+    let convertToAiPlayed (tryConvertToCellId: AiCellId -> CellId option) (transactionParameters: TransactionParameters option) : AiActions =
         match transactionParameters with
-        | Some t -> AiActions.Transaction { FromId = t.FromId |> convertToCellId; ToId = t.ToId |> convertToCellId; AmountToTransfer = t.AmountToTransfer }
+        | Some t -> 
+            match t.FromId |> tryConvertToCellId, t.ToId |> tryConvertToCellId with
+            | Option.None, _ -> AiActions.Bug "Invalid FromId"
+            | _, Option.None -> AiActions.Bug "Invalid ToId"
+            | Some fromId, Some toId -> 
+                AiActions.Transaction { FromId = fromId; ToId = toId; AmountToTransfer = t.AmountToTransfer }
         | Option.None -> AiActions.Sleep
 
-    let wrap convertToAiCellId convertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =
+    let wrap convertToAiCellId tryConvertToCellId aiTurn (aiCellsWithNeighbours: AiPlayParameters) : AiActions =
         try
             aiCellsWithNeighbours
             |> Seq.map (convertToAiCells convertToAiCellId)
             |> Seq.toArray
             |> (fun c -> if c.Length = 0 then Option.None else aiTurn c)
-            |> convertToAiPlayed convertToCellId
+            |> convertToAiPlayed tryConvertToCellId
         with | ex -> AiActions.Bug (ex.ToString())
 

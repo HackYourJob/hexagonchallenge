@@ -58,9 +58,9 @@ module AntiCorruptionLayer =
         [<Fact>] 
         member x.``return Transaction if Move`` ()= 
             let convertToCellId = function
-                | "a" -> cellId
-                | "b" -> cellId2
-                | _ -> failwith "invalid id"
+                | "a" -> Some cellId
+                | "b" -> Some cellId2
+                | _ -> Option.None
 
             let result = Some { FromId = "a"; ToId = "b"; AmountToTransfer = 5 } |> convertToAiPlayed convertToCellId 
 
@@ -70,9 +70,9 @@ module AntiCorruptionLayer =
         [<Fact>] 
         member x.``create layer`` ()= 
             let convertToCellId = function
-                | "a" -> cellId
-                | "b" -> cellId2
-                | _ -> failwith "invalid id"
+                | "a" -> Some cellId
+                | "b" -> Some cellId2
+                | _ -> Option.None
             let convertToAiCellId = function
                 | c when c = cellId -> "a"
                 | c when c = cellId2 -> "b"
@@ -90,7 +90,7 @@ module AntiCorruptionLayer =
 
         [<Fact>] 
         member x.``not play ai if not cells (game over)`` ()= 
-            let convertToCellId _ = cellId
+            let convertToCellId _ = Some cellId
             let convertToAiCellId _ = "a"
             let aiTurn = function 
                 | _ -> failwith "invalid cells"
