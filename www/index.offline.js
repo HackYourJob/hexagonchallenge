@@ -24,15 +24,16 @@ let basicAiJs = function(cells) {
 }
 
 let code = document.getElementById("code");
+let getPlayFunction = function() {
+    const functionCode = code.value.replace("function(cells)", "");
+    return new Function("cells", functionCode);
+}
     
 let testButton = document.getElementById("test");
 testButton.addEventListener("click", function() {
-
-    const dynamicAi = new Function("cells", code.value);
-
     const ais = [[{ Id: 1, Name: "Basic JS" }, basicAiJs ], 
         [{Id: 2, Name: "Basic F#" }, play ], 
-        [{ Id: 3, Name: "Dynamic JS" }, dynamicAi ]];
+        [{ Id: 3, Name: "Dynamic JS" }, getPlayFunction() ]];
 
     ct.isCancelled = false;
     setTimeout(stop, 30000);

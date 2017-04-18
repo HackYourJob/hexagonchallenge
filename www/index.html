@@ -174,10 +174,15 @@
         Name: <input id="name" type="text" /><br />
         Code: <textarea id="code" cols="80" rows="20">
 function(cells) {
+    // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
+    // - Resources cannot be more than 100, it is the available resources to move from a cell
+    // - Neighbours is an array of cell, with Id and Resources properties only
+    // NOTE: you don't know who is the cell's owner, and by the way, Neighbours include your cells also
 
     // Your clever code here :)
-    
-    return { FromId: '', ToId: '', AmountToTransfert: 0 };
+
+    if (cells[cells.length - 1].Resources > 10 && cells[cells.length - 1].Resources > cells[0].Neighbours[0].Resources)
+        return { FromId: cells[cells.length - 1].Id, ToId: cells[0].Neighbours[0].Id, AmountToTransfer: cells[cells.length - 1].Resources - 1 };
 }</textarea><br />
         <button id="test">Test</button>
         <button id="stop">Stop</button>
