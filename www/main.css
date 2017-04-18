@@ -161,3 +161,8 @@
 .score--header {
 	font-weight: bold;
 }
+
+.editor {
+    width: 500px;
+    height: 300px;
+}
