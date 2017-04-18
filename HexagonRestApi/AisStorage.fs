@@ -1,12 +1,15 @@
-﻿namespace HexagonRestApi.Storage
-open System.Collections.Generic
+﻿namespace HexagonRestApi.AisStorage
+
 type Ai = {
   AiName : string
   UserId : string
   Password : string
   Content : string
 }
-module Storage =
+
+module AisStorage =
+  open System.Collections.Generic
+
   let private aiStorage = new Dictionary<string, Ai>()
   
   let buildAiId userId password aiName =
@@ -15,7 +18,7 @@ module Storage =
   let getAis () =
     aiStorage.Values |> Seq.map (fun ai -> ai)
 
-  let createAi ai =
+  let submitAi ai =
     let id = buildAiId ai.UserId ai.Password ai.AiName
     aiStorage.Add(id, ai)
     ai

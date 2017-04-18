@@ -9,11 +9,11 @@ module RestFul =
   open Suave.Filters
   open Suave.Successful
   open Suave.RequestErrors
-  open HexagonRestApi.Storage
+  open HexagonRestApi.AisStorage
     
   type RestResource<'a> = {
     GetAll : unit -> 'a seq
-    Create : 'a -> 'a
+    Submit : 'a -> 'a
     GetById : string * string * string -> 'a option
   }
 
@@ -51,7 +51,7 @@ module RestFul =
     choose [
         path resourcePath >=> choose [
             GET >=> getAll
-            POST >=> request (getResourceFromRequest >> resource.Create >> JSON)
+            POST >=> request (getResourceFromRequest >> resource.Submit >> JSON)
          ]
         GET >=> pathScan resourceIdPath getResourceById
      ]
