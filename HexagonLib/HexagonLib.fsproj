@@ -61,7 +61,11 @@
     <Compile Include="BasicAi.fs" />
     <Compile Include="Game.fs" />
     <Compile Include="Fable.Import.Ace.fs" />
-    <Compile Include="UI.fs" />
+    <Compile Include="UI.Board.fs" />
+    <Compile Include="UI.Legend.fs" />
+    <Compile Include="UI.CodeEditor.fs" />
+    <Compile Include="Compilator.Js.fs" />
+    <Compile Include="UI.Simulator.fs" />
     <None Include="paket.references" />
     <Compile Include="CondorcetTournament.fs" />
   </ItemGroup>

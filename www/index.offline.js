@@ -1,4 +1,4 @@
-import { handleMessage, getPlayFunction, startGame } from './fable/UI';
+import { handleMessage, getPlayFunction, startGame, initializeAiSimulator } from './fable/UI.Simulator';
 import { TransactionParameters, Transaction } from "./fable/Ais";
 import { play } from "./fable/BasicAi";
 
@@ -35,3 +35,5 @@ testButton.addEventListener("click", function() {
 
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stop);
+
+initializeAiSimulator();
