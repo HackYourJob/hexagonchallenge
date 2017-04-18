@@ -9,6 +9,10 @@ type Game = {
     Players: Player seq
 }
 
+type GameRanking = {
+    PlayersFromFirstToLast: AiDescription seq
+}
+
 let private appendPlayersIfNeeded (players: Player list) =
     let nbPlayers = players |> Seq.length
     let lastPlayerId = players |> Seq.rev |> Seq.head |> fst |> fun p -> p.Id
@@ -51,4 +55,42 @@ let drawTournament players =
         
         [1..(players |> Seq.length) / 2]
         |> List.collect (fun _ -> games rand players)
-        
+
+type CondorcetGraph = Map<AiDescription, Map<AiDescription, int>>
+type DuelResult = WinAgainst | LooseAgainst
+
+let private updateCondorcetGraph' playerA duelResult playerB graph =
+    let mutable nbDuelWon = match duelResult with WinAgainst -> 1 | LooseAgainst -> -1
+    if graph |> Map.containsKey playerA then
+        let existingPlayerA = graph |> Map.find playerA
+        if existingPlayerA |> Map.containsKey playerB then
+            nbDuelWon <- nbDuelWon + (existingPlayerA |> Map.find playerB)
+            let newPlayerA = 
+                existingPlayerA |> Map.remove playerB
+                |> Map.add playerB nbDuelWon
+            graph |> Map.remove playerA
+            |> Map.add playerA newPlayerA
+        else
+            graph |> Map.remove playerA
+            |> Map.add playerA (Map.ofList [ playerB, nbDuelWon ])
+    else
+        graph |> Map.add playerA (Map.ofList [ playerB, nbDuelWon ])
+
+let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:AiDescription seq) =
+    gameRanking
+    |> Seq.tail
+    |> Seq.mapi (fun i x -> gameRanking |> Seq.item i, x)
+    |> Seq.fold (fun graph duel -> 
+        let duelWinner, duelLooser = duel
+        graph
+        |> updateCondorcetGraph' duelWinner WinAgainst duelLooser
+        |> updateCondorcetGraph' duelLooser LooseAgainst duelWinner 
+        ) condorcetGraph
+
+let determineBestPlayers gamesRankings =
+    gamesRankings
+    |> Seq.map (fun x -> x.PlayersFromFirstToLast)
+    |> Seq.fold updateCondorcetGraph Map.empty<AiDescription, Map<AiDescription, int>>
+    |> Map.toSeq
+    |> Seq.sortByDescending (fun x -> snd x |> Map.toSeq |> Seq.filter (fun x -> snd x > 0) |> Seq.length)
+    |> Seq.map fst
