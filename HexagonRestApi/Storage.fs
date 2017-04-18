@@ -2,11 +2,27 @@
 open System.Collections.Generic
 type Ai = {
   AiName : string
-  UserName : string
+  UserId : string
   Password : string
+  Content : string
 }
 module Storage =
   let private aiStorage = new Dictionary<string, Ai>()
+  
+  let buildAiId userId password aiName =
+    String.concat "." [userId; password; aiName;]
+  
   let getAis () =
     aiStorage.Values |> Seq.map (fun ai -> ai)
 
+  let createAi ai =
+    let id = buildAiId ai.UserId ai.Password ai.AiName
+    aiStorage.Add(id, ai)
+    ai
+
+  let getAi ai =
+    let id = buildAiId ai.UserId ai.Password ai.AiName
+    if aiStorage.ContainsKey(id) then
+      Some aiStorage.[id]
+    else
+      None

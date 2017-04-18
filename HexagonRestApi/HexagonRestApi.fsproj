@@ -61,7 +61,7 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Db.fs" />
+    <Compile Include="Storage.fs" />
     <Compile Include="RestFul.fs" />
     <Compile Include="App.fs" />
     <None Include="App.config" />
