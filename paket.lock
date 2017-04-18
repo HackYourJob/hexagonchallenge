@@ -1,12 +1,12 @@
 FRAMEWORK: >= NET462
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    Fable.Core (1.0.0-narumi-905)
-      FSharp.Core (>= 4.1.0.2) - framework: >= net463
+    Fable.Core (1.0.0-narumi-909)
+      FSharp.Core (>= 4.1.2) - framework: >= net463
       NETStandard.Library (>= 1.6.1) - framework: >= net463
     FSharp.Control.Reactive (3.5)
       System.Reactive (>= 3.0)
-    FSharp.Core (4.1.0.2)
+    FSharp.Core (4.1.12)
       System.ValueTuple (>= 4.3)
     FsUnit.xUnit (1.4.1)
       FSharp.Core (>= 3.1.2.5)
