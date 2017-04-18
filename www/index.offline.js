@@ -32,7 +32,7 @@ testButton.addEventListener("click", function() {
     ct.isCancelled = false;
     setTimeout(stop, 30000);
 
-    startGame(handleMessage, ct, 9, function (fun) {
+    startGame(message => { console.log(message); handleMessage(message); }, ct, 9, function (fun) {
         setTimeout(fun, 100);
     }, ais);    
 });
