@@ -25,6 +25,11 @@ module TransactionValidation =
             | Own param when param.AiId = context.AiId -> Valid context
             | _ -> Invalid NotOwnCell
 
+        let validResourcesAmount context =
+            match context.Transaction.AmountToTransfer with
+            | r when r > 0 -> Valid context
+            | _ -> Invalid InvalidMove
+
         let haveEnoughResources context =
             match extractResources context.FromCell with
             | r when r >= context.Transaction.AmountToTransfer -> Valid context
@@ -36,6 +41,7 @@ module TransactionValidation =
             else Invalid InvalidMove
     
         context
+        |> bind validResourcesAmount
         |> bind isOwnCell
         |> bind haveEnoughResources
         |> bind isNeighbours
