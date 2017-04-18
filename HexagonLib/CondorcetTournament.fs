@@ -58,6 +58,7 @@ let drawTournament players =
 
 type CondorcetGraph = Map<AiDescription, Map<AiDescription, int>>
 type DuelResult = WinAgainst | LooseAgainst
+type Score = { Ai: AiDescription; NbDuelWon: int; DuelWonBalance: int }
 
 let private updateCondorcetGraph' playerA duelResult playerB graph =
     let mutable nbDuelWon = match duelResult with WinAgainst -> 1 | LooseAgainst -> -1
@@ -72,14 +73,15 @@ let private updateCondorcetGraph' playerA duelResult playerB graph =
             |> Map.add playerA newPlayerA
         else
             graph |> Map.remove playerA
-            |> Map.add playerA (Map.ofList [ playerB, nbDuelWon ])
+            |> Map.add playerA (existingPlayerA |> Map.add playerB nbDuelWon)
     else
         graph |> Map.add playerA (Map.ofList [ playerB, nbDuelWon ])
 
 let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:AiDescription seq) =
     gameRanking
     |> Seq.tail
-    |> Seq.mapi (fun i x -> gameRanking |> Seq.item i, x)
+    |> Seq.mapi (fun i x -> [0..i] |> Seq.map (fun j -> gameRanking |> Seq.item j, x))
+    |> Seq.collect id
     |> Seq.fold (fun graph duel -> 
         let duelWinner, duelLooser = duel
         graph
@@ -88,9 +90,14 @@ let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:Ai
         ) condorcetGraph
 
 let determineBestPlayers gamesRankings =
-    gamesRankings
-    |> Seq.map (fun x -> x.PlayersFromFirstToLast)
-    |> Seq.fold updateCondorcetGraph Map.empty<AiDescription, Map<AiDescription, int>>
-    |> Map.toSeq
-    |> Seq.sortByDescending (fun x -> snd x |> Map.toSeq |> Seq.filter (fun x -> snd x > 0) |> Seq.length)
-    |> Seq.map fst
+    let bestPlayersUnsorted =
+        gamesRankings
+        |> Seq.map (fun x -> x.PlayersFromFirstToLast)
+        |> Seq.fold updateCondorcetGraph Map.empty<AiDescription, Map<AiDescription, int>>
+        |> Map.toSeq
+    bestPlayersUnsorted
+    |> Seq.map (fun x -> { Ai = fst x;
+                        NbDuelWon = snd x |> Map.toSeq |> Seq.filter (fun x -> snd x > 0) |> Seq.length;
+                        DuelWonBalance = snd x |> Map.toSeq |> Seq.sumBy (fun x -> snd x) })
+    |> Seq.sortByDescending (fun x -> x.NbDuelWon)
+    |> Seq.sortByDescending (fun x -> x.DuelWonBalance)

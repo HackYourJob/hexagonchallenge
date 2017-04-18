@@ -74,14 +74,33 @@ type ``determine best players should`` () =
         { PlayersFromFirstToLast = [ player1; player2; player3 ] }
     let gameRanking2 = 
         { PlayersFromFirstToLast = [ player2; player3; player1 ] }
+    let gameRanking3 = 
+        { PlayersFromFirstToLast = [ player3; player1; player2 ] }
     
     [<Fact>]
     member x.``return players in same order given same game ranking passed`` ()=
         let gamesRankings = [ gameRanking1; gameRanking1 ]
-        test <@ determineBestPlayers gamesRankings |> Seq.toList = (gameRanking1.PlayersFromFirstToLast |> Seq.toList) @>
+        let bestPlayers = [ 
+            { Ai = player1; NbDuelWon = 2; DuelWonBalance = 4 }
+            { Ai = player2; NbDuelWon = 1; DuelWonBalance = 0 }
+            { Ai = player3; NbDuelWon = 0; DuelWonBalance = -4 }]
+        test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
 
     [<Fact>]
     member x.``return in first position players having more won games against others`` ()=
         let gamesRankings = [ gameRanking1; gameRanking2; gameRanking2 ]
-        test <@ determineBestPlayers gamesRankings |> Seq.toList = (gameRanking2.PlayersFromFirstToLast |> Seq.toList) @>
+        let bestPlayers = [ 
+            { Ai = player2; NbDuelWon = 2; DuelWonBalance = 4 }
+            { Ai = player3; NbDuelWon = 1; DuelWonBalance = -2 }
+            { Ai = player1; NbDuelWon = 0; DuelWonBalance = -2 } ]
+        test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
+        
+    [<Fact>]
+    member x.``return in first position players having more won duels against others, then having won more games`` ()=
+        let gamesRankings = [ gameRanking1; gameRanking3 ]
+        let bestPlayers = [ 
+            { Ai = player1; NbDuelWon = 1; DuelWonBalance = 2 }
+            { Ai = player3; NbDuelWon = 0; DuelWonBalance = 0 }
+            { Ai = player2; NbDuelWon = 0; DuelWonBalance = -2 } ]
+        test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
         
