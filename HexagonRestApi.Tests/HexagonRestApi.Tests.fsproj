@@ -65,12 +65,6 @@
   </Target>
   -->
   <ItemGroup>
-    <Content Include="any\netstandard1.6\FSharp.Core.optdata">
-      <Paket>True</Paket>
-    </Content>
-    <Content Include="any\netstandard1.6\FSharp.Core.sigdata">
-      <Paket>True</Paket>
-    </Content>
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="packages.config" />
     <None Include="paket.references" />
