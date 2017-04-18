@@ -84,55 +84,58 @@ let initializeCells cells =
         | Free n -> cell |> changeOwner 0 n c.Id
         | Own own -> cell |> changeOwner own.AiId own.Resources c.Id)
 
-let initializeLegend ais =
+let addAiInLegend (ai: AiDescription) =
+    let scores = document.querySelector("#scores");
+
+    let score = document.createElement_div();
+    score.className <- "score";
+    score.setAttribute("aiId", string ai.Id);
+    scores.appendChild(score) |> ignore;
+        
+    let legendContainer = document.createElement_div();
+    legendContainer.className <- "score-legend";
+    score.appendChild(legendContainer) |> ignore;
+        
+    let nameContainer = document.createElement_div();
+    nameContainer.className <- "score-aiName";
+    nameContainer.textContent <- ai.Name;
+    score.appendChild(nameContainer) |> ignore;
+        
+    let cellsNbContainer = document.createElement_div();
+    cellsNbContainer.className <- "score-cellsNb";
+    let cellsNb = 0;
+    cellsNbContainer.textContent <- string cellsNb;
+    score.appendChild(cellsNbContainer) |> ignore;
+        
+    let resourcesNbContainer = document.createElement_div();
+    resourcesNbContainer.className <- "score-resources";
+    let resourcesNb = 0;
+    resourcesNbContainer.textContent <- string resourcesNb;
+    score.appendChild(resourcesNbContainer) |> ignore;
+
+    let bugsNbContainer = document.createElement_div();
+    bugsNbContainer.className <- "score-bugs";
+    let bugsNb = 0;
+    bugsNbContainer.textContent <- string bugsNb;
+    score.appendChild(bugsNbContainer) |> ignore
+        
+    scoreByAi.[ai.Id] <- {
+        CellsNb = cellsNb
+        CellsNbContainer = cellsNbContainer
+        ResourcesNb = resourcesNb
+        ResourcesNbContainer = resourcesNbContainer
+        BugsNb = bugsNb
+        BugsNbContainer = bugsNbContainer
+    }
+
+let initializeLegend () =
     let scores = document.querySelector("#scores");
     [1..int scores.childNodes.length - 1] |> List.map (fun _ -> scores.removeChild <| scores.childNodes.item(1.0)) |> ignore
-    ais |> Seq.iter (fun (ai:AiDescription) -> 
-        let score = document.createElement_div();
-        score.className <- "score";
-        score.setAttribute("aiId", string ai.Id);
-        scores.appendChild(score) |> ignore;
-        
-        let legendContainer = document.createElement_div();
-        legendContainer.className <- "score-legend";
-        score.appendChild(legendContainer) |> ignore;
-        
-        let nameContainer = document.createElement_div();
-        nameContainer.className <- "score-aiName";
-        nameContainer.textContent <- ai.Name;
-        score.appendChild(nameContainer) |> ignore;
-        
-        let cellsNbContainer = document.createElement_div();
-        cellsNbContainer.className <- "score-cellsNb";
-        let cellsNb = 0;
-        cellsNbContainer.textContent <- string cellsNb;
-        score.appendChild(cellsNbContainer) |> ignore;
-        
-        let resourcesNbContainer = document.createElement_div();
-        resourcesNbContainer.className <- "score-resources";
-        let resourcesNb = 0;
-        resourcesNbContainer.textContent <- string resourcesNb;
-        score.appendChild(resourcesNbContainer) |> ignore;
-
-        let bugsNbContainer = document.createElement_div();
-        bugsNbContainer.className <- "score-bugs";
-        let bugsNb = 0;
-        bugsNbContainer.textContent <- string bugsNb;
-        score.appendChild(bugsNbContainer) |> ignore
-        
-        scoreByAi.[ai.Id] <- {
-            CellsNb = cellsNb
-            CellsNbContainer = cellsNbContainer
-            ResourcesNb = resourcesNb
-            ResourcesNbContainer = resourcesNbContainer
-            BugsNb = bugsNb
-            BugsNbContainer = bugsNbContainer
-        })
 
 let onStarted started =
     initializeBoard started.BoardSize
     initializeCells started.Board
-    initializeLegend started.Ais
+    initializeLegend ()
 
 let onCellOwned (cellOwned:CellOwned) =
     getCell cellOwned.CellId.LineNum cellOwned.CellId.ColumnNum
@@ -200,6 +203,10 @@ let onScoreChanged scoreChanged =
 
 let handleMessage = function
     | Started started -> onStarted started
+    | Board (AiAdded aiDescription, cellsChanged, scoreChanged) ->
+        addAiInLegend aiDescription
+        onCellsChanged cellsChanged
+        onScoreChanged scoreChanged
     | Board (boardEvents, cellsChanged, scoreChanged) ->
         onCellsChanged cellsChanged
         onScoreChanged scoreChanged

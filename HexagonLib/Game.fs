@@ -41,8 +41,7 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
                 Lines = hexagon |> Seq.map (fun c -> c.Id.LineNum) |> Seq.max 
                 Columns = hexagon |> Seq.map (fun c -> c.Id.ColumnNum) |> Seq.max 
             } 
-        Board = hexagon
-        Ais = ais |> List.map fst }
+        Board = hexagon }
     |> publishEvent
     
     ais

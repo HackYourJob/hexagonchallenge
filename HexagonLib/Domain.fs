@@ -35,7 +35,7 @@ type GameEvents =
     | AiPlayed of AiActions
     | Board of BoardEvents * (CellChanged list) * (ScoreChanged list)
     | Won of AiId
-and Started = { BoardSize: BoardSize; Board: Board; Ais: AiDescription list }
+and Started = { BoardSize: BoardSize; Board: Board }
 and BoardSize = { Lines: int; Columns: int }
 and AiActions =
     | Transaction of TransactionParameters
