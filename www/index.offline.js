@@ -24,7 +24,17 @@ let basicAiJs = function(cells) {
     return { FromId: selectedTuple[0].Id, ToId: selectedTuple[1].Id, AmountToTransfer: selectedTuple[0].Resources };
 }
 
-let ais = [[{ Id: 1, Name: "Basic JS" }, basicAiJs ], [{Id: 2, Name: "Basic F#" }, play ]];
-startGame(handleMessage, ct, 9, function (fun) {
-    setTimeout(fun, 100);
-}, ais);
+let code = document.getElementById("code");
+    
+let testButton = document.getElementById("test");
+testButton.addEventListener("click", function() {
+    const dynamicAi = new Function("cells", code.value);
+
+    const ais = [[{ Id: 1, Name: "Basic JS" }, basicAiJs ], 
+        [{Id: 2, Name: "Basic F#" }, play ], 
+        [{ Id: 3, Name: "Dynamic JS" }, dynamicAi ]];
+
+    startGame(handleMessage, ct, 9, function (fun) {
+        setTimeout(fun, 100);
+    }, ais);    
+});

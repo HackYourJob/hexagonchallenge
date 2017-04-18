@@ -170,12 +170,29 @@
     </style>
 </head>
 <body>
+    <div>
+        Name: <input id="name" type="text" /><br />
+        Code: <textarea id="code" cols="80" rows="20">
+function(cells) {
+
+    // Your clever code here :)
+    
+    return { FromId: '', ToId: '', AmountToTransfert: 0 };
+}</textarea><br />
+        <button id="test">Test</button><br />
+    </div>
     <div id="board" class="board"></div>
     <div id="scores">
-        <div class="score score--header"><div class="score-legend"></div><div class="score-aiName">Name</div><div class="score-cellsNb">Cells</div><div class="score-resources">Resources</div><div class="score-bugs">Bugs</div></div>
+        <div class="score score--header">
+            <div class="score-legend"></div>
+            <div class="score-aiName">Name</div>
+            <div class="score-cellsNb">Cells</div>
+            <div class="score-resources">Resources</div>
+            <div class="score-bugs">Bugs</div>
+        </div>
     </div>
 
-<script src="fable/bundle.js"></script>
+    <script src="fable/bundle.js"></script>
 
 </body>
 </html>
