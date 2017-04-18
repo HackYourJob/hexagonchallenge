@@ -188,6 +188,7 @@ let onTerritoryChanged (territoryChanged:TerritoryChanged) =
 let onBugged aiId =
     let previousScore = scoreByAi.[aiId]
     let score = { previousScore with BugsNb = previousScore.BugsNb + 1 }
+    scoreByAi.[aiId] <- score
     score.BugsNbContainer.textContent <- string score.BugsNb
 
 let onScoreChanged scoreChanged =
