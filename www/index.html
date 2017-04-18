@@ -41,7 +41,17 @@
 
         <div id="code" class="editor-code"></div>
 
-        <div class="editor-actions">
+        <form class="form-inline editor-actions">
+            <div class="form-group">
+                <label for="speed">Speed</label>
+                <select class="form-control" id="speed">
+                    <option value="100">Normal</option>
+                    <option value="50">Fast</option>
+                    <option value="1">Very fast</option>
+                    <option value="500">Slow</option>
+                    <option value="-1">Step by step</option>
+                </select>
+            </div>
             <button type="button" class="btn btn-success editor-action" id="test">
                 <span class="glyphicon glyphicon-play"></span> Run
             </button>
@@ -51,7 +61,7 @@
             <button type="button" class="btn btn-default editor-action" id="stop">
                 <span class="glyphicon glyphicon-stop"></span> Stop
             </button>
-        </div>
+        </form>
     </div>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>

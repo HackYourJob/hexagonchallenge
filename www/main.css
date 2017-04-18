@@ -192,7 +192,7 @@
     justify-content: flex-end;
 }
 
-.editor-action {
+.editor-actions > * {
     margin: 5px;
     padding-left: 10px;
     padding-right: 10px;
