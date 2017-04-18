@@ -3,7 +3,7 @@
 open Domain
 
 type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
-    let mutable cellsById = System.Collections.Generic.Dictionary<_,_>(cells |> Seq.map (fun c -> c.Id, c) |> dict)
+    let cellsById = System.Collections.Generic.Dictionary<_,_>(cells |> Seq.map (fun c -> c.Id, c) |> dict)
     let neighboursById = cellsById.Keys |> Seq.map (fun id -> id, cellsById.Keys |> Seq.filter (fun nId -> isNeighbours id nId) |> Seq.toList) |> dict
 
     let tryGetValue (dict: System.Collections.Generic.IDictionary<_, _>) key =
@@ -14,8 +14,7 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
     member x.getCellsOf aiId =
         cellsById.Values 
         |> Seq.map (fun c -> match c.State with | Own p -> Some (c.Id, p) | Free _ -> Option.None)
-        |> Seq.filter Option.isSome
-        |> Seq.map Option.get
+        |> Seq.choose id
         |> Seq.filter (fun (id, c) -> c.AiId = aiId)
         |> Seq.toList
 
@@ -38,8 +37,7 @@ type CellsStore (cells: Board, isNeighbours: CellId -> CellId -> bool)=
     member x.getAllOwnCells () =
         cellsById.Values 
         |> Seq.map (fun c -> match c.State with | Own param -> Some (c.Id, param) | Free _ -> None)
-        |> Seq.filter Option.isSome
-        |> Seq.map Option.get
+        |> Seq.choose id
         |> Seq.toList
 
     member x.apply (evt: CellChanged) =

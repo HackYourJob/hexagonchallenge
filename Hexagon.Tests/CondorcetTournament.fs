@@ -2,6 +2,7 @@
 
 open Xunit
 open FsUnit.Xunit
+open Swensen.Unquote
 
 open Hexagon.CondorcetTournament
 open Hexagon.Domain
@@ -25,9 +26,7 @@ type ``drawGames should`` () =
     
     [<Fact>]
     member x.``return no games when no players`` ()=
-        drawTournament []
-        |> Seq.length
-        |> should equal 0
+        test <@ drawTournament [] |> Seq.length = 0 @>
         
     [<Fact>]
     member x.``return a game when 6 players given randomly distributed`` ()=
