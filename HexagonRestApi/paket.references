@@ -1,3 +1,4 @@
 suave
 Newtonsoft.Json
 Microsoft.Azure.DocumentDB
+FSharp.Interop.Dynamic

@@ -19,12 +19,20 @@ open HexagonRestApi.Rest.RestFul
 open HexagonRestApi.Domain.Domain
 
 
-let usingInMemoryStorage = {
-    GetAll = AiStorageInmemory.GetAll
-    Exists = AiStorageInmemory.Exists
-    Add = AiStorageInmemory.Add
-    Update = AiStorageInmemory.Update
-    GetById = AiStorageInmemory.GetById
+//let usingInMemoryStorage = {
+//    GetAll = AiStorageInmemory.GetAll
+//    Exists = AiStorageInmemory.Exists
+//    Add = AiStorageInmemory.Add
+//    Update = AiStorageInmemory.Update
+//    GetById = AiStorageInmemory.GetById
+//    }
+
+let usingInAzureDb = {
+    GetAll = AiStorageInDocumentDb.GetAll
+    Exists = AiStorageInDocumentDb.Exists
+    Add = AiStorageInDocumentDb.Add
+    Update = AiStorageInDocumentDb.Update
+    GetById = AiStorageInDocumentDb.GetById
     }
 
 let start port wwwDirectory =
@@ -35,9 +43,9 @@ let start port wwwDirectory =
                 homeFolder = Some (Path.GetFullPath wwwDirectory) }
    
     let aiRestWebPart = rest "ais" {
-        GetAll = AisService.getAis usingInMemoryStorage
-        Submit = AisService.submitAi usingInMemoryStorage
-        GetById = AisService.getAi usingInMemoryStorage
+        GetAll = AisService.getAis usingInAzureDb
+        Submit = AisService.submitAi usingInAzureDb
+        GetById = AisService.getAi usingInAzureDb
     }
 
     let app : WebPart =

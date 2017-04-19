@@ -5,7 +5,7 @@ open Suave.Successful
 open HexagonRestApi.AisService
 open HexagonRestApi.Rest.RestFul
 open HexagonRestApi.Domain.Domain
-
+open AiStorageInDocumentDb
 
 let usingInMemoryStorage = {
     GetAll = AiStorageInmemory.GetAll

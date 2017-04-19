@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-<<<<<<< HEAD
+    <div id="linkPub" style="visibility: collapse">https://frama.link/mixit_hexagon</div>
     <div class="simulator">
+<<<<<<< HEAD
+        <form class="form-inline simulator-controls">
+=======
         <div id="board" class="board"></div>
         <div>
             <div class="score score--header">
@@ -21,27 +24,15 @@
             <div id="scores" class="scores"></div>
         </div>
     </div>
-=======
-    <div>
-        Twitter Handle: <input id="userId" type="text" /><br />
-        AiName: <input id="aiName" type="text" /><br />
-        Password: <input id="password" type="text" /><br />
-        Code: <div id="code" class="editor">
-function(cells) {
-    // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
-    // - Resources cannot be more than 100, it is the available resources to move from a cell
-    // - Neighbours is an array of cell, with Id and Resources properties only
-    // NOTE: you don't know who is the cell's owner, and by the way, Neighbours include your cells also
->>>>>>> [WebApi] submit button works in JS
 
     <div class="editor">
         <form class="form-inline editor-fields">
             <div class="form-group">
-                <label for="userName">Name</label>
-                <input type="text" class="form-control" id="userName" placeholder="@twitter">
+                <label for="userId">Twitter</label>
+                <input type="text" class="form-control" id="userId" placeholder="@twitter">
             </div>
             <div class="form-group">
-                <label for="aiName">Email</label>
+                <label for="aiName">AiName</label>
                 <input type="text" class="form-control" id="aiName" placeholder="terminator">
             </div>
             <div class="form-group">
@@ -55,6 +46,7 @@ function(cells) {
         <div id="code" class="editor-code"></div>
 
         <form class="form-inline editor-actions">
+>>>>>>> [API] implement documentDb storage
             <div class="form-group">
                 <label for="speed">Speed</label>
                 <select class="form-control" id="speed">
@@ -74,7 +66,131 @@ function(cells) {
             <button type="button" class="btn btn-default editor-action" id="stop">
                 <span class="glyphicon glyphicon-stop"></span> Stop
             </button>
+            <button type="button" class="btn btn-default editor-action" id="showRulesButton" title="display rules">?</button>
         </form>
+        <div class="simulator-visualization">
+            <div id="board" class="board"></div>
+            <div>
+                <div class="score score--header">
+                    <div class="score-legend"></div>
+                    <div class="score-aiName">Name</div>
+                    <div class="score-cellsNb">Cells</div>
+                    <div class="score-resources">Resources</div>
+                    <div class="score-bugs">Bugs</div>
+                </div>
+                <div id="scores" class="scores"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="editor">
+        <form class="form-inline editor-fields">
+            <div class="form-group">
+                <label for="userId">Login</label>
+                <input type="text" class="form-control" id="userId" placeholder="@twitter">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password">
+            </div>
+            <div class="form-group">
+                <label for="aiName">AI name</label>
+                <input type="text" class="form-control" id="aiName" placeholder="terminator">
+            </div>
+            <button type="button" class="btn btn-primary" id="submit" title="Submit to save your AI and subscribe to tournament">Submit</button>
+            <button type="button" class="btn btn-danger" id="get" title="Load AI saved">Load</button>
+        </form>
+
+        <div id="code" class="editor-code"></div>
+        
+        <pre id="bugLogs" class="editor-bugs"></pre>
+    </div>
+    
+    <div id="rules" class="rules">
+        <div class="rules-container">
+            <h1>Hexagon Challenge - MiXiT <button type="button" class="btn btn-success rules-closeButton" id="hideRulesButton">Play</button></h1>
+            <p>
+                6 AIs of players fight to conquer cells of board. Cells are hexagon. <br/>
+                Each player play turn by turn. Each turn, AI can move resources from only one cell to one neighbour cell of this cell.<br/>
+                Board size and shape is not predetermined.<br/>
+                <br/>
+                <br/>
+                To win, you must own more cells than others. The end of the game is limited to 5000 turns.<br/>
+                On Friday, we will run a final tournament, and find the best AI. We cannot play all combinations, we use <a href="https://en.wikipedia.org/wiki/Condorcet_method">Condorcet election</a> on lots of games.<br/>
+                <br/>
+                You must submit AI to subscribe to tournaments (Submit button). You can override submitted AI, if you submit with the same AI name. <b>Please, don't forget your login/password/ai name.</b>
+            </p>
+            <h2>Technical details</h2>
+            <p>
+                AI must be coded in JS.<br/>
+                Example :
+            </p>
+            <pre>
+    (function(_) {
+        return function play(cells) {
+            // cells if an array of cell you own { Id : 'some-id', Resources : 12, Neighbours : [...] }, where 
+            // - Resources cannot be more than 100, it is the available resources to move from a cell
+            // - Neighbours is an array of cell, with Id and Resources properties only
+            // NOTE: you don't know who is the cell's owner, and by the way, Neighbours include your cells also
+    
+            // Your clever code here :)
+    
+            if (cells[cells.length - 1].Resources > 10 
+                && cells[cells.length - 1].Resources > cells[0].Neighbours[0].Resources) {
+                return { 
+                    FromId: cells[cells.length - 1].Id, 
+                    ToId: cells[0].Neighbours[0].Id, 
+                    AmountToTransfer: cells[cells.length - 1].Resources - 1 
+                };
+            }
+        };
+    })
+            </pre>
+            <p>
+                First function allows to create context and should return function play. This function is called on each AI turn. <a href="http://underscorejs.org/">Underscore library</a> is injected.<br/>
+                Play function take cells owned by AI with their neighbours, and return move for this turn.<br/>
+                <br/>
+                <b>Input structure :</b> Cell array.<br/>
+                Cell :
+            </p>
+            <pre>{ 
+    Id: string (unique cell id), 
+    Resources: integer (resources amount of cell),
+    Neighbours: Neighbour array (neighbour of cell) 
+}</pre>
+            <p>
+                Neighbour :
+            </p>
+            <pre>{ 
+    Id: string (unique cell id), 
+    Owner: string (Own, Other or None), 
+    Resources: integer (resources amount of cell) 
+}</pre>
+            <p>
+                Owner : "Own" (it's your cell), "Other" (cell of other AI), "None" (free cell)<br/>
+                <br/>
+                <b>NB : You cannot know position of cells. Only way is to count neighbours and detect edges for example.</b><br/>
+                <br/>
+                <b>Output structure :</b> Transaction<br/>
+
+                Transaction:
+            </p>
+            <pre>{ 
+    FromId: string (unique cell id), 
+    ToId: string (unique cell id), 
+    AmountToTransfer: integer (resources amount to move from fromId to toId) 
+}</pre>
+            <p>
+                <b>NB : Be carefull to return only allow move to avoid bugs. You can return undefined if you would like to skip turn.</b><br/>
+                <br/>
+                You can ask questions on <a href="https://slack.lyontechhub.org/">LyonTechHub slack</a>, channel <a href="https://lyontechhub.slack.com/messages/C50PYUDA5/">#hexagonchallenge</a><br/>
+                <br/>
+                You can <b>play by team.</b><br/>
+                It's forbidden to try to escape your execution context (we use sandbox in tournament).<br/>
+                It's forbidden to use too cpu or memory. Your AI should response in 50ms.<br/>
+
+            </p>
+        </div>
     </div>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
