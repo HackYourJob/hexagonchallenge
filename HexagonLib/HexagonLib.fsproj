@@ -57,17 +57,19 @@
     <Compile Include="Ais.fs" />
     <Compile Include="CellsStore.fs" />
     <Compile Include="AiCellIdsStore.fs" />
-    <Compile Include="ScoresStore.fs" />
     <Compile Include="BasicAi.fs" />
+    <Compile Include="ScoresStore.fs" />
     <Compile Include="Game.fs" />
+    <Compile Include="Fable.Import.Fetch.fs" />
+    <Compile Include="Fable.Helpers.Fetch.fs" />
     <Compile Include="Fable.Import.Ace.fs" />
-    <Compile Include="UI.Board.fs" />
-    <Compile Include="UI.Legend.fs" />
-    <Compile Include="UI.CodeEditor.fs" />
-    <Compile Include="Compilator.Js.fs" />
-    <Compile Include="UI.Simulator.fs" />
     <None Include="paket.references" />
     <Compile Include="CondorcetTournament.fs" />
+    <Compile Include="Compilator.Js.fs" />
+    <Compile Include="UI.Board.fs" />
+    <Compile Include="UI.CodeEditor.fs" />
+    <Compile Include="UI.Legend.fs" />
+    <Compile Include="UI.Simulator.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Fable.Core">

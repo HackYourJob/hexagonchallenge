@@ -1,8 +1,19 @@
 ﻿module Hexagon.UI.Simulator
 
+open System
+open System.Drawing
 open Fable.Core
 open Hexagon.Domain
 open Fable.Import.Browser
+open Fable.Import.Fetch
+open Fable.Helpers.Fetch
+
+type Ai = {
+   AiName : string
+   UserId : string
+   Password : string
+   Content : string
+}
 
 [<Emit("setTimeout($1, $0)")>]
 let setTimeout (delayInMs: int) (action: unit -> unit) = jsNative
@@ -82,6 +93,46 @@ let stop () =
     isRunning <- false
     isPaused <- false
 
+let aiName () =
+    document.getElementById("aiName").textContent
+
+let userId () =
+    document.getElementById("userId").textContent
+
+let password () =
+    document.getElementById("password").textContent
+
+let createAiFromValues () =
+    {
+        AiName = aiName();
+        UserId = userId();
+        Password = password();
+        Content = CodeEditor.editor.getValue()
+    }
+
+let onSomeSubmitResult result =
+    window.alert("AI Saved " + result)|> ignore
+
+let submit ()=   
+    async {
+        let! response = 
+            postRecord(
+                "http://localhost:8080/ais", 
+                createAiFromValues(),
+                [ Headers [ 
+                    Accept "application/xml" ]
+                ])
+        if response.Ok then
+            match response.Headers.ContentType with
+            | None ->  window.alert("An error occured while saving AI") |> ignore
+            | Some contentType -> onSomeSubmitResult contentType
+    }
+
+let addListenerAsyncOnClick (button: HTMLElement) action =
+    button.addEventListener_click(fun _ ->
+        action() |> Async.StartImmediate
+        new obj())
+
 let addListenerOnClick (button: HTMLElement) action =
     button.addEventListener_click(fun _ -> 
         action()
@@ -100,6 +151,9 @@ let initializeAiSimulator basicAiJs =
         
     let pauseButton = document.getElementById("pause");
     addListenerOnClick pauseButton pause
+
+    let submitButton = document.getElementById("submit");
+    addListenerAsyncOnClick submitButton submit
 
     document.addEventListener_keydown (fun evt -> 
         match evt.keyCode with
