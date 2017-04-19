@@ -1,6 +1,7 @@
 FRAMEWORK: >= NET462
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    BCrypt.Net (0.1)
     Dynamitey (1.0.2)
     FSharp.Control.Reactive (3.5)
       System.Reactive (>= 3.0)

@@ -1,6 +1,7 @@
 source https://api.nuget.org/v3/index.json
 framework >= net462
 
+nuget BCrypt.net
 nuget FSharp.Control.Reactive
 nuget FSharp.Interop.Dynamic
 nuget FsUnit.Xunit
