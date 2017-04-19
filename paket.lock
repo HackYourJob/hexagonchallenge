@@ -8,6 +8,8 @@ NUGET
     FsUnit.xUnit (1.4.1)
       FSharp.Core (>= 3.1.2.5)
       xunit (2.1)
+    Microsoft.Azure.DocumentDB (1.13.1)
+      Newtonsoft.Json (>= 6.0.8)
     Microsoft.FSharpLu.Json (0.9.6073.20898)
       Newtonsoft.Json (>= 8.0.3)
     Newtonsoft.Json (9.0.1)

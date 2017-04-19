@@ -3,6 +3,7 @@ framework >= net462
 
 nuget FSharp.Control.Reactive
 nuget FsUnit.Xunit
+nuget Microsoft.Azure.DocumentDB
 nuget Microsoft.FSharpLu.Json
 nuget Newtonsoft.Json
 nuget suave
