@@ -152,8 +152,9 @@ let initializeAiSimulator basicAiJs =
     let pauseButton = document.getElementById("pause");
     addListenerOnClick pauseButton pause
 
-    let submitButton = document.getElementById("submit");
-    addListenerAsyncOnClick submitButton submit
+    //remplacer par le JS pour le moment
+    //let submitButton = document.getElementById("submit");
+    //addListenerAsyncOnClick submitButton submit
 
     document.addEventListener_keydown (fun evt -> 
         match evt.keyCode with
