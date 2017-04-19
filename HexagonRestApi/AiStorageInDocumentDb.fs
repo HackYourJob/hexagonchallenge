@@ -26,7 +26,7 @@ let private buildAiId (ai: Ai)=
    String.concat "." [ai.UserId; ai.Password; ai.AiName;]
 
 let documentToAi (document : ResourceResponse<Document>) =
-    {AiName = document.Resource?AiName; UserId = document.Resource?UserId; Password = document.Resource?Password; Content = document.Resource?Content}
+    {Ai.AiName = document.Resource?AiName; UserId = document.Resource?UserId; Password = document.Resource?Password; Content = document.Resource?Content}
 
 let GetById id = 
     let document = client.ReadDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id)).Result

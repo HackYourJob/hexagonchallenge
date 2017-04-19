@@ -66,6 +66,7 @@
     <Compile Include="RestFul.fs" />
     <Compile Include="AiStorageInmemory.fs" />
     <Compile Include="AiStorageInDocumentDb.fs" />
+    <Compile Include="AiStorageInMySql.fs" />
     <Compile Include="App.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
@@ -74,8 +75,10 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -89,6 +92,17 @@
       <ItemGroup>
         <Reference Include="BCrypt.Net">
           <HintPath>..\packages\BCrypt.Net\lib\net35\BCrypt.Net.dll</HintPath>
+        <Reference Include="System.Data">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Xml">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Xml.Linq">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Dapper">
+          <HintPath>..\packages\Dapper\lib\net451\Dapper.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -133,6 +147,17 @@
       <ItemGroup>
         <Reference Include="Microsoft.Azure.Documents.Client">
           <HintPath>..\packages\Microsoft.Azure.DocumentDB\lib\net45\Microsoft.Azure.Documents.Client.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3')">
+      <ItemGroup>
+        <Reference Include="MySql.Data">
+          <HintPath>..\packages\MySql.Data\lib\net45\MySql.Data.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
