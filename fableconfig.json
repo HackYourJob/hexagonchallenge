@@ -1,8 +1,8 @@
 {
   "projFile": "HexagonLib/HexagonLib.fsproj",
-  "outDir": "www/fable",
+  "outDir": "build",
   "scripts": {
-    "postbuild": "webpack"
+    "postbuild": "webpack --config www.webpack.config.js && webpack --config tournamentWorker.webpack.config.js"
   },
   "targets": {
     "watch": {

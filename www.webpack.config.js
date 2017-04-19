@@ -5,8 +5,8 @@ var cfg = {
     devtool: "source-map",
     entry: "./www/index.offline.js",
     output: {
-        path: path.join(__dirname, "www", "fable"),
-        filename: "bundle.js"
+        path: path.join(__dirname, "www"),
+        filename: "main.js"
     },
     module: {
         rules: [

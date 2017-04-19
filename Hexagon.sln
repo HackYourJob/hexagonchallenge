@@ -29,7 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Start", "Start", "{2D74480D
 		package.json = package.json
 		README = README
 		start.bat = start.bat
-		webpack.config.js = webpack.config.js
+		tournamentWorker.webpack.config.js = tournamentWorker.webpack.config.js
+		www.webpack.config.js = www.webpack.config.js
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonRestApi", "HexagonRestApi\HexagonRestApi.fsproj", "{38E14007-2858-427F-831C-1A8DF499E31D}"

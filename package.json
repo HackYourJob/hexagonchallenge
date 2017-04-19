@@ -23,6 +23,7 @@
   "homepage": "https://github.com/HackYourJob/hexagonchallenge#readme",
   "devDependencies": {
     "@types/ace": "0.0.32",
+    "es6-promise": "^4.1.0",
     "fable-compiler": "^0.7.50",
     "fable-import-fetch": "^0.2.4",
     "source-map-loader": "^0.2.0",
@@ -32,6 +33,7 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "fable-core": "^0.7.30",
+    "mysql2": "^1.2.0",
     "underscore": "^1.8.3"
   }
 }

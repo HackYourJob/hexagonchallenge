@@ -1,4 +1,4 @@
-import { initializeAiSimulator } from './fable/UI.Simulator';
+import { initializeAiSimulator } from '../build/UI.Simulator';
 
 let basicAiJs = function (cells) {
     let maxResourcesDiff = 0;
