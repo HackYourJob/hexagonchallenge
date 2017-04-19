@@ -75,7 +75,6 @@ let getAi = function () {
         }
     };
 
-    //let getaisUrlById = aisUrl + "/userId=" + userId() + "&password=" + password() + "&aiName=" + aiName();
     let data = JSON.stringify(createJsObjectFromFields());
     xhr.send(data);
 }
