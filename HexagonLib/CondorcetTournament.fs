@@ -5,15 +5,11 @@ open Hexagon.Ais
 
 type Player = AiDescription * (AiCell [] -> TransactionParameters option) 
 
-type Game = {
-    Players: Player seq
-}
+type GamePlayers = Player list
 
-type GameRanking = {
-    PlayersFromFirstToLast: AiDescription seq
-}
+type GameRankingFromFirstToLast = AiDescription list
 
-let private appendPlayersIfNeeded (players: Player list) =
+let private appendPlayersIfNeeded (players: GamePlayers) =
     let nbPlayers = players |> Seq.length
     let lastPlayerId = players |> Seq.rev |> Seq.head |> fst |> fun p -> p.Id
     let basicAis = 
@@ -30,7 +26,6 @@ let private splitInGames players =
             | false -> ()
         ]
     loop players
-    |> List.map (fun players -> { Players = players })
 
 let private games rand players =
     let games =
@@ -43,9 +38,8 @@ let private games rand players =
     games
 
 let drawTournament players = 
-    if players |> Seq.length = 0 then List.empty<Game>
+    if players |> Seq.length = 0 then List.empty<GamePlayers>
     else 
-        
         let random = new System.Random()
         let rand = fun () -> random.Next()
         
@@ -92,7 +86,6 @@ let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:Ai
 let determineBestPlayers gamesRankings =
     let bestPlayersUnsorted =
         gamesRankings
-        |> Seq.map (fun x -> x.PlayersFromFirstToLast)
         |> Seq.fold updateCondorcetGraph Map.empty<AiDescription, Map<AiDescription, int>>
         |> Map.toSeq
     bestPlayersUnsorted

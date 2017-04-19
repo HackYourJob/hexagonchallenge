@@ -32,19 +32,19 @@ type ``drawGames should`` () =
     member x.``return a game when 6 players given randomly distributed`` ()=
         let games = drawTournament sixPlayers
         
-        (games |> Seq.head).Players 
+        (games |> Seq.head)
         |> Seq.mapi (fun i p -> sixPlayers |> Seq.item i |> fst = fst p)
         |> Seq.filter id
         |> Seq.length
         |> should lessThan 6
                 
-        (games |> Seq.head).Players
+        (games |> Seq.head)
         |> Seq.iter (fun p -> sixPlayers |> Seq.map fst |> should contain (fst p))
 
     [<Fact>]
     member x.``return a game with additional players when strictly less than 6 players given`` ()=
         let firstGame = drawTournament (sixPlayers |> List.tail) |> Seq.head
-        firstGame.Players 
+        firstGame
         |> Seq.map (fun p -> (fst p).Id)
         |> Seq.distinct 
         |> Seq.length
@@ -53,13 +53,13 @@ type ``drawGames should`` () =
     [<Fact>]
     member x.``return games with exactly 6 players`` ()=
         drawTournament (sixPlayers @ sixOtherPlayers)
-        |> Seq.iter (fun g -> g.Players |> Seq.length |> should equal 6)
+        |> Seq.iter (fun g -> g |> Seq.length |> should equal 6)
     
     [<Fact>]
     member x.``return games with same participation (half the nb of players) for each players`` ()=
         let games = drawTournament (sixPlayers @ sixOtherPlayers)
         let nbGamePerPlayer =
-            games |> Seq.collect (fun g -> g.Players)
+            games |> Seq.collect id
             |> Seq.map (fun p -> (fst p).Id)
             |> Seq.countBy id
         nbGamePerPlayer
@@ -69,12 +69,9 @@ type ``determine best players should`` () =
     let player1 = { Id = 1; Name = "Player 1" }
     let player2 = { Id = 2; Name = "Player 2" }
     let player3 = { Id = 3; Name = "Player 3" }
-    let gameRanking1 = 
-        { PlayersFromFirstToLast = [ player1; player2; player3 ] }
-    let gameRanking2 = 
-        { PlayersFromFirstToLast = [ player2; player3; player1 ] }
-    let gameRanking3 = 
-        { PlayersFromFirstToLast = [ player3; player1; player2 ] }
+    let gameRanking1 = [ player1; player2; player3 ] 
+    let gameRanking2 = [ player2; player3; player1 ]
+    let gameRanking3 = [ player3; player1; player2 ]
     
     [<Fact>]
     member x.``return players in same order given same game ranking passed`` ()=
