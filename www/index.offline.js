@@ -19,7 +19,7 @@ initializeAiSimulator(basicAiJs);
 
 
 let codeEditor = ace.edit("code");
-let url = "http://localhost:8080/ais";
+let aisUrl = window.location.host + "/ais";
 
 let aiName = function () {
     return document.getElementById('aiName').value;
@@ -42,7 +42,7 @@ let createJsObjectFromFields = function () {
 
 let submit = function () {
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
+    xhr.open("POST", aisUrl, true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -63,6 +63,7 @@ submitButton.addEventListener("click", submit);
 
 let getAi = function () {
     var xhr = new XMLHttpRequest();
+    xhr.open("POST", aisUrl + "/get", true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
@@ -73,9 +74,10 @@ let getAi = function () {
             }
         }
     };
-    let getUrlById = url + "/userId=" + userId() + "&password=" + password() + "&aiName=" + aiName();
-    xhr.open("GET", getUrlById, true);
-    xhr.send();
+
+    //let getaisUrlById = aisUrl + "/userId=" + userId() + "&password=" + password() + "&aiName=" + aiName();
+    let data = JSON.stringify(createJsObjectFromFields());
+    xhr.send(data);
 }
 
 let getButton = document.getElementById("get");

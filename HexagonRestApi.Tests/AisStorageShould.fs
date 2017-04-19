@@ -37,5 +37,5 @@
 
     [<Fact>] 
     let ``return none when unknow ai`` () =              
-        AisService.getAi usingInMemoryStorage ("unknow","unknow","unknow") |> should equal None
+        AisService.getAi usingInMemoryStorage ({AiName="unknow";UserId="unknow";Password="unknow";Content="unknow"}) |> should equal None
 

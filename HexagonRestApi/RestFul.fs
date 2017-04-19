@@ -14,7 +14,7 @@ module RestFul =
   type RestResource<'a> = {
     GetAll : unit -> 'a seq
     Submit : 'a -> 'a
-    GetById : string * string * string -> 'a option
+    GetById : 'a -> 'a option
   }
 
   let JSON objectToSerialize =
@@ -35,8 +35,8 @@ module RestFul =
 
   let rest resourceName resource =
     let resourcePath = "/" + resourceName
-    let resourceIdPath = new PrintfFormat<(string*string*string -> string),unit,string,string,string*string*string>(resourcePath + "/userId=%s&password=%s&aiName=%s")
-
+    let resourceGetPath = resourcePath + "/get" 
+    
     let badRequest = BAD_REQUEST "Resource not found"
 
     let getAll = warbler (fun _ -> resource.GetAll () |> JSON)
@@ -52,7 +52,10 @@ module RestFul =
         path resourcePath >=> choose [
             GET >=> getAll
             POST >=> request (getResourceFromRequest >> resource.Submit >> JSON)
-         ]
-        GET >=> pathScan resourceIdPath getResourceById
-     ]
+            ]
+        path resourceGetPath  >=> choose [
+            POST >=> request (getResourceFromRequest >> resource.GetById >> handleResource (NOT_FOUND "Resource not found"))
+            ]
+        ]
+     
 
