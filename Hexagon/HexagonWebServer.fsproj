@@ -72,6 +72,11 @@
       <Project>{54c1d653-0603-43ba-8f97-ccb8295ce5ff}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\HexagonRestApi\HexagonRestApi.fsproj">
+      <Name>HexagonRestApi</Name>
+      <Project>{38e14007-2858-427f-831c-1a8df499e31d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

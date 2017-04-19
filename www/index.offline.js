@@ -18,17 +18,18 @@ let basicAiJs = function(cells) {
 initializeAiSimulator(basicAiJs);
 
 
-let createJsObjectFromFields = function() {
-    var ai = new Object();
-    ai.AiName = "Test";
-    ai.UserName = "Test";
-    ai.Password = "Test";
-    ai.Content = "Content";
+let createJsObjectFromFields = function () {
+    let codeEditor = ace.edit("code");
+    let ai = new Object();
+    ai.AiName = document.getElementById('aiName').value;
+    ai.UserId = document.getElementById('userId').value;
+    ai.Password = document.getElementById('password').value;
+    ai.Content = codeEditor.getValue();
     return ai;
 }
 
 let submit = function () {
-    let url = "http://localhost/8080/ais";
+    let url = "http://localhost:8080/ais";
 
     let xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
@@ -36,10 +37,9 @@ let submit = function () {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             if (xhr.status == 200) {
-                document.getElementById("myDiv").innerHTML = xhr.responseText;
-                alert("AI correctly sended");
+                alert("AI saved");
             } else {
-                alert('An error occured while sending AI ' + xhr.status.toString());
+                alert('An error occured while saving AI ' + xhr.status.toString());
             }
         }
     }
