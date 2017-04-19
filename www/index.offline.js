@@ -40,26 +40,26 @@ let createJsObjectFromFields = function () {
     return ai;
 }
 
-let submit = function () {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                alert("AI saved");
-            } else {
-                alert(`An error occured while saving AI ${xhr.status.toString()}`);
-            }
-        }
-    }
+//let submit = function () {
+//    let xhr = new XMLHttpRequest();
+//    xhr.open("POST", url, true);
+//    xhr.setRequestHeader("Content-type", "application/json");
+//    xhr.onreadystatechange = function () {
+//        if (xhr.readyState === XMLHttpRequest.DONE) {
+//            if (xhr.status === 200) {
+//                alert("AI saved");
+//            } else {
+//                alert(`An error occured while saving AI ${xhr.status.toString()}`);
+//            }
+//        }
+//    }
 
-    let data = JSON.stringify(createJsObjectFromFields());
-    xhr.send(data);
-}
+//    let data = JSON.stringify(createJsObjectFromFields());
+//    xhr.send(data);
+//}
 
-let submitButton = document.getElementById("submit");
-submitButton.addEventListener("click", submit);
+//let submitButton = document.getElementById("submit");
+//submitButton.addEventListener("click", submit);
 
 let getAi = function () {
     var xhr = new XMLHttpRequest();
