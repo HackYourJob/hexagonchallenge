@@ -15,35 +15,15 @@ type Score = {
     ResourcesNbContainer: HTMLDivElement
     BugsNb: int
     BugsNbContainer: HTMLDivElement
+    Container: HTMLDivElement
 }
 
 let private scoreByAi = new System.Collections.Generic.Dictionary<int, Score>()
 
-let private moveUp score upperElement = 
-    let scores = score.CellsNbContainer.parentElement.parentElement
-    scores.removeChild score.CellsNbContainer.parentElement |> ignore
-    scores.insertBefore (score.CellsNbContainer.parentElement, upperElement) |> ignore
-
-let private moveDown score (lowerElement:Node) = 
-    let scores = score.CellsNbContainer.parentElement.parentElement
-    scores.removeChild score.CellsNbContainer.parentElement |> ignore
-    if lowerElement.nextSibling <> null then
-        scores.insertBefore (score.CellsNbContainer.parentElement, lowerElement.nextSibling) |> ignore
-    else
-        scores.appendChild score.CellsNbContainer.parentElement |> ignore
-
-let rec reorderPlayersScore score cellsIncrement =
-    let surroundingElement, compare, move =
-        if cellsIncrement > 0 then
-            score.CellsNbContainer.parentElement.previousElementSibling, (>), moveUp
-        else
-            score.CellsNbContainer.parentElement.nextElementSibling, (<), moveDown
-    
-    if surroundingElement <> null then
-        let surroundingCellsNb = surroundingElement.getElementsByClassName("score-cellsNb").Item 0 
-        if compare score.CellsNb (int surroundingCellsNb.textContent) then
-            move score surroundingElement
-            reorderPlayersScore score cellsIncrement
+let rec reorderPlayersScore () =
+    scoreByAi.Values 
+    |> Seq.sortByDescending (fun v -> v.CellsNb, v.ResourcesNb, v.BugsNb) 
+    |> Seq.iteri (fun i v -> v.Container.style.order <- string i)
 
 let private onTerritoryChanged (territoryChanged:TerritoryChanged) =
     let previousScore = scoreByAi.[territoryChanged.AiId]
@@ -53,7 +33,8 @@ let private onTerritoryChanged (territoryChanged:TerritoryChanged) =
     score.CellsNbContainer.textContent <- string score.CellsNb
     score.ResourcesNbContainer.textContent <- string score.ResourcesNb
     scoreByAi.[territoryChanged.AiId] <- score
-    reorderPlayersScore score territoryChanged.CellsIncrement
+
+    reorderPlayersScore ()
 
 let private onBugged aiId =
     let previousScore = scoreByAi.[aiId]
@@ -101,6 +82,7 @@ let private addAiInLegend (ai: AiDescription) =
         ResourcesNbContainer = resourcesNbContainer
         BugsNb = bugsNb
         BugsNbContainer = bugsNbContainer
+        Container = score
     })
         
 let private clear () =

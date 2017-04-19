@@ -127,6 +127,11 @@
     color: #ffffff;
 }
 
+.scores {
+    display: flex;
+    flex-direction: column;
+}
+
 .score {
 	display: flex;
 	flex-direction: row;
