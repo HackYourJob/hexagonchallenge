@@ -158,6 +158,16 @@ let initializeAiSimulator basicAiJs =
         
     let pauseButton = document.getElementById("pause");
     addListenerOnClick pauseButton pause
+        
+    let hideRulesButton = document.getElementById("hideRulesButton");
+    addListenerOnClick hideRulesButton (fun _ -> 
+        let container = document.getElementById("rules") :?> HTMLDivElement
+        container.style.visibility <- "collapse")
+        
+    let showRulesButton = document.getElementById("showRulesButton");
+    addListenerOnClick showRulesButton (fun _ -> 
+        let container = document.getElementById("rules") :?> HTMLDivElement
+        container.style.visibility <- "visible")
 
     //remplacer par le JS pour le moment
     //let submitButton = document.getElementById("submit");
