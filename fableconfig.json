@@ -1,6 +1,6 @@
 {
   "projFile": "HexagonLib/HexagonLib.fsproj",
-  "outDir": "www/fable",
+  "outDir": "build",
   "scripts": {
     "postbuild": "webpack"
   },
