@@ -26,7 +26,21 @@ let checkOuput (result: Ais.TransactionParameters option): Ais.TransactionParame
 [<Emit("eval($0)($1)")>]
 let eval (code: string) underscore : (obj -> Ais.TransactionParameters option) = jsNative
 
+[<Emit("""(function(timerId, play) {
+    return function(cells) {
+        console.time(timerId)
+
+        var result = play(cells)
+
+        var delay = console.timeEnd(timerId)
+        if(delay > 50) throw "Timeout";
+
+        return result;
+    };
+})($0, $1);""")>]
+let checkExecutionDelay (id: System.Guid) (play: Ais.AiCell[] -> Ais.TransactionParameters option) : (Ais.AiCell[] -> Ais.TransactionParameters option) = jsNative
+
 let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = 
     let play = eval code underscore
 
-    improveInput >> play >> checkOuput
+    checkExecutionDelay (System.Guid.NewGuid()) (improveInput >> play >> checkOuput)

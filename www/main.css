@@ -191,16 +191,9 @@
     flex: 1;
 }
 
-.editor-actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-.editor-actions > * {
-    margin: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+.editor-bugs {
+    height: 50px;
+    overflow: auto;
 }
 
 .simulator {
@@ -212,6 +205,25 @@
     padding: 5px;
     overflow: auto;
     display: flex;
+    flex-direction: column;
+}
+
+.simulator-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+    .simulator-controls > * {
+        margin-right: 5px;
+        margin-left: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+.simulator-visualization {
+    display: flex;
     flex-direction: row;
     align-items: center;
+    flex: 1;
 }
