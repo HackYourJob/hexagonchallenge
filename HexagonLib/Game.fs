@@ -9,12 +9,7 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
     let basicAis = 
         [nbPlayers + 1..6]
         |> List.map (fun i -> { Id = i; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
-    let rand = fun () -> (new System.Random()).Next()
-    let ais = 
-        ais @ basicAis
-        |> List.map (fun ai -> ai, rand())
-        |> List.sortBy snd
-        |> List.map fst
+    let ais = ais @ basicAis
     
     let hexagon = 
         HexagonBoard.generate hexagonSize 
