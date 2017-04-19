@@ -70,6 +70,7 @@
     <Compile Include="UI.CodeEditor.fs" />
     <Compile Include="UI.Legend.fs" />
     <Compile Include="UI.Simulator.fs" />
+    <Compile Include="TournamentWorker.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Fable.Core">
