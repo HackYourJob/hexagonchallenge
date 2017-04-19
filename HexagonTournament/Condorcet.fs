@@ -1,21 +1,14 @@
-﻿module Hexagon.CondorcetTournament
+﻿module HexagonTournament.Condorcet
 
 open Hexagon.Domain
 open Hexagon.Ais
+open System
 
-type Player = AiDescription * (AiCell [] -> TransactionParameters option) 
+type PlayerId = string
 
-type GamePlayers = Player list
+type GamePlayers = PlayerId list
 
 type GameRankingFromFirstToLast = AiDescription list
-
-let private appendPlayersIfNeeded (players: GamePlayers) =
-    let nbPlayers = players |> Seq.length
-    let lastPlayerId = players |> Seq.rev |> Seq.head |> fst |> fun p -> p.Id
-    let basicAis = 
-        [nbPlayers + 1..6]
-        |> List.map (fun i -> { Id = i + lastPlayerId; Name = sprintf "Basic AI %i" i }, Hexagon.BasicAi.play)
-    players @ basicAis
 
 let private splitInGames players =
     let rec loop xs =
@@ -37,16 +30,12 @@ let private games rand players =
         |> splitInGames
     games
 
-let drawTournament players = 
+let drawGames players = 
     if players |> Seq.length = 0 then List.empty<GamePlayers>
     else 
         let random = new System.Random()
         let rand = fun () -> random.Next()
-        
-        let players =
-            players
-            |> appendPlayersIfNeeded
-        
+                
         [1..(players |> Seq.length) / 2]
         |> List.collect (fun _ -> games rand players)
 

@@ -3,8 +3,8 @@
 module Domain =
 
     type Ai = {
-      AiName : string
       UserId : string
+      AiName : string
       Password : string
       Content : string
     }

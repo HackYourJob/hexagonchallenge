@@ -64,7 +64,6 @@
     <Compile Include="Fable.Helpers.Fetch.fs" />
     <Compile Include="Fable.Import.Ace.fs" />
     <None Include="paket.references" />
-    <Compile Include="CondorcetTournament.fs" />
     <Compile Include="Compilator.Js.fs" />
     <Compile Include="UI.Board.fs" />
     <Compile Include="UI.CodeEditor.fs" />
