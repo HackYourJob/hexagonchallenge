@@ -52,7 +52,12 @@ module TransactionValidation =
         | Bug _ -> transaction
         | Transaction t -> 
             match createContext getCell aiId t |> validTransaction isNeighboursOf with
-            | Invalid e -> sprintf "%A" e |> Bug
+            | Invalid e -> 
+                match e with 
+                | NotOwnCell -> "Try to move cell resources of other player"
+                | NotEnoughResources -> "Try to move too resources"
+                | InvalidMove -> "Forbidden move"
+                |> Bug
             | Valid c -> transaction
 
 module BoardHandler =
