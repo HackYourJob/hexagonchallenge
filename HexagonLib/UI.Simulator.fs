@@ -25,6 +25,13 @@ let handleMessage evt =
     Legend.apply evt 
     Board.apply evt
     printLog evt
+
+    match evt with
+    | AiPlayed (Bug bug) -> 
+        let container = document.getElementById("bugLogs")
+        container.innerText <- bug + "\n" + container.innerText
+        ()
+    | _ -> ()
     
 let getPlayFunction () =
     CodeEditor.getValue Hexagon.Compilator.Js.compile
