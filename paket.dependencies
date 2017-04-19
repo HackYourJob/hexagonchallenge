@@ -2,11 +2,13 @@ source https://api.nuget.org/v3/index.json
 framework >= net462
 
 nuget BCrypt.net
+nuget Dapper
 nuget FSharp.Control.Reactive
 nuget FSharp.Interop.Dynamic
 nuget FsUnit.Xunit
 nuget Microsoft.Azure.DocumentDB
 nuget Microsoft.FSharpLu.Json
+nuget MySql.Data
 nuget Newtonsoft.Json
 nuget suave
 nuget System.ValueTuple 4.3.0

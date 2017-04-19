@@ -3,3 +3,5 @@ Newtonsoft.Json
 Microsoft.Azure.DocumentDB
 FSharp.Interop.Dynamic
 BCrypt.net
+Dapper
+MySql.Data

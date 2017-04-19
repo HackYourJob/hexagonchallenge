@@ -19,7 +19,7 @@ initializeAiSimulator(basicAiJs);
 
 
 let codeEditor = ace.edit("code");
-let aisUrl = window.location.host + "/ais";
+let aisUrl = "/ais";
 
 let aiName = function () {
     return document.getElementById('aiName').value;
