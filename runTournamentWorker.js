@@ -17,27 +17,37 @@ let delayAction = function(action) {
     setTimeout(action, 30000);
 };
 
+let query = function(connection, sql, parameters) {
+    return new Promise(function (resolve, reject) {
+        connection.query(sql, parameters, function(err, result) {
+            if (err) return reject(err)
+            resolve(result)
+        });
+    });
+};
+
+function readFileAsync(file, encoding) {
+    return new Promise(function (resolve, reject) {
+        fs.readFile(file, encoding, function (err, data) {
+            if (err) return reject(err) // rejects the promise with `err` as the reason
+            resolve(data)               // fulfills the promise with `data` as the value
+        })
+    })
+}
+
 let saveResult = function(matchId, events, scores) {
     let connection = openConnection();
 
     let results = scores.map(function (s) { return { matchId: matchId, aiId: s.aiId, resources: s.resources, cells: s.cellsNb, bugs: s.bugs, order: s.position}});
-    connection.query('INSERT INTO matchResult SET ?', results, function (err) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-
-        connection.query(`INSERT INTO matchEvents (matchId, events, processedAt) VALUES (?, ?, NOW())`, [matchId, events], function (err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-
+    Promise.all(results.map(result => query(connection, 'INSERT INTO matchResult SET ?', result)))
+        .then(() =>
+            query(connection,
+                `INSERT INTO matchEvents (matchId, events, processedAt) VALUES (?, ?, NOW())`,
+                [matchId, events]))
+        .then(() => {
             console.log("match end : " + matchId);
-
             checkIfMatch();
-        });
-    });
+        }, err => console.error(err));
 };
 
 let runMatch = function (ais, matchId) {
