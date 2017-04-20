@@ -14,7 +14,7 @@ open Suave.Files
 open Suave.RequestErrors
 open Suave.Logging
 open Suave.Utils
-open HexagonRestApi.AisService
+open HexagonRestApi
 open HexagonRestApi.Rest.RestFul
 open HexagonRestApi.Domain.Domain
 

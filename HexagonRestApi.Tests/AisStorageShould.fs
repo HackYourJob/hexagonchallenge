@@ -2,7 +2,7 @@
     
     open Xunit
     open FsUnit.Xunit
-    open HexagonRestApi.AisService
+    open HexagonRestApi
     open HexagonRestApi.Domain.Domain
 
     
