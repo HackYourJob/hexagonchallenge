@@ -5,7 +5,7 @@ open Hexagon.Domain
 open Fable.Core
 
 let hexagonSize = 9
-let roundsNb = 5000
+let roundsNb = 100
 
 [<Emit("console.log($0)")>]
 let printLog (value: obj) = jsNative
@@ -32,7 +32,7 @@ let play (ais: AiWorker seq) =
 
     ais
     |> Seq.sortBy (fun ai -> ai.order)
-    |> Seq.map (fun ai -> ({ Id = ai.order; Name = ai.name }, ai.code |> Compilator.Js.compile ))
+    |> Seq.map (fun ai -> ({ Id = ai.order; Name = ai.name }, (ai.code, ai.name) |> Compilator.Js.compile ))
     |> Seq.toList
     |> Game.startGame (handleMessage events scoresStore) hexagonSize roundsNb
     |> runNextStep
