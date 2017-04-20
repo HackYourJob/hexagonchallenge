@@ -5,13 +5,12 @@ let main argv =
     printfn "%A" argv
     let tournamentName = argv.[1]
     if argv.[0] = "drawGames" then
-        let availableAis = HexagonTournament.SqlStorage.getAllAis () |> Seq.toList
-        let nbBasicAisToRemove = (availableAis |> Seq.length) % 6
-        let ais = 
-            availableAis 
-            //|> Seq.filter (fun x -> x.UserId = "hyj" && x.Password = "MiXiT" && x.AiName.Replace("Basic AI", ""))
-        let games = drawGames (ais |> Seq.toList)
-        ()
+        let availableAis = HexagonTournament.SqlStorage.getAllAis ()
+        let nbBasicAisToAdd = (6 - ((availableAis |> Seq.length) % 6)) % 6
+        let basicAisToAdd = HexagonTournament.SqlStorage.getBasicAis () |> List.take nbBasicAisToAdd
+        let ais = availableAis @ basicAisToAdd
+        let games = drawGames ais
+        HexagonTournament.SqlStorage.queueGames games tournamentName
     else if argv.[0] = "determineBestPlayers" then
         ()
     0 // return an integer exit code
