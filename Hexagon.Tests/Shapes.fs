@@ -100,16 +100,16 @@ module HexagonCell =
             |> should be True
 
         [<Fact>] member x.
-            ``return true if right cell`` ()= 
+            ``return false if right cell`` ()= 
             cellId 12 10
             |> isNeighbours reference  
-            |> should be True
+            |> should be False
 
         [<Fact>] member x.
-            ``return true if left cell`` ()= 
+            ``return false if left cell`` ()= 
             cellId 8 10
             |> isNeighbours reference  
-            |> should be True
+            |> should be False
 
         [<Fact>] member x.
             ``return true if top left cell`` ()= 

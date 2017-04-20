@@ -78,8 +78,6 @@ module HexagonCell =
         match (other.ColumnNum - reference.ColumnNum, other.LineNum - reference.LineNum) with
         | (0, -2)
         | (0, 2)
-        | (-2, 0)
-        | (2, 0)
         | (-1, -1)
         | (1, -1)
         | (1, 1)
