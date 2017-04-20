@@ -82,6 +82,8 @@ let play basicAiJs =
         isPaused <- false
 
         let nameInput = document.getElementById("aiName") :?> HTMLInputElement
+
+        document.getElementById("bugLogs").innerText <- ""
         
         [
             ({ Id = 1; Name = nameInput.value }, getPlayFunction() )
