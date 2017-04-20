@@ -33,21 +33,31 @@ let checkOuput (result: Ais.TransactionParameters option): Ais.TransactionParame
 })($0, $1);""")>]
 let eval (code: string) underscore : (obj -> Ais.TransactionParameters option) = jsNative
 
-[<Emit("""(function(timerId, play) {
+[<Emit("""(function(aiName, play) {
+    let nbTimeout = 0;
     return function(cells) {
-        console.time(timerId)
+        let timer = Date.now()
 
-        var result = play(cells)
+        if (nbTimeout < 10) {
+            var result = play(cells)
+        }
 
-        var delay = console.timeEnd(timerId)
-        if(delay > 50) throw "Timeout";
+        let delay = Date.now() - timer
+        if(delay > 50) {
+            console.log("Timeout for " + aiName + ": " + delay)
+            throw "Timeout"
+        }
+        if (nbTimeout >= 10) {
+            console.log("Too much timeout," + aiName + " excluded from Game")
+            throw "Too much timeout, excluded from Game";
+        }
 
         return result;
     };
 })($0, $1);""")>]
-let checkExecutionDelay (id: System.Guid) (play: Ais.AiCell[] -> Ais.TransactionParameters option) : (Ais.AiCell[] -> Ais.TransactionParameters option) = jsNative
+let checkExecutionDelay (aiName: string) (play: Ais.AiCell[] -> Ais.TransactionParameters option) : (Ais.AiCell[] -> Ais.TransactionParameters option) = jsNative
 
-let compile (code: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = 
+let compile (code: string, aiName: string): (Ais.AiCell[] -> Ais.TransactionParameters option) = 
     let play = eval code underscore
 
-    checkExecutionDelay (System.Guid.NewGuid()) (improveInput >> play >> checkOuput)
+    checkExecutionDelay aiName (improveInput >> play >> checkOuput)

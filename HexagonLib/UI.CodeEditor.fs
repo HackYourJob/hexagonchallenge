@@ -31,4 +31,4 @@ return function play(cells) {
 })""") |> ignore
 
 let getValue compile : (Ais.AiCell[] -> Ais.TransactionParameters option) =
-    editor.getValue() |> compile
+    (editor.getValue(), document.getElementById("aiName").nodeValue) |> compile
