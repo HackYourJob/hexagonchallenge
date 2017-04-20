@@ -55,7 +55,15 @@ let runMatch = function (ais, matchId) {
 
     ais.map(r => aiIdsByOrder[r.order] = r.aiId);
 
-    let result = play(ais);
+    let oldLog = console.log
+    console.log = function() {};
+
+    let result;
+    try {
+        result = play(ais);
+    } finally {
+        console.log = oldLog;
+    }
 
     var events = serializeEvents(result[0]);
     var scores = result[1].map(function(s, position) {
