@@ -48,31 +48,31 @@ module TransactionValidation =
         member x.``return bug if transaction not start of ai's cell`` ()= 
             Transaction { FromId = cellOfOtherAi.Id; ToId = neighboursCell.Id; AmountToTransfer = 1 }
             |> validAction
-            |> should equal (Bug "NotOwnCell")
+            |> should equal (Bug "Try to move cell resources of other player")
 
         [<Fact>] 
         member x.``return bug if transaction start of free cell`` ()= 
             Transaction { FromId = freeCell.Id; ToId = neighboursCell.Id; AmountToTransfer = 1 }
             |> validAction
-            |> should equal (Bug "NotOwnCell")
+            |> should equal (Bug "Try to move cell resources of other player")
 
         [<Fact>] 
         member x.``return bug if transaction move too resources`` ()= 
             Transaction { FromId = cellOfAi.Id; ToId = neighboursCell.Id; AmountToTransfer = 6 }
             |> validAction
-            |> should equal (Bug "NotEnoughResources")
+            |> should equal (Bug "Try to move too resources")
 
         [<Fact>] 
         member x.``return bug if transaction not end of neighbours`` ()= 
             Transaction { FromId = cellOfAi.Id; ToId = notNeighboursCell.Id; AmountToTransfer = 1 }
             |> validAction
-            |> should equal (Bug "InvalidMove")
+            |> should equal (Bug "Forbidden move")
 
         [<Fact>] 
         member x.``return bug if transaction start of unknown cell`` ()= 
             Transaction { FromId = unknownCellId; ToId = neighboursCell.Id; AmountToTransfer = 1 }
             |> validAction
-            |> should equal (Bug "NotOwnCell")
+            |> should equal (Bug "Try to move cell resources of other player")
 
         [<Fact>] 
         member x.``returntransaction if transaction is valid`` ()= 
@@ -85,13 +85,13 @@ module TransactionValidation =
         member x.``return bug if transaction move 0 resource`` ()= 
             Transaction { FromId = cellOfAi.Id; ToId = neighboursCell.Id; AmountToTransfer = 0 }
             |> validAction
-            |> should equal (Bug "InvalidMove")
+            |> should equal (Bug "Forbidden move")
 
         [<Fact>] 
         member x.``return bug if transaction move negative resource amount`` ()= 
             Transaction { FromId = cellOfAi.Id; ToId = neighboursCell.Id; AmountToTransfer = -5 }
             |> validAction
-            |> should equal (Bug "InvalidMove")
+            |> should equal (Bug "Forbidden move")
 
 module BoardHandler =
     open Hexagon.Round.BoardHandler
