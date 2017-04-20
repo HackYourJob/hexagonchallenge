@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{608F83F2-4709-4D1F-8A40-9145E62DB6A7}"
 	ProjectSection(SolutionItems) = preProject
@@ -40,6 +40,11 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonTournament", "HexagonTournament\HexagonTournament.fsproj", "{EC6645E3-476E-49B4-91A4-D4006107D60F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HexagonTournament.Tests", "HexagonTournament.Tests\HexagonTournament.Tests.fsproj", "{45029514-FBC3-4EBC-A133-6A05AFDE169D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "node", "node", "{122F638A-E8F1-4F2B-B6F5-95AE7E802537}"
+	ProjectSection(SolutionItems) = preProject
+		runTournamentWorker.js = runTournamentWorker.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

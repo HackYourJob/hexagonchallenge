@@ -63,4 +63,4 @@ let getGamesResults tournamentName =
          FROM matchResult, ai, matchQueue
          WHERE matchResult.AiId = ai.AiId
          AND matchResult.MatchId = matchQueue.MatchId
-         AND matchQueue.TournamentName = @TournamentName", { TournamentName = tournamentName })
+         AND matchQueue.TournamentName = @TournamentName", { TournamentName = tournamentName }) |> Seq.toList
