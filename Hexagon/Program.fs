@@ -51,7 +51,6 @@ let start port wwwDirectory =
                 homeFolder = Some (Path.GetFullPath wwwDirectory) }
    
     let aiRestWebPart = rest "ais" {
-        GetAll = AisService.getAis usingMySqlStorage
         Submit = AisService.submitAi usingMySqlStorage
         GetById = AisService.getAi usingMySqlStorage
     }

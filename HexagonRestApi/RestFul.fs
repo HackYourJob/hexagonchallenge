@@ -12,7 +12,6 @@ module RestFul =
   open HexagonRestApi.AisService
     
   type RestResource<'a> = {
-    GetAll : unit -> 'a seq
     Submit : 'a -> 'a
     GetById : 'a -> 'a option
   }
@@ -38,9 +37,7 @@ module RestFul =
     let resourceGetPath = resourcePath + "/get" 
     
     let badRequest = BAD_REQUEST "Resource not found"
-
-    let getAll = warbler (fun _ -> resource.GetAll () |> JSON)
-    
+        
     let handleResource requestError = function
     | Some r -> r |> JSON
     | _ -> requestError
@@ -50,7 +47,6 @@ module RestFul =
       
     choose [
         path resourcePath >=> choose [
-            GET >=> getAll
             POST >=> request (getResourceFromRequest >> resource.Submit >> JSON)
             ]
         path resourceGetPath  >=> choose [
