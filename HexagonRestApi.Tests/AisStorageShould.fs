@@ -21,7 +21,7 @@
     let ``create ai when submit an unknown ai`` () =
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
       
-        AisService.submitAi usingInMemoryStorage aiToSubmit|> should equal aiToSubmit 
+        AisService.submitAi AiStorageInmemory.updateOrAdd aiToSubmit|> should equal aiToSubmit 
         usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
         
 
@@ -32,10 +32,10 @@
         
         usingInMemoryStorage.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
         
-        AisService.submitAi usingInMemoryStorage aiUpdated |> should equal aiUpdated
+        AisService.submitAi AiStorageInmemory.updateOrAdd aiUpdated |> should equal aiUpdated
         usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
 
     [<Fact>] 
     let ``return none when unknow ai`` () =              
-        AisService.getAi usingInMemoryStorage ({Ai.AiName="unknow";UserId="unknow";Password="unknow";Content="unknow"}) |> should equal None
+        AisService.getAi AiStorageInmemory.tryToGetCode ({Ai.AiName="unknow";UserId="unknow";Password="unknow";Content="unknow"}) |> should equal None
 

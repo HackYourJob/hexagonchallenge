@@ -10,6 +10,7 @@ module RestFul =
   open Suave.Successful
   open Suave.RequestErrors
   open HexagonRestApi.AisService
+  open HexagonRestApi.Domain.Domain
     
   type RestResource<'a> = {
     Submit : 'a -> 'a
@@ -32,26 +33,14 @@ module RestFul =
     req.rawForm |> getString |> fromJson<'a>
 
 
-  let rest resourceName resource =
-    let resourcePath = "/" + resourceName
-    let resourceGetPath = resourcePath + "/get" 
-    
-    let badRequest = BAD_REQUEST "Resource not found"
-        
-    let handleResource requestError = function
-    | Some r -> r |> JSON
-    | _ -> requestError
+  let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) =    
+    let errorIfNone = function
+        | Some r -> r |> OK
+        | _ -> NOT_FOUND "Resource not found"
 
-    let getResourceById =
-        resource.GetById >> handleResource (NOT_FOUND "Resource not found")
-      
     choose [
-        path resourcePath >=> choose [
-            POST >=> request (getResourceFromRequest >> resource.Submit >> JSON)
-            ]
-        path resourceGetPath  >=> choose [
-            POST >=> request (getResourceFromRequest >> resource.GetById >> handleResource (NOT_FOUND "Resource not found"))
-            ]
+        path "/ais" >=> POST >=> request (getResourceFromRequest >> submit >> (fun () -> "Saved" |> OK))
+        path "/ais/get"  >=> POST >=> request (getResourceFromRequest >> tryToGetCode >> errorIfNone)
         ]
      
 

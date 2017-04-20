@@ -33,10 +33,7 @@ let start port wwwDirectory =
                 bindings = [ HttpBinding.mkSimple HTTP "0.0.0.0" port ]
                 homeFolder = Some (Path.GetFullPath wwwDirectory) }
    
-    let aiRestWebPart = rest "ais" {
-        Submit = AisService.submitAi usingMySqlStorage
-        GetById = AisService.getAi usingMySqlStorage
-    }
+    let aiRestWebPart = aiRest (AisService.submitAi AiStorageInMySql.updateOrAdd) (AisService.getAi AiStorageInMySql.tryToGetCode)
 
     let app : WebPart =
       choose [
