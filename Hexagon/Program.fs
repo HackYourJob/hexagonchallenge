@@ -16,15 +16,7 @@ open Suave.Logging
 open Suave.Utils
 open HexagonRestApi
 open HexagonRestApi.RestFul
-open HexagonRestApi.Domain.Domain
-
-let usingMySqlStorage = {
-    GetAll = AiStorageInMySql.getAll
-    Exists = AiStorageInMySql.exists
-    Add = AiStorageInMySql.add
-    Update = AiStorageInMySql.update
-    GetById = AiStorageInMySql.getById
-}
+open HexagonRestApi.Domain
 
 let start port wwwDirectory =
 

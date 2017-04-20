@@ -1,7 +1,7 @@
 ﻿module AiStorageInmemory
 
 open System.Collections.Generic
-open HexagonRestApi.Domain.Domain
+open HexagonRestApi.Domain
 
 let private aiMemoryStorage = new Dictionary<string, Ai>()
 

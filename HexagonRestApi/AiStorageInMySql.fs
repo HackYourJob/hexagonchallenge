@@ -3,7 +3,7 @@
 open Dapper
 open MySql.Data
 open MySql.Data.MySqlClient
-open HexagonRestApi.Domain
+open HexagonRestApi
 open System.Security.Cryptography
 
 let connectionString = System.Environment.GetEnvironmentVariable("HEXAGON_MYSQL_CONNECTIONSTRING")

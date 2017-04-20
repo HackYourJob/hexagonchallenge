@@ -9,7 +9,7 @@ open Suave.Filters
 open Suave.Successful
 open Suave.RequestErrors
 open HexagonRestApi.AisService
-open HexagonRestApi.Domain.Domain
+open HexagonRestApi.Domain
 
 let JSON objectToSerialize =
     let jsonSerializerSettings = new JsonSerializerSettings()

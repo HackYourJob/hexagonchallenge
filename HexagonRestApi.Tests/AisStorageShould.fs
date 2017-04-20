@@ -3,17 +3,8 @@
     open Xunit
     open FsUnit.Xunit
     open HexagonRestApi
-    open HexagonRestApi.Domain.Domain
-
-    
-    let usingInMemoryStorage = {
-        GetAll = AiStorageInmemory.GetAll
-        Exists = AiStorageInmemory.Exists
-        Add = AiStorageInmemory.Add
-        Update = AiStorageInmemory.Update
-        GetById = AiStorageInmemory.GetById
-        }
-    
+    open HexagonRestApi.Domain
+        
     let private buildAiId ai=
         String.concat "." [ai.UserId; ai.Password; ai.AiName;]
 
@@ -22,7 +13,7 @@
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
       
         AisService.submitAi AiStorageInmemory.updateOrAdd aiToSubmit|> should equal aiToSubmit 
-        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
+        AiStorageInmemory.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
         
 
     [<Fact>] 
@@ -30,10 +21,10 @@
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
         let aiUpdated = {AiName="test";UserId="test";Password="test";Content="testUpdated"}
         
-        usingInMemoryStorage.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
+        AiStorageInmemory.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
         
         AisService.submitAi AiStorageInmemory.updateOrAdd aiUpdated |> should equal aiUpdated
-        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
+        AiStorageInmemory.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
 
     [<Fact>] 
     let ``return none when unknow ai`` () =              

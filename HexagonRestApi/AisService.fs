@@ -1,6 +1,6 @@
 ﻿module HexagonRestApi.AisService
 
-open HexagonRestApi.Domain.Domain
+open HexagonRestApi.Domain
 open BCrypt.Net
 
 let hashPassword password =
