@@ -24,7 +24,6 @@ let printLog (value: obj) = jsNative
 let handleMessage evt = 
     Legend.apply evt 
     Board.apply evt
-    printLog evt
 
     match evt with
     | AiPlayed (Bug bug) -> 
