@@ -79,9 +79,9 @@
                 Each turn, all cells with less than 100 resources, earn 1 resource.<br />
                 A cell can attack another cell. To do this, AI must move resources to the victim cell.<br />
                 <ul>
-                    <li>If the victim cell has more resources than the attacker, then the attacking and victim cells loses moved resources.</li>
-                    <li>If the victim cell has fewer resources than the attacker, then the victim cell is conquered and the victim cell contains the difference between moved resources and victim resources.</li>
-                    <li>If the victim cell has as many resources as the attacker, then the attacking cell loses all its resources and the victim cell gains 1 resource.</li>
+                    <li>If the victim cell has more resources than the attacker, then the attacking and victim cells loses moved resources. (example, cell A has 15 resources and cell B has 12 resources, if A move 5 resources to B, then A has 10 resources and B has 7 resources)</li>
+                    <li>If the victim cell has fewer resources than the attacker, then the victim cell is conquered and the victim cell contains the difference between moved resources and victim resources. (example, cell A has 15 resources and cell B has 10 resources, if A move 13 resources to B, then A has 2 resources and B has 3 resources and owned by AI of cell A)</li>
+                    <li>If the victim cell has as many resources as the attacker, then the attacking cell loses all its resources and the victim cell gains 1 resource. (example, cell A has 15 resources and cell B has 10 resources, if A move 10 resources to B, then A has 0 resources and B has 11 resources)</li>
                 </ul>
                 <br />
                 <br/>
