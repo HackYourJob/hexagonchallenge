@@ -1,7 +1,8 @@
 import { play, serializeEvents } from "./build/TournamentWorker";
 import mysql from "mysql2";
+import os from "os";
 
-let workerName = 'worker1';
+let workerName = 'worker-' + os.hostname();
 
 let openConnection = function() {
     return mysql.createConnection({
