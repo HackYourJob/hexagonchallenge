@@ -56,9 +56,9 @@ type ``drawGames should`` () =
         |> Seq.iter (fun (x, y) -> y |> should equal 6)
         
 type ``determine best players should`` () =
-    let player1 = { Id = 1; Name = "Player 1" }
-    let player2 = { Id = 2; Name = "Player 2" }
-    let player3 = { Id = 3; Name = "Player 3" }
+    let player1 = { AiId = "Player 1"; Cells = 0; Resources = 0; Bugs = 0 }
+    let player2 = { AiId = "Player 2"; Cells = 0; Resources = 0; Bugs = 0 }
+    let player3 = { AiId = "Player 3"; Cells = 0; Resources = 0; Bugs = 0 }
     let gameRanking1 = [ player1; player2; player3 ] 
     let gameRanking2 = [ player2; player3; player1 ]
     let gameRanking3 = [ player3; player1; player2 ]
@@ -67,26 +67,26 @@ type ``determine best players should`` () =
     member x.``return players in same order given same game ranking passed`` ()=
         let gamesRankings = [ gameRanking1; gameRanking1 ]
         let bestPlayers = [ 
-            { Ai = player1; NbDuelWon = 2; DuelWonBalance = 4 }
-            { Ai = player2; NbDuelWon = 1; DuelWonBalance = 0 }
-            { Ai = player3; NbDuelWon = 0; DuelWonBalance = -4 }]
+            { AiScore = player1; NbDuelWon = 2; DuelWonBalance = 4 }
+            { AiScore = player2; NbDuelWon = 1; DuelWonBalance = 0 }
+            { AiScore = player3; NbDuelWon = 0; DuelWonBalance = -4 }]
         test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
 
     [<Fact>]
     member x.``return in first position players having more won games against others`` ()=
         let gamesRankings = [ gameRanking1; gameRanking2; gameRanking2 ]
         let bestPlayers = [ 
-            { Ai = player2; NbDuelWon = 2; DuelWonBalance = 4 }
-            { Ai = player3; NbDuelWon = 1; DuelWonBalance = -2 }
-            { Ai = player1; NbDuelWon = 0; DuelWonBalance = -2 } ]
+            { AiScore = player2; NbDuelWon = 2; DuelWonBalance = 4 }
+            { AiScore = player3; NbDuelWon = 1; DuelWonBalance = -2 }
+            { AiScore = player1; NbDuelWon = 0; DuelWonBalance = -2 } ]
         test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
         
     [<Fact>]
     member x.``return in first position players having more won duels against others, then having won more games`` ()=
         let gamesRankings = [ gameRanking1; gameRanking3 ]
         let bestPlayers = [ 
-            { Ai = player1; NbDuelWon = 1; DuelWonBalance = 2 }
-            { Ai = player3; NbDuelWon = 0; DuelWonBalance = 0 }
-            { Ai = player2; NbDuelWon = 0; DuelWonBalance = -2 } ]
+            { AiScore = player1; NbDuelWon = 1; DuelWonBalance = 2 }
+            { AiScore = player3; NbDuelWon = 0; DuelWonBalance = 0 }
+            { AiScore = player2; NbDuelWon = 0; DuelWonBalance = -2 } ]
         test <@ determineBestPlayers gamesRankings |> Seq.toList = bestPlayers @>
         

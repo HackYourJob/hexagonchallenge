@@ -8,7 +8,16 @@ type PlayerId = string
 
 type GamePlayers = PlayerId list
 
-type GameRankingFromFirstToLast = AiDescription list
+type AiId = string
+
+type GameAiScore = {
+    AiId:AiId
+    Resources: int
+    Cells: int
+    Bugs: int
+}
+
+type GameRankingFromFirstToLast = GameAiScore list
 
 let private splitInGames players =
     let rec loop xs =
@@ -39,9 +48,9 @@ let drawGames players =
         [1..(players |> Seq.length) / 2]
         |> List.collect (fun _ -> games rand players)
 
-type CondorcetGraph = Map<AiDescription, Map<AiDescription, int>>
+type CondorcetGraph = Map<AiId, Map<AiId, int>>
 type DuelResult = WinAgainst | LooseAgainst
-type Score = { Ai: AiDescription; NbDuelWon: int; DuelWonBalance: int }
+type Score = { AiScore: GameAiScore; NbDuelWon: int; DuelWonBalance: int }
 
 let private updateCondorcetGraph' playerA duelResult playerB graph =
     let mutable nbDuelWon = match duelResult with WinAgainst -> 1 | LooseAgainst -> -1
@@ -60,10 +69,10 @@ let private updateCondorcetGraph' playerA duelResult playerB graph =
     else
         graph |> Map.add playerA (Map.ofList [ playerB, nbDuelWon ])
 
-let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:AiDescription seq) =
+let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:GameRankingFromFirstToLast) =
     gameRanking
     |> Seq.tail
-    |> Seq.mapi (fun i x -> [0..i] |> Seq.map (fun j -> gameRanking |> Seq.item j, x))
+    |> Seq.mapi (fun i x -> [0..i] |> Seq.map (fun j -> (gameRanking |> Seq.item j).AiId, x.AiId))
     |> Seq.collect id
     |> Seq.fold (fun graph duel -> 
         let duelWinner, duelLooser = duel
@@ -75,11 +84,27 @@ let private updateCondorcetGraph (condorcetGraph:CondorcetGraph) (gameRanking:Ai
 let determineBestPlayers gamesRankings =
     let bestPlayersUnsorted =
         gamesRankings
-        |> Seq.fold updateCondorcetGraph Map.empty<AiDescription, Map<AiDescription, int>>
+        |> Seq.fold updateCondorcetGraph Map.empty<AiId, Map<AiId, int>>
         |> Map.toSeq
+    let playersTotalScore =
+        gamesRankings
+        |> Seq.collect id
+        |> Seq.groupBy (fun x -> x.AiId)
+        |> Seq.map (fun (x,y) -> 
+            x, 
+            { 
+                AiId = x
+                Cells = y |> Seq.sumBy (fun z -> z.Cells)
+                Resources = y |> Seq.sumBy (fun z -> z.Resources)
+                Bugs = y |> Seq.sumBy (fun z -> z.Bugs)
+            })
+        |> Map.ofSeq
     bestPlayersUnsorted
-    |> Seq.map (fun x -> { Ai = fst x;
+    |> Seq.map (fun x -> { AiScore = playersTotalScore |> Map.find (fst x);
                         NbDuelWon = snd x |> Map.toSeq |> Seq.filter (fun x -> snd x > 0) |> Seq.length;
                         DuelWonBalance = snd x |> Map.toSeq |> Seq.sumBy (fun x -> snd x) })
     |> Seq.sortByDescending (fun x -> x.NbDuelWon)
     |> Seq.sortByDescending (fun x -> x.DuelWonBalance)
+    |> Seq.sortBy (fun x -> x.AiScore.Bugs)
+    |> Seq.sortByDescending (fun x -> x.AiScore.Cells)
+    |> Seq.sortByDescending (fun x -> x.AiScore.Resources)

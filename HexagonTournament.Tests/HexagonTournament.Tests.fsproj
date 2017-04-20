@@ -72,7 +72,6 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Condorcet.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
