@@ -105,8 +105,9 @@ let determineBestPlayers gamesRankings =
     |> Seq.map (fun x -> { AiScore = playersTotalScore |> Map.find (fst x);
                         NbDuelWon = snd x |> Map.toSeq |> Seq.filter (fun x -> snd x > 0) |> Seq.length;
                         DuelWonBalance = snd x |> Map.toSeq |> Seq.sumBy (fun x -> snd x) })
-    |> Seq.sortByDescending (fun x -> x.NbDuelWon)
-    |> Seq.sortByDescending (fun x -> x.DuelWonBalance)
-    |> Seq.sortBy (fun x -> x.AiScore.Bugs)
-    |> Seq.sortByDescending (fun x -> x.AiScore.Cells)
-    |> Seq.sortByDescending (fun x -> x.AiScore.Resources)
+    |> Seq.sortByDescending (fun x -> 
+        x.NbDuelWon, 
+        x.DuelWonBalance, 
+        -x.AiScore.Bugs, 
+        x.AiScore.Cells, 
+        x.AiScore.Resources)
