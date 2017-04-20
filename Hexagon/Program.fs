@@ -15,7 +15,7 @@ open Suave.RequestErrors
 open Suave.Logging
 open Suave.Utils
 open HexagonRestApi
-open HexagonRestApi.Rest.RestFul
+open HexagonRestApi.RestFul
 open HexagonRestApi.Domain.Domain
 
 let usingMySqlStorage = {
