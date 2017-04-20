@@ -4,6 +4,7 @@ NUGET
     BCrypt.Net (0.1)
     Dapper (1.50.2)
     Dynamitey (1.0.2)
+    Dapper (1.50.2)
     FSharp.Control.Reactive (3.5)
       System.Reactive (>= 3.0)
     FSharp.Core (4.1.12)

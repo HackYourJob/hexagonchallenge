@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>f774b9b9-b9e2-4f1d-9698-7ca168c282cd</ProjectGuid>
+    <ProjectGuid>45029514-FBC3-4EBC-A133-6A05AFDE169D</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Hexagon.Tests</RootNamespace>
-    <AssemblyName>Hexagon.Tests</AssemblyName>
+    <RootNamespace>HexagonTournament.Tests</RootNamespace>
+    <AssemblyName>HexagonTournament.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.1.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>Hexagon.Tests</Name>
+    <Name>HexagonTournament.Tests</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,15 +72,7 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Shapes.fs" />
-    <Compile Include="Round.fs" />
-    <Compile Include="Ais.fs" />
-    <Compile Include="CellsStore.fs" />
-    <Compile Include="AiCellIdsStore.fs" />
-    <Compile Include="ScoresStore.fs" />
-    <Content Include="App.config" />
     <None Include="paket.references" />
-    <Compile Include="Condorcet.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
