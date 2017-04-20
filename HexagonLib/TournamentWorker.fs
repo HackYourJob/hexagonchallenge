@@ -5,7 +5,7 @@ open Hexagon.Domain
 open Fable.Core
 
 let hexagonSize = 9
-let roundsNb = 100
+let roundsNb = 5000
 
 [<Emit("console.log($0)")>]
 let printLog (value: obj) = jsNative
