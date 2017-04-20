@@ -81,11 +81,13 @@ let play basicAiJs =
     | false -> 
         isRunning <- true
         isPaused <- false
+
+        let nameInput = document.getElementById("aiName") :?> HTMLInputElement
         
         [
-            ({ Id = 1; Name = "Basic JS" }, basicAiJs )
-            ({ Id = 2; Name = "Basic F#" }, Hexagon.BasicAi.play )
-            ({ Id = 3; Name = "Dynamic JS" }, getPlayFunction() )
+            ({ Id = 1; Name = nameInput.value }, getPlayFunction() )
+            ({ Id = 2; Name = "Basic JS" }, basicAiJs )
+            ({ Id = 3; Name = "Basic F#" }, Hexagon.BasicAi.play )
         ]
         |> startGame 9 5000
 
