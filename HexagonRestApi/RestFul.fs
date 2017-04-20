@@ -27,7 +27,7 @@ let getResourceFromRequest<'a> (req : HttpRequest) =
     req.rawForm |> getString |> fromJson<'a>
 
 
-let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) =    
+let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) (getMatchEvents: string -> string) =    
     let errorIfNone = function
         | Some r -> r |> OK
         | _ -> NOT_FOUND "Resource not found"
@@ -35,4 +35,5 @@ let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) =
     choose [
         path "/ais" >=> POST >=> request (getResourceFromRequest >> submit >> (fun () -> "Saved" |> OK))
         path "/ais/get"  >=> POST >=> request (getResourceFromRequest >> tryToGetCode >> errorIfNone)
+        pathScan "/matchs/%s/events" (fun (matchId) -> matchId |> getMatchEvents |> OK)
         ]

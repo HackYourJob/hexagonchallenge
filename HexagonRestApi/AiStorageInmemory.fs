@@ -28,3 +28,6 @@ let updateOrAdd id ai =
     match aiMemoryStorage.ContainsKey id with
     | false -> aiMemoryStorage.Add(id, ai)
     | true -> aiMemoryStorage.[id] <- ai
+
+let getMatchEvents matchId =
+    "fdsfsdfsdfsf " + matchId

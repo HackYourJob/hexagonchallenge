@@ -25,7 +25,7 @@ let start port wwwDirectory =
                 bindings = [ HttpBinding.mkSimple HTTP "0.0.0.0" port ]
                 homeFolder = Some (Path.GetFullPath wwwDirectory) }
    
-    let aiRestWebPart = aiRest (AisService.submitAi AiStorageInMySql.updateOrAdd) (AisService.getAi AiStorageInMySql.tryToGetCode)
+    let aiRestWebPart = aiRest (AisService.submitAi AiStorageInMySql.updateOrAdd) (AisService.getAi AiStorageInMySql.tryToGetCode) (AiStorageInmemory.getMatchEvents)
 
     let app : WebPart =
       choose [
