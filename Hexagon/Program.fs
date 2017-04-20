@@ -14,34 +14,9 @@ open Suave.Files
 open Suave.RequestErrors
 open Suave.Logging
 open Suave.Utils
-open HexagonRestApi.AisService
-open HexagonRestApi.Rest.RestFul
-open HexagonRestApi.Domain.Domain
-
-
-//let usingInMemoryStorage = {
-//    GetAll = AiStorageInmemory.GetAll
-//    Exists = AiStorageInmemory.Exists
-//    Add = AiStorageInmemory.Add
-//    Update = AiStorageInmemory.Update
-//    GetById = AiStorageInmemory.GetById
-//    }
-
-//let usingInAzureDb = {
-//    GetAll = AiStorageInDocumentDb.GetAll
-//    Exists = AiStorageInDocumentDb.Exists
-//    Add = AiStorageInDocumentDb.Add
-//    Update = AiStorageInDocumentDb.Update
-//    GetById = AiStorageInDocumentDb.GetById
-//    }
-
-let usingMySqlStorage = {
-    GetAll = AiStorageInMySql.getAll
-    Exists = AiStorageInMySql.exists
-    Add = AiStorageInMySql.add
-    Update = AiStorageInMySql.update
-    GetById = AiStorageInMySql.getById
-}
+open HexagonRestApi
+open HexagonRestApi.RestFul
+open HexagonRestApi.Domain
 
 let start port wwwDirectory =
 
@@ -50,11 +25,7 @@ let start port wwwDirectory =
                 bindings = [ HttpBinding.mkSimple HTTP "0.0.0.0" port ]
                 homeFolder = Some (Path.GetFullPath wwwDirectory) }
    
-    let aiRestWebPart = rest "ais" {
-        GetAll = AisService.getAis usingMySqlStorage
-        Submit = AisService.submitAi usingMySqlStorage
-        GetById = AisService.getAi usingMySqlStorage
-    }
+    let aiRestWebPart = aiRest (AisService.submitAi AiStorageInMySql.updateOrAdd) (AisService.getAi AiStorageInMySql.tryToGetCode)
 
     let app : WebPart =
       choose [

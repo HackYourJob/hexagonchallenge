@@ -2,18 +2,9 @@
     
     open Xunit
     open FsUnit.Xunit
-    open HexagonRestApi.AisService
-    open HexagonRestApi.Domain.Domain
-
-    
-    let usingInMemoryStorage = {
-        GetAll = AiStorageInmemory.GetAll
-        Exists = AiStorageInmemory.Exists
-        Add = AiStorageInmemory.Add
-        Update = AiStorageInmemory.Update
-        GetById = AiStorageInmemory.GetById
-        }
-    
+    open HexagonRestApi
+    open HexagonRestApi.Domain
+        
     let private buildAiId ai=
         String.concat "." [ai.UserId; ai.Password; ai.AiName;]
 
@@ -21,8 +12,8 @@
     let ``create ai when submit an unknown ai`` () =
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
       
-        AisService.submitAi usingInMemoryStorage aiToSubmit|> should equal aiToSubmit 
-        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
+        AisService.submitAi AiStorageInmemory.updateOrAdd aiToSubmit|> should equal aiToSubmit 
+        AiStorageInmemory.GetById(buildAiId aiToSubmit)|> should equal aiToSubmit 
         
 
     [<Fact>] 
@@ -30,12 +21,12 @@
         let aiToSubmit = {AiName="test";UserId="test";Password="test";Content="test"}
         let aiUpdated = {AiName="test";UserId="test";Password="test";Content="testUpdated"}
         
-        usingInMemoryStorage.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
+        AiStorageInmemory.Add(buildAiId(aiToSubmit), aiToSubmit) |> ignore
         
-        AisService.submitAi usingInMemoryStorage aiUpdated |> should equal aiUpdated
-        usingInMemoryStorage.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
+        AisService.submitAi AiStorageInmemory.updateOrAdd aiUpdated |> should equal aiUpdated
+        AiStorageInmemory.GetById(buildAiId aiToSubmit)|> should equal aiUpdated         
 
     [<Fact>] 
     let ``return none when unknow ai`` () =              
-        AisService.getAi usingInMemoryStorage ({Ai.AiName="unknow";UserId="unknow";Password="unknow";Content="unknow"}) |> should equal None
+        AisService.getAi AiStorageInmemory.tryToGetCode ({Ai.AiName="unknow";UserId="unknow";Password="unknow";Content="unknow"}) |> should equal None
 

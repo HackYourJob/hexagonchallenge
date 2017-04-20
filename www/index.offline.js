@@ -67,8 +67,7 @@ let getAi = function () {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                let aiJson = JSON.parse(xhr.responseText);
-                codeEditor.setValue(aiJson.content);
+                codeEditor.setValue(xhr.responseText);
             } else {
                 alert(`An error occured while retrieving AI ${xhr.status.toString()}`);
             }

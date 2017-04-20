@@ -3,7 +3,7 @@
 open Dapper
 open MySql.Data
 open MySql.Data.MySqlClient
-open HexagonRestApi.Domain
+open HexagonRestApi
 open System.Security.Cryptography
 
 let connectionString = System.Environment.GetEnvironmentVariable("HEXAGON_MYSQL_CONNECTIONSTRING")
@@ -58,3 +58,22 @@ let update (id, (ai:Domain.Ai)) =
 let getById id =
     use connection = new MySqlConnection(connectionString)
     connection.QuerySingle<Domain.Ai>("SELECT aiName, userId, password, content FROM ai WHERE AiId = @Id", { Id = getHashedId id })
+    
+let getByCode id =
+    use connection = new MySqlConnection(connectionString)
+    connection.QuerySingle<string>("SELECT content FROM ai WHERE AiId = @Id", { Id = getHashedId id })
+
+let tryToGetCode id ai =
+    match exists id with
+    | false -> None
+    | true -> 
+        let code = getByCode id
+        match System.String.IsNullOrWhiteSpace(code) with
+        | true -> None
+        | false -> Some code
+
+let updateOrAdd id ai =
+    match exists id with
+    | false -> add (id, ai)
+    | true -> update (id, ai)
+    ()

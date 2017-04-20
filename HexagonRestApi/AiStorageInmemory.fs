@@ -1,7 +1,7 @@
 ﻿module AiStorageInmemory
 
 open System.Collections.Generic
-open HexagonRestApi.Domain.Domain
+open HexagonRestApi.Domain
 
 let private aiMemoryStorage = new Dictionary<string, Ai>()
 
@@ -18,3 +18,13 @@ let Exists id = aiMemoryStorage.ContainsKey id
 let Add (id,ai) = 
     aiMemoryStorage.Add(id, ai)
     ai
+
+let tryToGetCode id ai =
+    match aiMemoryStorage.ContainsKey id with
+    | true -> Some aiMemoryStorage.[id].Content
+    | false -> None
+
+let updateOrAdd id ai =
+    match aiMemoryStorage.ContainsKey id with
+    | false -> aiMemoryStorage.Add(id, ai)
+    | true -> aiMemoryStorage.[id] <- ai
