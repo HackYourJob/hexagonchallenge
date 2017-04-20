@@ -2,7 +2,6 @@
 #I __SOURCE_DIRECTORY__
 #r "../../packages/Dapper/lib/net451/Dapper.dll"
 #r "../../HexagonLib/bin/Debug/HexagonLib.dll"
-#r "../../HexagonRestApi/bin/Debug/HexagonRestApi.exe"
 #r "../../packages/MySql.Data/lib/net45/MySql.Data.dll"
 #r "System.Configuration.dll"
 #r "System.Core.dll"

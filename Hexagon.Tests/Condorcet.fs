@@ -56,9 +56,9 @@ type ``drawGames should`` () =
         |> Seq.iter (fun (x, y) -> y |> should equal 6)
         
 type ``determine best players should`` () =
-    let player1 = { AiId = "Player 1"; Cells = 0; Resources = 0; Bugs = 0 }
-    let player2 = { AiId = "Player 2"; Cells = 0; Resources = 0; Bugs = 0 }
-    let player3 = { AiId = "Player 3"; Cells = 0; Resources = 0; Bugs = 0 }
+    let player1 = { AiId = "#1"; AiName = "Player 1"; Cells = 0; Resources = 0; Bugs = 0 }
+    let player2 = { AiId = "#2"; AiName = "Player 2"; Cells = 0; Resources = 0; Bugs = 0 }
+    let player3 = { AiId = "#3"; AiName = "Player 3"; Cells = 0; Resources = 0; Bugs = 0 }
     let gameRanking1 = [ player1; player2; player3 ] 
     let gameRanking2 = [ player2; player3; player1 ]
     let gameRanking3 = [ player3; player1; player2 ]

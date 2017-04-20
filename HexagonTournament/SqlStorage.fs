@@ -3,7 +3,7 @@
 open Dapper
 open MySql.Data
 open MySql.Data.MySqlClient
-open HexagonRestApi.Domain
+open HexagonTournament.Condorcet
 
 let connectionString = System.Environment.GetEnvironmentVariable("HEXAGON_MYSQL_CONNECTIONSTRING")
 
@@ -17,6 +17,20 @@ type GameQueue = {
     GameId: string
     CreatedAt: System.DateTime
     TournamentName: string
+}
+
+type Tournament = {
+    TournamentName: string
+}
+
+type GameResult = {
+    MatchId: System.Guid
+    AiId: string
+    AiName: string
+    Resources: int
+    Cells: int
+    Bugs: int
+    Order: int
 }
 
 let getAllAis () =
@@ -40,3 +54,13 @@ let queueGames games tournamentName =
             connection.Execute("INSERT INTO matchAi VALUES (@GameId, @AiId, @Order)", ai) |> ignore)
         connection.Execute("INSERT INTO matchQueue VALUES (@GameId, NULL, @CreatedAt, @TournamentName)", game) |> ignore)
     connection.Close()
+
+let getGamesResults tournamentName =
+    use connection = new MySqlConnection(connectionString)
+    connection.Query<GameResult>(
+        "SELECT matchResult.MatchId, ai.AiId, ai.AiName, matchResult.Resources, 
+            matchResult.Cells, matchResult.Bugs, matchResult.Order
+         FROM matchResult, ai, matchQueue
+         WHERE matchResult.AiId = ai.AiId
+         AND matchResult.MatchId = matchQueue.MatchId
+         AND matchQueue.TournamentName = @TournamentName", { TournamentName = tournamentName })

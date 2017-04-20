@@ -12,6 +12,7 @@ type AiId = string
 
 type GameAiScore = {
     AiId:AiId
+    AiName: string
     Resources: int
     Cells: int
     Bugs: int
@@ -94,6 +95,7 @@ let determineBestPlayers gamesRankings =
             x, 
             { 
                 AiId = x
+                AiName = (y |> Seq.head).AiName
                 Cells = y |> Seq.sumBy (fun z -> z.Cells)
                 Resources = y |> Seq.sumBy (fun z -> z.Resources)
                 Bugs = y |> Seq.sumBy (fun z -> z.Bugs)
