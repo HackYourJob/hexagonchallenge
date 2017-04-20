@@ -18,23 +18,6 @@ open HexagonRestApi
 open HexagonRestApi.Rest.RestFul
 open HexagonRestApi.Domain.Domain
 
-
-//let usingInMemoryStorage = {
-//    GetAll = AiStorageInmemory.GetAll
-//    Exists = AiStorageInmemory.Exists
-//    Add = AiStorageInmemory.Add
-//    Update = AiStorageInmemory.Update
-//    GetById = AiStorageInmemory.GetById
-//    }
-
-//let usingInAzureDb = {
-//    GetAll = AiStorageInDocumentDb.GetAll
-//    Exists = AiStorageInDocumentDb.Exists
-//    Add = AiStorageInDocumentDb.Add
-//    Update = AiStorageInDocumentDb.Update
-//    GetById = AiStorageInDocumentDb.GetById
-//    }
-
 let usingMySqlStorage = {
     GetAll = AiStorageInMySql.getAll
     Exists = AiStorageInMySql.exists
