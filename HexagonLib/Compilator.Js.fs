@@ -23,7 +23,14 @@ let improveInput (cells: Ais.AiCell[]): obj = jsNative
 })($0);""")>]
 let checkOuput (result: Ais.TransactionParameters option): Ais.TransactionParameters option = jsNative
 
-[<Emit("eval($0)($1)")>]
+[<Emit("""(function(code, _) {
+    try {
+        return eval($0)($1);
+    } catch (e) {
+        console.log(e);
+        return function() {};
+    }
+})($0, $1);""")>]
 let eval (code: string) underscore : (obj -> Ais.TransactionParameters option) = jsNative
 
 [<Emit("""(function(timerId, play) {
