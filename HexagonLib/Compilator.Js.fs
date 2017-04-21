@@ -19,7 +19,7 @@ let improveInput (cells: Ais.AiCell[]): obj = jsNative
     if(result.ToId === undefined) throw "Missing FromId";
     if(result.AmountToTransfer === undefined) throw "Missing FromId";
 
-    return { FromId: "" + result.FromId, ToId: "" + result.ToId, AmountToTransfer: + result.AmountToTransfer };
+    return { FromId: "" + result.FromId, ToId: "" + result.ToId, AmountToTransfer: Math.round(+ result.AmountToTransfer) };
 })($0);""")>]
 let checkOuput (result: Ais.TransactionParameters option): Ais.TransactionParameters option = jsNative
 
