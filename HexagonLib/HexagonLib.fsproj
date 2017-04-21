@@ -69,6 +69,7 @@
     <Compile Include="UI.CodeEditor.fs" />
     <Compile Include="UI.Legend.fs" />
     <Compile Include="UI.Simulator.fs" />
+    <Compile Include="UI.Tournament.fs" />
     <Compile Include="TournamentWorker.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 import { play, serializeEvents } from "./build/TournamentWorker";
 import mysql from "mysql2";
 import os from "os";
+import zlib from 'zlib';
 
 let workerName = 'worker-' + os.hostname();
 
@@ -39,6 +40,8 @@ function readFileAsync(file, encoding) {
 let saveResult = function(matchId, events, scores) {
     let connection = openConnection();
 
+    events = zlib.gzipSync(events);
+
     let results = scores.map(function (s) { return { matchId: matchId, aiId: s.aiId, resources: s.resources, cells: s.cellsNb, bugs: s.bugs, order: s.position}});
     Promise.all(results.map(result => query(connection, 'INSERT INTO matchResult SET ?', result)))
         .then(() =>
@@ -46,9 +49,14 @@ let saveResult = function(matchId, events, scores) {
                 `INSERT INTO matchEvents (matchId, events, processedAt) VALUES (?, ?, NOW())`,
                 [matchId, events]))
         .then(() => {
+            connection.end();
             console.log("match end : " + matchId);
             checkIfMatch();
-        }, err => console.error(err));
+            },
+            err => {
+                console.error(err);
+                connection.end();
+            });
 };
 
 let runMatch = function (ais, matchId) {
@@ -65,7 +73,7 @@ let runMatch = function (ais, matchId) {
     } finally {
         console.log = oldLog;
     }
-
+    
     var events = serializeEvents(result[0]);
     var scores = result[1].map(function(s, position) {
         return {
@@ -87,17 +95,13 @@ let runMatch = function (ais, matchId) {
 function checkIfMatch() {
     let connection = openConnection();
 
-    connection.query(
-        `SELECT matchId, tournamentName 
-        FROM matchQueue
-        WHERE lockedBy IS NULL
-        ORDER BY createdAt ASC
-        LIMIT 1`,
-        function (err, results) {
-            if (err) {
-                console.error(err);
-            }
-
+    query(connection,
+            `SELECT matchId, tournamentName 
+            FROM matchQueue
+            WHERE lockedBy IS NULL
+            ORDER BY createdAt ASC
+            LIMIT 1`)
+        .then(results => {
             if (!results || results.length != 1) {
                 delayAction(checkIfMatch);
                 return;
@@ -105,41 +109,38 @@ function checkIfMatch() {
 
             var match = results[0];
 
-            connection.query(
-                'UPDATE matchQueue SET lockedBy = ? WHERE matchId = ? AND lockedBy IS NULL',
-                [workerName, match.matchId],
-                function (err) {
-                    if (err) {
-                        console.error(err);
-                    }
-
-                    connection.query(
+            return query(connection,
+                    'UPDATE matchQueue SET lockedBy = ? WHERE matchId = ? AND lockedBy IS NULL',
+                    [workerName, match.matchId])
+                .then(results => {
+                    return query(connection,
                         `SELECT matchQueue.lockedBy, matchAi.aiId, matchAi.order, ai.content, ai.ainame
                         FROM matchQueue
                         LEFT JOIN matchAi ON matchQueue.matchId = matchAi.matchId
                         LEFT JOIN ai ON ai.aiId = matchAi.aiId
                         WHERE matchQueue.matchId = ? AND matchQueue.lockedBy = ?`,
-                        [match.matchId, workerName],
-                        function (err, results) {
-                            if (err) {
-                                console.error(err);
-                            }
+                        [match.matchId, workerName]);
+                })
+                .then(results => {
+                    if (!results || results.length < 1) {
+                        checkIfMatch();
+                        return;
+                    }
 
-                            if (!results || results.length < 1) {
-                                checkIfMatch();
-                                return;
-                            }
+                    console.log("Start match " + match.matchId);
 
-                            console.log("Start match " + match.matchId);
+                    let ais = results.map(function(r) {
+                        return { aiId: r.aiId, order: r.order, code: r.content, name: r.ainame }
+                    });
 
-                            let ais = results.map(function(r) {
-                                return { aiId: r.aiId, order: r.order, code: r.content, name: r.ainame }
-                            });
-                            
-                            runMatch(ais, match.matchId);
-                        });
+                    runMatch(ais, match.matchId);
                 });
-        });
+        })
+        .then(() => connection.end(),
+            err => {
+                console.error(err);
+                connection.end()
+            });
 };
 
 checkIfMatch();

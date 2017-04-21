@@ -26,13 +26,15 @@ let getResourceFromRequest<'a> (req : HttpRequest) =
         System.Text.Encoding.UTF8.GetString(rawForm)
     req.rawForm |> getString |> fromJson<'a>
 
-
-let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) =    
+let aiRest (submit: Ai -> unit) (tryToGetCode: Ai -> string option) (getMatchEvents: string -> byte[]) (getTournamentNames: unit -> string[]) (getMatchsOfTournament: string -> Match[]) =    
     let errorIfNone = function
         | Some r -> r |> OK
         | _ -> NOT_FOUND "Resource not found"
 
     choose [
         path "/ais" >=> POST >=> request (getResourceFromRequest >> submit >> (fun () -> "Saved" |> OK))
-        path "/ais/get"  >=> POST >=> request (getResourceFromRequest >> tryToGetCode >> errorIfNone)
+        path "/ais/get" >=> POST >=> request (getResourceFromRequest >> tryToGetCode >> errorIfNone)
+        pathScan "/matchs/%s/events" (fun (matchId) -> matchId |> getMatchEvents |> ok) >=> Writers.setHeader "Content-Encoding" "gzip"
+        path "/tournaments" >=> GET >=> request (fun _ -> getTournamentNames () |> JSON)
+        pathScan "/tournaments/%s/matchs" (fun (tournamentId) -> tournamentId |> getMatchsOfTournament |> JSON)
         ]

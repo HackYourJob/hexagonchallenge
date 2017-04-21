@@ -183,3 +183,4 @@ let initializeAiSimulator basicAiJs =
         | _ -> ()
 
         new obj())
+    

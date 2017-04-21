@@ -5,3 +5,9 @@ type Ai = {
     Password : string
     Content : string
 }
+
+type Match = {
+    Id: string
+    Date: System.DateTime
+    AiNames: string[]
+}

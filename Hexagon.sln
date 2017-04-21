@@ -19,6 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{E0B36D0A-7B7
 		www\index.html = www\index.html
 		www\index.offline.js = www\index.offline.js
 		www\main.css = www\main.css
+		www\presentation.html = www\presentation.html
+		www\tournaments.html = www\tournaments.html
+		www\tournaments.offline.js = www\tournaments.offline.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Start", "Start", "{2D74480D-5B57-43C4-9559-C8E3CB858C89}"
@@ -29,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Start", "Start", "{2D74480D
 		package.json = package.json
 		README = README
 		start.bat = start.bat
+		tournament.webpack.config.js = tournament.webpack.config.js
 		tournamentWorker.webpack.config.js = tournamentWorker.webpack.config.js
 		www.webpack.config.js = www.webpack.config.js
 	EndProjectSection

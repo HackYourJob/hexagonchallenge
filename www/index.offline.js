@@ -40,42 +40,40 @@ let createJsObjectFromFields = function () {
     return ai;
 }
 
-let submit = function () {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", aisUrl, true);
+let ajax = function(method, url, data, onResult, onfailed) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                alert("AI saved");
+                onResult(xhr.responseText);
             } else {
-                alert(`An error occured while saving AI ${xhr.status.toString()}`);
+                onfailed(xhr.status.toString());
             }
         }
     }
 
-    let data = JSON.stringify(createJsObjectFromFields());
-    xhr.send(data);
+    xhr.send(data ? JSON.stringify(data) : data);
+};
+
+let submit = function () {
+    ajax("POST",
+        aisUrl,
+        createJsObjectFromFields(),
+        function() { alert("AI saved"); },
+        function(status) { alert(`An error occured while saving AI ${status}`); });
 }
 
 let submitButton = document.getElementById("submit");
 submitButton.addEventListener("click", submit);
 
 let getAi = function () {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", aisUrl + "/get", true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                codeEditor.setValue(xhr.responseText);
-            } else {
-                alert(`An error occured while retrieving AI ${xhr.status.toString()}`);
-            }
-        }
-    };
-
-    let data = JSON.stringify(createJsObjectFromFields());
-    xhr.send(data);
+    ajax("POST",
+        aisUrl + "/get",
+        createJsObjectFromFields(),
+        function (result) { codeEditor.setValue(result); },
+        function (status) { alert(`An error occured while retrieving AI ${status}`); });
 }
 
 let getButton = document.getElementById("get");
