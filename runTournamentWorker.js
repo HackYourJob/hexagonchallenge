@@ -1,6 +1,7 @@
 import { play, serializeEvents } from "./build/TournamentWorker";
 import mysql from "mysql2";
 import os from "os";
+import zlib from 'zlib';
 
 let workerName = 'worker-' + os.hostname();
 
@@ -39,6 +40,8 @@ function readFileAsync(file, encoding) {
 let saveResult = function(matchId, events, scores) {
     let connection = openConnection();
 
+    events = zlib.gzipSync(events);
+
     let results = scores.map(function (s) { return { matchId: matchId, aiId: s.aiId, resources: s.resources, cells: s.cellsNb, bugs: s.bugs, order: s.position}});
     Promise.all(results.map(result => query(connection, 'INSERT INTO matchResult SET ?', result)))
         .then(() =>
@@ -65,7 +68,7 @@ let runMatch = function (ais, matchId) {
     } finally {
         console.log = oldLog;
     }
-
+    
     var events = serializeEvents(result[0]);
     var scores = result[1].map(function(s, position) {
         return {

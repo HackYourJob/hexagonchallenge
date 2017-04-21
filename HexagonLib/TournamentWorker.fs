@@ -42,5 +42,5 @@ let play (ais: AiWorker seq) =
 open Fable.Core.JsInterop
 
 let serializeEvents (events: GameEvents seq) = 
-    toJson events
+    toJsonWithTypeInfo events
     
