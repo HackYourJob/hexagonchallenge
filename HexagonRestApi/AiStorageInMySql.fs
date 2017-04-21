@@ -1,5 +1,6 @@
 ﻿module AiStorageInMySql
 
+open HexagonRestApi.Domain
 open Dapper
 open MySql.Data
 open MySql.Data.MySqlClient
@@ -74,6 +75,35 @@ let tryToGetCode id ai =
 
 let updateOrAdd id ai =
     match exists id with
-    | false -> add (id, ai)
-    | true -> update (id, ai)
-    ()
+    | false -> add (id, ai) |> ignore
+    | true -> update (id, ai) |> ignore
+
+let getMatchEvents (matchId: string) =
+    use connection = new MySqlConnection(connectionString)
+    
+    connection.QuerySingle<byte[]>("SELECT events FROM matchEvents WHERE matchId = @Id", { Id = matchId })
+
+let getTournamentNames () =
+    use connection = new MySqlConnection(connectionString)
+    connection.Query<string>("SELECT DISTINCT tournamentName FROM matchQueue WHERE lockedBy IS NOT NULL")
+    |> Seq.toArray
+
+type MatchResult = {
+    Id: System.Guid
+    Date: System.DateTime
+    AiName: string
+}
+
+let getMatchsOfTournament tournamentId =
+    use connection = new MySqlConnection(connectionString)
+    connection.Query<MatchResult>("""
+        SELECT matchQueue.matchId as Id, matchEvents.processedAt as Date, ai.ainame as AiName
+        FROM matchQueue 
+        LEFT JOIN matchEvents ON matchEvents.matchId = matchQueue.matchId 
+        LEFT JOIN matchResult ON matchResult.matchId = matchQueue.matchId 
+        LEFT JOIN ai ON matchResult.aiId = ai.aiId 
+        WHERE matchEvents.events IS NOT NULL 
+        AND tournamentName = @Id""", { Id = tournamentId })
+    |> Seq.groupBy (fun m -> m.Id)
+    |> Seq.map (fun (id, values) -> { Id = id.ToString(); Date = (values |> Seq.head).Date; AiNames = values |> Seq.map (fun v -> v.AiName) |> Seq.toArray} )
+    |> Seq.toArray
