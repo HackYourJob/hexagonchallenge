@@ -1,0 +1,66 @@
+﻿<html>
+<head>
+    <title>Hexagonal game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link href="/main.css?v=20170420172401" media="all" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <form class="form-inline simulator-controls">
+        <div class="form-group">
+            <label for="speed">Tournaments</label>
+            <select class="form-control" id="tournaments"></select>
+        </div>
+        <button type="button" class="btn btn-success editor-action" id="seeMatchs">
+            See matchs
+        </button>
+    </form>
+    <ul id="matchs">
+        
+    </ul>
+</div>
+
+<div id="runner" class="simulator simulator--match">
+    <form class="form-inline simulator-controls">
+        <div class="form-group">
+            <label for="speed">Speed</label>
+            <select class="form-control" id="speed">
+                <option value="100">Normal</option>
+                <option value="50">Fast</option>
+                <option value="1">Very fast</option>
+                <option value="500">Slow</option>
+                <option value="-1">Step by step</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-success editor-action" id="test">
+            <span class="glyphicon glyphicon-play"></span> Run
+        </button>
+        <button type="button" class="btn btn-default editor-action" id="pause">
+            <span class="glyphicon glyphicon-pause"></span> Pause
+        </button>
+        <button type="button" class="btn btn-default editor-action" id="stop">
+            <span class="glyphicon glyphicon-stop"></span> Stop
+        </button>
+        <button type="button" class="btn btn-default editor-action" id="close">X</button>
+    </form>
+    <div class="simulator-visualization">
+        <div id="board" class="board"></div>
+        <div>
+            <div class="score score--header">
+                <div class="score-legend"></div>
+                <div class="score-aiName">Name</div>
+                <div class="score-cellsNb">Cells</div>
+                <div class="score-resources">Resources</div>
+                <div class="score-bugs">Bugs</div>
+            </div>
+            <div id="scores" class="scores"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="/tournaments.js?v=20170420172401"></script>
+</body>
+</html>
