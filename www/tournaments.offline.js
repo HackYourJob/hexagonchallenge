@@ -93,4 +93,36 @@ closeButton.addEventListener("click", function () {
 
 updateTournaments();
 
-initialize(() => events);
+var cleanEvents = function (events) {
+    let flatCollection = function(obj) {
+        if (obj && obj["$type"] === "Microsoft.FSharp.Collections.FSharpList") {
+            return obj["$values"];
+        }
+
+        return obj;
+    };
+
+    let transformRec = function (obj) {
+        if (!obj || typeof obj === 'string') return obj;
+
+        for (let propertyName in obj) {
+            obj[propertyName] = flatCollection(obj[propertyName]);
+
+            obj[propertyName] = transformRec(obj[propertyName]);
+        }
+
+        if (Array.isArray(obj)) {
+            for (let index in obj) {
+                obj[index] = flatCollection(obj[index]);
+
+                obj[index] = transformRec(obj[index]);
+            }
+        }
+
+        return obj;
+    };
+
+    return transformRec(events);
+};
+
+initialize(() => events, cleanEvents);

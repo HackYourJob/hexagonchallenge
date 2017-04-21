@@ -47,7 +47,7 @@ let rec autoPlay () =
         runNextStep()
         setTimeout speed autoPlay
 
-let play getEvents =
+let play getEvents cleanEvents =
     speed <- getSpeed ()
 
     match isPaused with
@@ -62,6 +62,7 @@ let play getEvents =
         events <- 
             getEvents () 
             |> Fable.Core.JsInterop.ofJson<GameEvents seq>
+            |> cleanEvents
             |> Seq.toArray
         
         autoPlay()
@@ -83,12 +84,12 @@ let addListenerOnClick (button: HTMLElement) action =
         action()
         new obj())
 
-let initialize getEvents =
+let initialize getEvents cleanEvents =
     Legend.initialize (document.getElementById("scores"))
     Board.initialize (document.getElementById("board"))
 
     let testButton = document.getElementById("test");
-    addListenerOnClick testButton (fun _ -> play getEvents)
+    addListenerOnClick testButton (fun _ -> play getEvents cleanEvents)
         
     let stopButton = document.getElementById("stop");
     addListenerOnClick stopButton stop
