@@ -40,6 +40,7 @@ let runMatch = function (matchId) {
         function (results) {
             let runner = document.getElementById("runner");
             runner.style.visibility = 'visible';
+            runner.style.display = 'flex';
 
             events = results;
         });
@@ -87,6 +88,7 @@ let closeButton = document.getElementById("close");
 closeButton.addEventListener("click", function () {
     let runner = document.getElementById("runner");
     runner.style.visibility = 'collapse';
+    runner.style.display = 'none';
 
     close();
 });
