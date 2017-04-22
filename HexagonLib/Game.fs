@@ -12,7 +12,7 @@ let startGame raiseEvents hexagonSize roundsNb ais : GameStep =
     let ais = ais @ basicAis
     
     let hexagon = 
-        HexagonBoard.generate hexagonSize 
+        MixitBoard.generate hexagonSize 
         |> convertShapeToCells
         |> Seq.toList
 
