@@ -46,7 +46,7 @@ let drawGames players =
         let random = new System.Random()
         let rand = fun () -> random.Next()
                 
-        [1..(players |> Seq.length) / 2]
+        [1..(players |> Seq.length) * 2]
         |> List.collect (fun _ -> games rand players)
 
 type CondorcetGraph = Map<AiId, Map<AiId, int>>
